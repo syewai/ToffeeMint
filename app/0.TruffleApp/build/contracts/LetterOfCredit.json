@@ -1,0 +1,569 @@
+{
+  "contract_name": "LetterOfCredit",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "contractID",
+          "type": "string"
+        }
+      ],
+      "name": "getStatus",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "contractID",
+          "type": "string"
+        },
+        {
+          "name": "contractJson",
+          "type": "string"
+        }
+      ],
+      "name": "createLC",
+      "outputs": [
+        {
+          "name": "set",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "contractID",
+          "type": "string"
+        }
+      ],
+      "name": "getLC",
+      "outputs": [
+        {
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "contractID",
+          "type": "string"
+        },
+        {
+          "name": "stat",
+          "type": "string"
+        }
+      ],
+      "name": "setStatus",
+      "outputs": [
+        {
+          "name": "changed",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "contractID",
+          "type": "string"
+        },
+        {
+          "name": "contractJson",
+          "type": "string"
+        }
+      ],
+      "name": "modifyLC",
+      "outputs": [
+        {
+          "name": "set",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "contractID",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "contractValues",
+          "type": "string"
+        }
+      ],
+      "name": "LCCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "contractID",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "contractValues",
+          "type": "string"
+        }
+      ],
+      "name": "LCModified",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "contractID",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "contractStatus",
+          "type": "string"
+        }
+      ],
+      "name": "StatusChanged",
+      "type": "event"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000f57600080fd5b5b610c388061001f6000396000f300606060405263ffffffff7c010000000000000000000000000000000000000000000000000000000060003504166322b05ed2811461006957806338b8cfc714610132578063a8a490c3146101d9578063c5590033146102a2578063d5380c7214610349575b600080fd5b341561007457600080fd5b6100ba60046024813581810190830135806020601f820181900481020160405190810160405281815292919060208401838380828437509496506103f095505050505050565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156100f75780820151818401525b6020016100de565b50505050905090810190601f1680156101245780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b341561013d57600080fd5b6101c560046024813581810190830135806020601f8201819004810201604051908101604052818152929190602084018383808284378201915050505050509190803590602001908201803590602001908080601f0160208091040260200160405190810160405281815292919060208401838380828437509496506104ff95505050505050565b604051901515815260200160405180910390f35b34156101e457600080fd5b6100ba60046024813581810190830135806020601f8201819004810201604051908101604052818152929190602084018383808284375094965061073795505050505050565b60405160208082528190810183818151815260200191508051906020019080838360005b838110156100f75780820151818401525b6020016100de565b50505050905090810190601f1680156101245780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b34156102ad57600080fd5b6101c560046024813581810190830135806020601f8201819004810201604051908101604052818152929190602084018383808284378201915050505050509190803590602001908201803590602001908080601f01602080910402602001604051908101604052818152929190602084018383808284375094965061084695505050505050565b604051901515815260200160405180910390f35b341561035457600080fd5b6101c560046024813581810190830135806020601f8201819004810201604051908101604052818152929190602084018383808284378201915050505050509190803590602001908201803590602001908080601f0160208091040260200160405190810160405281815292919060208401838380828437509496506109d095505050505050565b604051901515815260200160405180910390f35b6103f8610b5a565b6001826040518082805190602001908083835b6020831061042b57805182525b601f19909201916020918201910161040b565b6001836020036101000a03801982511681845116808217855250505050505090500191505090815260200160405180910390208054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156104f25780601f106104c7576101008083540402835291602001916104f2565b820191906000526020600020905b8154815290600101906020018083116104d557829003601f168201915b505050505090505b919050565b6000816000846040518082805190602001908083835b6020831061053557805182525b601f199092019160209182019101610515565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020908051610579929160200190610b6c565b506040805190810160405280600781526020017f70656e64696e67000000000000000000000000000000000000000000000000008152506001846040518082805190602001908083835b602083106105e357805182525b601f1990920191602091820191016105c3565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020908051610627929160200190610b6c565b507fe1818f16878559f131382edac6d0a5aae66df2bcccc50a7325993134fe739f7a8383604051808060200180602001838103835285818151815260200191508051906020019080838360005b8381101561068d5780820151818401525b602001610674565b50505050905090810190601f1680156106ba5780820380516001836020036101000a031916815260200191505b50838103825284818151815260200191508051906020019080838360005b838110156106f15780820151818401525b6020016106d8565b50505050905090810190601f16801561071e5780820380516001836020036101000a031916815260200191505b5094505050505060405180910390a15060015b92915050565b61073f610b5a565b6000826040518082805190602001908083835b6020831061042b57805182525b601f19909201916020918201910161040b565b6001836020036101000a03801982511681845116808217855250505050505090500191505090815260200160405180910390208054600181600116156101000203166002900480601f0160208091040260200160405190810160405280929190818152602001828054600181600116156101000203166002900480156104f25780601f106104c7576101008083540402835291602001916104f2565b820191906000526020600020905b8154815290600101906020018083116104d557829003601f168201915b505050505090505b919050565b6000816001846040518082805190602001908083835b6020831061087c57805182525b601f19909201916020918201910161085c565b6001836020036101000a03801982511681845116808217855250505050505090500191505090815260200160405180910390209080516108c0929160200190610b6c565b507f34196bdb17643c131ad4d20f53a4762def8f51af723e34144d6dc7ea01d30b138383604051808060200180602001838103835285818151815260200191508051906020019080838360005b8381101561068d5780820151818401525b602001610674565b50505050905090810190601f1680156106ba5780820380516001836020036101000a031916815260200191505b50838103825284818151815260200191508051906020019080838360005b838110156106f15780820151818401525b6020016106d8565b50505050905090810190601f16801561071e5780820380516001836020036101000a031916815260200191505b5094505050505060405180910390a15060015b92915050565b6000816000846040518082805190602001908083835b60208310610a0657805182525b601f1990920191602091820191016109e6565b6001836020036101000a0380198251168184511680821785525050505050509050019150509081526020016040518091039020908051610a4a929160200190610b6c565b507f04d9b0fbc9520eaf2a4ab04c9b370e532d2dda8e907d36a4a4b87e0f5508bde58383604051808060200180602001838103835285818151815260200191508051906020019080838360005b8381101561068d5780820151818401525b602001610674565b50505050905090810190601f1680156106ba5780820380516001836020036101000a031916815260200191505b50838103825284818151815260200191508051906020019080838360005b838110156106f15780820151818401525b6020016106d8565b50505050905090810190601f16801561071e5780820380516001836020036101000a031916815260200191505b5094505050505060405180910390a15060015b92915050565b60206040519081016040526000815290565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10610bad57805160ff1916838001178555610bda565b82800160010185558215610bda579182015b82811115610bda578251825591602001919060010190610bbf565b5b50610be7929150610beb565b5090565b610c0991905b80821115610be75760008155600101610bf1565b5090565b905600a165627a7a72305820555f57ea134e19f81225b55125f3151539d58b37aaa86e694814eeaf7805eacd0029",
+  "networks": {
+    "1508676436886": {
+      "events": {
+        "0xe1818f16878559f131382edac6d0a5aae66df2bcccc50a7325993134fe739f7a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCCreated",
+          "type": "event"
+        },
+        "0x04d9b0fbc9520eaf2a4ab04c9b370e532d2dda8e907d36a4a4b87e0f5508bde5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCModified",
+          "type": "event"
+        },
+        "0x34196bdb17643c131ad4d20f53a4762def8f51af723e34144d6dc7ea01d30b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentStatus",
+              "type": "string"
+            }
+          ],
+          "name": "StatusChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x046555a58702e4cc78608fb56aa13f0a7d4d4333",
+      "updated_at": 1508676473001
+    },
+    "1508676902960": {
+      "events": {
+        "0xe1818f16878559f131382edac6d0a5aae66df2bcccc50a7325993134fe739f7a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCCreated",
+          "type": "event"
+        },
+        "0x04d9b0fbc9520eaf2a4ab04c9b370e532d2dda8e907d36a4a4b87e0f5508bde5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCModified",
+          "type": "event"
+        },
+        "0x34196bdb17643c131ad4d20f53a4762def8f51af723e34144d6dc7ea01d30b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentStatus",
+              "type": "string"
+            }
+          ],
+          "name": "StatusChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x5ae89c17f07263c18e516c6d8736588574db0de3",
+      "updated_at": 1508676924739
+    },
+    "1508686712733": {
+      "events": {
+        "0xe1818f16878559f131382edac6d0a5aae66df2bcccc50a7325993134fe739f7a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCCreated",
+          "type": "event"
+        },
+        "0x04d9b0fbc9520eaf2a4ab04c9b370e532d2dda8e907d36a4a4b87e0f5508bde5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCModified",
+          "type": "event"
+        },
+        "0x34196bdb17643c131ad4d20f53a4762def8f51af723e34144d6dc7ea01d30b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentStatus",
+              "type": "string"
+            }
+          ],
+          "name": "StatusChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xf75a5ec6f42dfb0777926deaa304f73046126236",
+      "updated_at": 1508686749854
+    },
+    "1508734638205": {
+      "events": {
+        "0xe1818f16878559f131382edac6d0a5aae66df2bcccc50a7325993134fe739f7a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCCreated",
+          "type": "event"
+        },
+        "0x04d9b0fbc9520eaf2a4ab04c9b370e532d2dda8e907d36a4a4b87e0f5508bde5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCModified",
+          "type": "event"
+        },
+        "0x34196bdb17643c131ad4d20f53a4762def8f51af723e34144d6dc7ea01d30b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentStatus",
+              "type": "string"
+            }
+          ],
+          "name": "StatusChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x5a69db6b46e417b627e84ee27c4ee8ce641b60da",
+      "updated_at": 1508734654585
+    },
+    "1508735308435": {
+      "events": {
+        "0xe1818f16878559f131382edac6d0a5aae66df2bcccc50a7325993134fe739f7a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCCreated",
+          "type": "event"
+        },
+        "0x04d9b0fbc9520eaf2a4ab04c9b370e532d2dda8e907d36a4a4b87e0f5508bde5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCModified",
+          "type": "event"
+        },
+        "0x34196bdb17643c131ad4d20f53a4762def8f51af723e34144d6dc7ea01d30b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentStatus",
+              "type": "string"
+            }
+          ],
+          "name": "StatusChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x8255f9804e4ccfcee067b7eee49299f1c96a4875",
+      "updated_at": 1508735622678
+    },
+    "1508737706283": {
+      "events": {
+        "0xe1818f16878559f131382edac6d0a5aae66df2bcccc50a7325993134fe739f7a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCCreated",
+          "type": "event"
+        },
+        "0x04d9b0fbc9520eaf2a4ab04c9b370e532d2dda8e907d36a4a4b87e0f5508bde5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCModified",
+          "type": "event"
+        },
+        "0x34196bdb17643c131ad4d20f53a4762def8f51af723e34144d6dc7ea01d30b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentStatus",
+              "type": "string"
+            }
+          ],
+          "name": "StatusChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x89b1103aaadfb408910c607ff1d80b3da49dcb4d",
+      "updated_at": 1508737729179
+    },
+    "1508744527366": {
+      "events": {
+        "0xe1818f16878559f131382edac6d0a5aae66df2bcccc50a7325993134fe739f7a": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCCreated",
+          "type": "event"
+        },
+        "0x04d9b0fbc9520eaf2a4ab04c9b370e532d2dda8e907d36a4a4b87e0f5508bde5": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentContract",
+              "type": "string"
+            }
+          ],
+          "name": "LCModified",
+          "type": "event"
+        },
+        "0x34196bdb17643c131ad4d20f53a4762def8f51af723e34144d6dc7ea01d30b13": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "currentID",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "currentStatus",
+              "type": "string"
+            }
+          ],
+          "name": "StatusChanged",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xbc5a3ceb6561596eb6c0e111a9e11a59109bc8e5",
+      "updated_at": 1508744543011
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1508745265931
+}
