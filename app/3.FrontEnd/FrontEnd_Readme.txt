@@ -1,1 +1,1 @@
-testing on 26_October 17
+current status: combine UI + convert to JSON object from user input
