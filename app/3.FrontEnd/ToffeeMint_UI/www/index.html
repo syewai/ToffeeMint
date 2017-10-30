@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Express.js example</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+</head>
+
+<body class="home">
+    <article class="textLeft" id="main">
+        <img class="logo" src="images/nodejs-logo.png">
+        <h1>Example Form</h1>
+        <p>Enter some info and then click "Submit"</p>
+        <div>
+            <!-- <form method="POST" id="testForm">
+                <label>First name:</label>
+                <input type="text" name="firstName"><br>
+                <label>Last name:</label>
+                <input type="text" name="lastName">
+                <button type="submit" id="submitButton">Submit</button><img class="ajaxLoader" src="images/ajax-loader.gif">
+            </form>-->
+            <form method="post" id="lc">
+                <div class="row clearfix">
+                    <!-- Task Info -->
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>GENERAL INFORMATION</h2><br>
+
+
+                                <!--START 0 ROW-->
+                                <div class="row clearfix">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <h2>Reference Number : </h2>
+                                            <!--Last exsiting RN + 1-->
+                                            <!-- Call Rest web service to retrieve total Num of LC on the chain-->
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <h2>Application Date : </h2>
+                                            <!--Grab the date of current date-->
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--END 0 ROW-->
+                                <!--START 1ST ROW-->
+                                <div class="row clearfix">
+                                    <div class="col-sm-6" name="expiryDate">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control expiryDate" placeholder="Expiry Date" name="expiryDate" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control expiryPlace" placeholder="Expiry Place" name="expiryPlace" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--END FIRST ROW-->
+                                <!--START 2ND ROW-->
+                                <div class="row clearfix">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control amount" placeholder="Amount" name="amount" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control currency" placeholder="Currency" name="currency" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--END 2ND ROW-->
+                                <!--START 3RD ROW-->
+                                <div class="row clearfix">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Credit Available by" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Term Days" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--END 3RD ROW-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# 1st Task Info -->
+
+                <!--START 2ND TASK INFO-->
+                <div class="row clearfix">
+                    <!-- Task Info -->
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>EXPORTER DETAILS</h2><br>
+
+                                <!--START 1ST ROW-->
+                                <div class="row clearfix">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Name" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Contact Number" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--END FIRST ROW-->
+                                <!--START 2ND ROW-->
+                                <div class="row clearfix">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Address" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Currency" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--END 2ND ROW-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# 2ND Task Info -->
+
+                <!--START 3RD TASK INFO-->
+                <div class="row clearfix">
+                    <!-- Task Info -->
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>BANKING DETAILS</h2><br>
+
+                                <!--START 1ST ROW-->
+                                <div class="row clearfix">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Issuing Bank" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Advising Bank" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--END FIRST ROW-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# 3RD Task Info -->
+                <!--START 4TH TASK INFO-->
+                <div class="row clearfix">
+                    <!-- Task Info -->
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>EXPORTER DETAILS</h2><br>
+
+                                <!--START 1ST ROW-->
+                                <div class="row clearfix">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="From" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="To" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--END FIRST ROW-->
+                                <!--START 2ND ROW-->
+                                <div class="row clearfix">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Shipment Date" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" placeholder="Goods Description" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--END 2ND ROW-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- #END# 4TH Task Info -->
+                <!-- Textarea -->
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>ADDITIONAL CONDITIONS</h2>
+                            </div>
+                            <div class="body">
+                                <h2 class="card-inside-title">Remarks</h2>
+                                <div class="row clearfix">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <textarea rows="3" class="form-control no-resize" placeholder="Please state your additional request..."></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- File Upload | Drag & Drop OR With Click & Choose -->
+                                <h2 class="card-inside-title">Required Documents Upload</h2>
+                                <div class="body">
+                                    <form action="/" id="frmFileUpload" class="dropzone" method="post" enctype="multipart/form-data">
+                                        <div class="dz-message">
+                                            <div class="drag-icon-cph">
+                                                <i class="material-icons">touch_app</i>
+                                            </div>
+                                            <h3>Drop files here or click to upload.</h3>
+                                        </div>
+                                        <div class="fallback">
+                                            <input name="file" type="file" multiple />
+                                        </div>
+                                    </form>
+                                </div>
+                                <div style="text-align:center">
+                                    <button type="submit" id="submitButton" class="btn btn-primary m-t-15 waves-effect">SUBMIT</button>
+
+                                    <button type="button" class="btn btn-primary m-t-15 waves-effect">RESET</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #END# File Upload | Drag & Drop OR With Click & Choose -->
+                    <!-- #END# Textarea -->
+                </div>
+            </form>
+
+        </div>
+        <section id="post-results-container">
+            <h2>POST DATA</h2>
+            <p>Here is the data you posted:</p>
+            <ul class="data"></ul>
+        </section>
+    </article>
+    <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="js/processApplyLC.js"></script>
+</body>
+
+</html>
