@@ -1,3 +1,18 @@
+<!--<script>
+    document.getElementById('exporterDetails').style.color = "red";
+
+    function displayInfo() {
+
+        var exporterId = document.getElementById("exporterId");
+        if (exporterId[exporterId.selectedIndex].value != "") {
+            document.getElementById('exporterDetails').style.display = "inline";
+        }
+    }
+
+</script>-->
+<script src="../plugins/jquery/jquery.min.js"></script>
+
+
 <div class="block-header">
 
     <h1>Apply Letter of Credits</h1>
@@ -14,7 +29,7 @@
                 <div class="body">
                     <div class="row clearfix">
                         <div class="col-sm-12">
-                            <select class="form-control show-tick">
+                            <select name="exporterId" id="exporterId" class="form-control show-tick">
                                 <option value="">-- Please select --</option>
                                 <option value="10">10</option>
                                 <option value="20">20</option>
@@ -28,7 +43,7 @@
             </div>
         </div>
         <!--Exporter details: Display after the user has selected exporter ID-->
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-hidden">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-hidden" id="exporterDetails">
             <div class="card">
                 <div class="header">
                     <h2>Exporter Details </h2>
@@ -197,16 +212,12 @@
 
     </div>
 
-    <div class="row clearfix">
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-
-
-
-
-        </div>
-
-    </div>
-
-
-
 </form>
+
+<script>
+    var elem = document.getElementById("exporterId");
+    elem.onchange = function() {
+        var hiddenDiv = document.getElementById("exporterDetails");
+        hiddenDiv.style.display = (this.value == "") ? "none" : "block";
+    };
+</script>

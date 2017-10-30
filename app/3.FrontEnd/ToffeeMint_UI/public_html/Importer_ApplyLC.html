@@ -38,27 +38,15 @@
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
     <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="js/processApplyLC.js"></script>
 
 </head>
 
 <body class="theme-blue">
     <!-- Page Loader -->
-    <!-- <div class="page-loader-wrapper">
-        <div class="loader">
-            <div class="preloader">
-                <div class="spinner-layer pl-red">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div>
-                    <div class="circle-clipper right">
-                        <div class="circle"></div>
-                    </div>
-                </div>
-            </div>
-            <p>Please wait...</p>
-        </div>
-    </div>-->
-    <!--<div w3-include-html="view/pageLoader.html"></div>-->
+
+    <div w3-include-html="view/pageLoader.html"></div>
 
     <!-- #END# Page Loader -->
     <!-- Overlay For Sidebars -->
@@ -73,33 +61,19 @@
         <!-- Left Sidebar -->
         <aside id="leftsidebar" class="sidebar">
             <!-- User Info -->
-            <div class="user-info">
-                <div class="image">
-                    <img src="images/user.png" width="48" height="48" alt="User" />
-                </div>
-                <div class="info-container">
-                    <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">John Doe</div>
-                    <div class="email">Importer Association of American</div>
-                    <div class="btn-group user-helper-dropdown">
-                        <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
-                        <ul class="dropdown-menu pull-right">
-                            <li><a href="javascript:void(0);"><i class="material-icons">input</i>Sign Out</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            <div w3-include-html="view/userInfo.html"></div>
             <!-- #User Info -->
             <!-- Menu -->
             <div class="menu">
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
-                    <li class="active">
+                    <li>
                         <a href="Importer_Dashboard.html">
                             <i class="material-icons">home</i>
                             <span>Home</span>
                         </a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="javascript:void(0);" class="menu-toggle">
                             <i class="material-icons">assignment</i>
                             <span>Letter of Credit </span>
@@ -116,33 +90,7 @@
                             </li>
                         </ul>
                     </li>
-                    <!--                    <li>
-                        <a href="javascript:void(0);" class="menu-toggle">
-                            <i class="material-icons">content_copy</i>
-                            <span>Documentation</span>
-                        </a>
-                        <ul class="ml-menu">
-                            <li>
-                                <a href="pages/examples/sign-in.html">Request Trust Receipt</a>
-                            </li>
-                            <li>
-                                <a href="pages/examples/sign-up.html">Request Shipping Guarantee</a>
-                            </li>
-                        </ul>
-                    </li>-->
-                    <!--                    <li class="header">DOCUMENTATION</li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            <i class="material-icons col-red">donut_large</i>
-                            <span>Request Trust Receipt</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);">
-                            <i class="material-icons col-amber">donut_large</i>
-                            <span>Request Shipping Guarantee</span>
-                        </a>
-                    </li>-->
+
                 </ul>
             </div>
             <!-- #Menu -->
@@ -158,8 +106,7 @@
             <!-- #Footer -->
         </aside>
         <!-- #END# Left Sidebar -->
-        <!-- Right Sidebar -->
-        <!-- #END# Right Sidebar -->
+
     </section>
     <section class="content">
         <div class="container-fluid">
@@ -171,8 +118,7 @@
     <script>
         w3.includeHTML();
     </script>
-    <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
-    <script type="text/javascript" src="js/processApplyLC.js"></script>
+
     <!-- Jquery Core Js -->
     <script src="plugins/jquery/jquery.min.js"></script>
 
@@ -221,7 +167,7 @@
 
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
-    <script type="text/javascript" src="js/processApplyLC.js"></script>
+
     <script src="/js/pages/forms/form-validation.js"></script>
 </body>
 
