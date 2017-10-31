@@ -23,9 +23,9 @@
             type: 'POST',
             data: {
                 expiryDate: lc.expiryDate.value,
-                expiryPlace: lc.expiryPlace.value,
+
                 amount: lc.amount.value,
-                currency: lc.currency.value
+
             },
             success: postSuccessHandler
         });
@@ -33,6 +33,9 @@
 
     function postSuccessHandler(jsonData) {
         //notification triggered. 
+
+        window.location.assign("/pages/importer/Importer_ViewLC.html");
+
 
         /*var $data = $('#post-results-container .data');
 

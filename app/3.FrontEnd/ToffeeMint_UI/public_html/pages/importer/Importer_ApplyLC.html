@@ -41,8 +41,7 @@
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="../../css/themes/all-themes.css" rel="stylesheet" />
     <script src="https://www.w3schools.com/lib/w3.js"></script>
-    <script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
-    <script type="text/javascript" src="js/processApplyLC.js"></script>
+
 
 </head>
 
@@ -120,7 +119,7 @@
                 <h1>Apply Letter of Credits</h1>
 
             </div>
-            <form method="post" id="lc" data-toggle="validator" role="form">
+            <form method="post" id="lc">
 
                 <!-- Select -->
                 <div class="row clearfix">
@@ -222,8 +221,8 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <div class="form-line">
-                                                <input type="text" pattern="^[_A-z0-9]{1,}$" maxlength="15" class="form-control" id="inputTwitter" placeholder="1000hz" required>
-                                                <!--<input type="text" class="form-control amount" placeholder="Amount" name="amount" />-->
+
+                                                <input type="text" class="form-control amount" placeholder="Amount" name="amount" />
                                             </div>
                                         </div>
                                     </div>
@@ -334,6 +333,8 @@
         </div>
     </section>
 
+    <script type="text/javascript" src="../../js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="../../js/processApplyLC.js"></script>
     <script>
         w3.includeHTML();
     </script>
