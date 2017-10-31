@@ -10,7 +10,7 @@
     }
 
 </script>-->
-<script src="../plugins/jquery/jquery.min.js"></script>
+
 
 
 <div class="block-header">
@@ -214,8 +214,9 @@
 
 </form>
 
-<script>
+<script type="text/javascript">
     var elem = document.getElementById("exporterId");
+    console.log(elem);
     elem.onchange = function() {
         var hiddenDiv = document.getElementById("exporterDetails");
         hiddenDiv.style.display = (this.value == "") ? "none" : "block";
