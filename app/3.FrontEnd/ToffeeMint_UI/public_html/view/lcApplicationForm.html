@@ -1,24 +1,9 @@
-<!--<script>
-    document.getElementById('exporterDetails').style.color = "red";
-
-    function displayInfo() {
-
-        var exporterId = document.getElementById("exporterId");
-        if (exporterId[exporterId.selectedIndex].value != "") {
-            document.getElementById('exporterDetails').style.display = "inline";
-        }
-    }
-
-</script>-->
-
-
-
 <div class="block-header">
-
     <h1>Apply Letter of Credits</h1>
-
 </div>
-<form method="post" id="lc form_validation">
+
+<form method="post" id="lc">
+
     <!-- Select -->
     <div class="row clearfix">
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -30,20 +15,20 @@
                     <div class="row clearfix">
                         <div class="col-sm-12">
                             <select name="exporterId" id="exporterId" class="form-control show-tick">
-                                <option value="">-- Please select --</option>
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="30">30</option>
-                                <option value="40">40</option>
-                                <option value="50">50</option>
-                            </select>
+                                                    <option value="">-- Please select --</option>
+                                                    <option value="10">10</option>
+                                                    <option value="20">20</option>
+                                                    <option value="30">30</option>
+                                                    <option value="40">40</option>
+                                                    <option value="50">50</option>
+                                                </select>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <!--Exporter details: Display after the user has selected exporter ID-->
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-hidden" id="exporterDetails">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 formHidden" id="exporterDetails">
             <div class="card">
                 <div class="header">
                     <h2>Exporter Details </h2>
@@ -83,7 +68,7 @@
     <!--Goods-->
     <div class="row clearfix">
         <!-- Task Info -->
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-hidden">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 formHidden">
             <div class="card">
                 <div class="header">
                     <h2>Goods Description</h2><br>
@@ -92,13 +77,13 @@
                     <div class="row clearfix">
                         <div class="col-sm-6">
                             <select class="form-control show-tick" name="goods">
-                                        <option value="">-- Please select Goods --</option>
-                                        <option value="10">Screen</option>
-                                        <option value="20">Mouse</option>
-                                        <option value="30">Memory Card</option>
-                                        <option value="40">Hard-disk</option>
-                                        <option value="50">Keyboard</option>
-                                    </select>
+                                                                <option value="">-- Please select Goods --</option>
+                                                                <option value="10">Screen</option>
+                                                                <option value="20">Mouse</option>
+                                                                <option value="30">Memory Card</option>
+                                                                <option value="40">Hard-disk</option>
+                                                                <option value="50">Keyboard</option>
+                                                            </select>
                         </div>
                     </div>
                     <!--END FIRST ROW-->
@@ -110,7 +95,7 @@
 
     <div class="row clearfix">
         <!-- Task Info -->
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-hidden">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 formHidden">
             <div class="card">
                 <div class="header">
                     <h2>Amount</h2><br>
@@ -118,8 +103,8 @@
                     <div class="row clearfix">
                         <div class="col-sm-6">
                             <div class="form-group">
-
                                 <div class="form-line">
+
                                     <input type="text" class="form-control amount" placeholder="Amount" name="amount" />
                                 </div>
                             </div>
@@ -134,7 +119,7 @@
 
     <div class="row clearfix">
         <!-- Task Info -->
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-hidden">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 formHidden">
             <div class="card">
                 <div class="header">
                     <h2>Ship By</h2><br>
@@ -157,7 +142,7 @@
 
     <!-- Textarea -->
     <div class="row clearfix">
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-hidden">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 formHidden">
             <div class="card">
                 <div class="header">
                     <h2>Required Documents Upload</h2>
@@ -185,7 +170,7 @@
 
     <!-- Textarea -->
     <div class="row clearfix">
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-hidden">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 formHidden">
             <div class="card">
                 <div class="header">
                     <h2>Additional Conditions</h2>
@@ -222,3 +207,6 @@
         hiddenDiv.style.display = (this.value == "") ? "none" : "block";
     };
 </script>
+
+<script type="text/javascript" src="../../js/jquery-2.2.4.min.js"></script>
+<script type="text/javascript" src="../../js/processApplyLC.js"></script>
