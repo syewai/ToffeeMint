@@ -9,18 +9,17 @@ contract = require("truffle-contract"),
 path = require('path')
 LetterOfCreditJSON = require(path.join(__dirname, 'build/contracts/LetterOfCredit.json'));
 
+const filePath = path.join(__dirname, 'build/contracts/LetterOfCredit.json');
 
-const web3 = new Web3.providers.HttpProvider("http://localhost:8545"),
-filePath = path.join(__dirname, 'build/contracts/LetterOfCredit.json');
-
+var web3 = new Web3();
+web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
 const LetterOfCredit = contract(LetterOfCreditJSON);
-LetterOfCredit.setProvider(web3);
+LetterOfCredit.setProvider(web3.currentProvider);
 
-// const testcon = '{"LC_ID":"0000000003","ref_num":"0000000003","creation_datetime":"2015-06-07 15:21:42","status":"Pending","status_details":"","importer_ID":"0000000206","exporter_ID":"0000000222","importer_account_num":"0000000000","exporter_account_num":"0000000000","expiry_date":"2018-07-15","expiry_place":"London","confirmed":"NULL","revocable":"0","available_by":"0","term_days":"90","amount":"1000000","currency":"GBP","applicable_rules":"?","partial_shipments":"0","ship_destination":"Singapore","ship_date":"2018-07-01","ship_period":"90 days","goods_description":"?","docs_required":"?","additional_conditions":"?","sender_to_receiver_info":"?","issuing_bank_id":"ISS000012","advising_bank_id":"AD00015"}';
 
 //Account variables
-const account = '0xe9c6d89bdb89e7782cf792a9cccfc16da33c758e'; 
+var account = web3.eth.accounts[0];
 const gasLimit = 100000000000;
 
 //Starting JSON
