@@ -11,6 +11,70 @@
 <%@page import="javax.servlet.RequestDispatcher"%>
 <%@page import="java.io.*"%>
 
+<%
+    
+   
+    
+// api url
+		String apiServiceUrl = "http://smu.tbankonline.com/SMUtBank_API/Gateway";
+//		String apiServiceUrl = "http://localhost:8080/SMUtBank_API/Gateway";
+                JSONObject results = new JSONObject();
+                JSONArray refNumArr = new JSONArray();
+                JSONObject responseObj = null;
+
+		try {		
+
+			// build header
+			JSONObject jo = new JSONObject();
+			jo.put("serviceName", "getLetterOfCreditRefNumList");
+			jo.put("userID", "kinetic1");
+			jo.put("PIN", "123456");
+			jo.put("OTP", "999999");
+			JSONObject headerObj = new JSONObject();
+			headerObj.put("Header", jo);
+			String header = headerObj.toString();
+
+			// connect to API service
+			HttpURLConnection urlConnection = (HttpURLConnection) new URL(apiServiceUrl).openConnection();
+			urlConnection.setDoOutput(true);
+			urlConnection.setRequestMethod("POST");
+			
+			// build request parameters
+			String parameters
+				= "Header="+header+"&"
+				+ "ConsumerID=TF";
+			System.out.println(parameters);
+			System.out.println();
+			System.out.println();
+				
+			// send request
+			BufferedWriter br = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
+			br.write(parameters);
+			br.close();
+			
+			// get response
+			String response1 = "";
+			Scanner s = new Scanner(urlConnection.getInputStream());
+			while (s.hasNextLine()){
+				response1 += s.nextLine();
+			}
+			s.close();
+			
+			// get response object
+			responseObj = new JSONObject(response1);
+			System.out.println(responseObj.toString(4)); // indent 4 spaces
+                       
+			//System.out.println(refNumListSize);
+                        
+
+		}
+		catch(Exception e) {e.printStackTrace(System.out);}
+                
+                
+
+%>
+
+
 <!DOCTYPE html>
 <html lang="en" class="app">
 
@@ -201,7 +265,15 @@
                                     <h4 class="font-bold">All LC</h4>
                                 </header>
 
-
+                                 <% 
+                                         results = responseObj.getJSONObject("RefNumList");
+                                         refNumArr = results.getJSONArray("RefNum");
+                                         
+                                         int refNumListSize = refNumArr.length();
+                                          
+                                         if( refNumListSize > 0 ) {
+                                    
+                                    %>
 
                                 <div class="table-responsive">
                                     <table class="table table-striped b-t b-light" id="lcTable">
@@ -216,49 +288,118 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
+                                             <%
+                                                List<String> refList = new ArrayList<String>();
+                                                for (int i = 0; i < refNumListSize; i++) {
+                                                    String ref = (String) refNumArr.get(i);
+                                                    refList.add(ref);
+                                                }
+                                                    
+                                                Collections.sort(refList);
+                                                System.out.println(refList);
+                                                
+                                                JSONArray allLC = new JSONArray();
+                                                for (int i = refNumListSize-1; i >= 0; i--){
+                                                    String refNum = (String)refList.get(i);
+                                                    JSONObject responseObj2 = new JSONObject();
+                                                    JSONObject tradeLC = new JSONObject();
+                                                    String exporterId = "";
+                                                    String dateTimeSubmitted = "";
+                                                    String dateSubmitted = "";
+                                                    
+                                                    String status = "";
+                                                        
+                                                    //Get LC by parsing reference number
+                                                    try {		
+                                                        // build header
+                                                        JSONObject jo = new JSONObject();
+                                                        jo.put("serviceName", "getLetterOfCredit");
+                                                        jo.put("userID", "kinetic1");
+                                                        jo.put("PIN", "123456");
+                                                        jo.put("OTP", "999999");
+                                                        JSONObject headerObj = new JSONObject();
+                                                        headerObj.put("Header", jo);
+                                                        String header = headerObj.toString();
 
-                                                <td>12345</td>
-                                                <td>Idrawfast</td>
-                                                <td>Nov 2, 2017</td>
-                                                <td class="text-danger font-bold">
-                                                    </i>Advised to amend</td>
-                                                <td>
-                                                    <a href="lcDetails.jsp" class="active btn btn-s-md btn-danger">View LC</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
+                                                        // build content
+                                                        jo = new JSONObject();
+                                                        jo.put("referenceNumber", refNum);
+                                                        jo.put("mode", "BC"); // BC or DB
+                                                        JSONObject contentObj = new JSONObject();
+                                                        contentObj.put("Content", jo);
+                                                        String content = contentObj.toString();
+                                                        //System.out.println(refNum);
+                                                        // connect to API service
+                                                        HttpURLConnection urlConnection = (HttpURLConnection) new URL(apiServiceUrl).openConnection();
+                                                        urlConnection.setDoOutput(true);
+                                                        urlConnection.setRequestMethod("POST");
 
-                                                <td>13333</td>
-                                                <td>Idrawfast</td>
-                                                <td>Nov 1, 2017</td>
-                                                <td class="text-danger font-bold">
-                                                    </i>Advised to amend</td>
-                                                <td>
-                                                    <a href="#" class="active btn btn-s-md btn-danger" data-toggle="class">View LC</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>14567</td>
-                                                <td>Avatar system</td>
-                                                <td>Nov 5, 2017</td>
-                                                <td class="text-primary font-bold">
-                                                    </i>Issued</td>
-                                                <td>
-                                                    <a href="#" class="active btn btn-s-md btn-primary" data-toggle="class">View LC</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
+                                                        // build request parameters
+                                                        String parameters
+                                                        = "Header="+header+"&"
+                                                        + "Content="+content+"&"
+                                                        + "ConsumerID=TF";
 
-                                                <td>14567</td>
-                                                <td>Avatar system</td>
-                                                <td>Oct 15, 2017</td>
-                                                <td class="text-primary font-bold">
-                                                    </i>Advised</td>
-                                                <td>
-                                                    <a href="#" class="active btn btn-s-md btn-primary" data-toggle="class">View LC</a>
-                                                </td>
-                                            </tr>
+                                                        // send request
+                                                        BufferedWriter br = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream()));
+                                                        br.write(parameters);
+                                                        br.close();
+
+                                                        // get response
+                                                        String response2 = "";
+                                                        Scanner s = new Scanner(urlConnection.getInputStream());
+                                                        while (s.hasNextLine()){
+                                                        response2 += s.nextLine();
+                                                        }
+                                                        s.close();
+
+                                                        // get response object
+                                                        responseObj2 = new JSONObject(response2);
+                                                        System.out.println(responseObj2.toString(4)); // indent 4 spaces
+
+
+                                                        tradeLC = responseObj2.getJSONObject("Content").getJSONObject("ServiceResponse").getJSONObject("Trade_LC_Read-Response").getJSONObject("LC_record");
+                                                        System.out.println(tradeLC);
+                                                        JSONObject obj = new JSONObject();
+                                                        obj.put(refNum,tradeLC);
+                                                        allLC.put(obj);
+
+                                                        exporterId = tradeLC.getString("exporter_ID");
+                                                        
+                                                        dateTimeSubmitted = tradeLC.getString("creation_datetime");
+                                                        int delimiter = dateTimeSubmitted.indexOf(" ");
+                                                        
+                                                        if (delimiter != -1) {
+                                                         dateSubmitted = dateTimeSubmitted.substring(0,delimiter);     
+                                                        }
+
+                                                        status = tradeLC.getString("status");
+
+
+                                                            
+                                                    }
+                                                    catch(Exception e) {e.printStackTrace(System.out);}
+                                                        
+                                                
+                                             
+                                                              
+
+                                               %>
+                                             <tr>
+
+                                                    <td><%=refNum%></td>
+                                                    <td><%=exporterId %></td>
+                                                    <td><%=dateTimeSubmitted %></td>
+                                                    <td class="text-danger font-bold">
+                                                        </i><%=status %></td>
+                                                    <td>
+                                                        <a href="lcDetails.jsp" class="active btn btn-s-md btn-danger">View LC</a>
+                                                    </td>
+                                                </tr>
+                                              
+                                            <%
+                                             }
+                                            %>   
                                         </tbody>
                                     </table>
                                 </div>
@@ -285,6 +426,10 @@
                                         </div>
                                     </div>
                                 </footer>
+                                        <%
+                                    }
+                                    
+                                    %>
                             </section>
                             <!--End of LC Table-->
 
