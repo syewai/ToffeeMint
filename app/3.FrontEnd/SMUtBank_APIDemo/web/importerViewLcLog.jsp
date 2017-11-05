@@ -224,7 +224,7 @@
                                                 <td class="text-danger font-bold">
                                                     </i>Advised to amend</td>
                                                 <td>
-                                                    <a href="lcDetails.html" class="active btn btn-s-md btn-danger">View LC</a>
+                                                    <a href="lcDetails.jsp" class="active btn btn-s-md btn-danger">View LC</a>
                                                 </td>
                                             </tr>
                                             <tr>
