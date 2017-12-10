@@ -30,7 +30,7 @@ app.listen(PORT, function () {
 })
 
 
-//endpoints
+//////////////////////////////ENDPOINTS//////////////////////////////
 
 app.get('/lc/createContract/', function(req, res){
     const lcID = req.param("refNum");    
@@ -80,10 +80,29 @@ app.get('/lc/setStatus', function (req, res) {
     });
 })
 
+app.get('/lc/getBOE', function(req, res) {
+    const lcID = req.param("refNum");
+
+    getBOE(lcID).then(function(result) {
+        res.status(200).send(result);
+        console.log(result);
+    });
+})
+
+app.get('/lc/setBOE', function(req, res) {
+    const lcID = req.param("refNum");
+    const boeHash = req.param("BOE");
+
+    setBOE(lcID, boeHash).then(function(result) {
+        res.status(200).send(result);
+        console.log(result);
+    });
+})
 
 
 
-//contract functions exposed
+
+//LC getter setters
 
 function createLetterOfCredit(refNum, contract) {
     return new Promise(function(resolve, reject) {
@@ -92,7 +111,7 @@ function createLetterOfCredit(refNum, contract) {
         }).then(function(result) {
             resolve(result);
         }).catch(function(error) {
-            console.log("Error" + error);
+            console.log("Error: " + error);
             reject(error);
         });  
     })
@@ -107,7 +126,7 @@ function getLetterOfCredit(refNum) {
         }).then(function(result) {              
             resolve(result);
         }).catch(function(error) {
-                console.log("Error" + error);
+                console.log("Error: " + error);
                 reject(error);
         });
     })     
@@ -121,11 +140,13 @@ function modifyLetterOfCredit(refNum, contract) {
         }).then(function(result) {
             resolve(result);
         }).catch(function(error) {
-            console.log("Error" + error);
+            console.log("Error: " + error);
             reject(error);
         });  
     })
 }
+
+//LC Status getter setter
 
 function getLCStatus(refNum) {
     return new Promise(function(resolve, reject) {
@@ -134,7 +155,7 @@ function getLCStatus(refNum) {
         }).then(function(result) {
             resolve(result);
         }).catch(function(error) {
-            console.log("Error" + error);
+            console.log("Error: " + error);
             reject(error);
         });
     })
@@ -147,12 +168,39 @@ function setLCStatus(refNum, stat) {
         }).then(function(result) {
                 resolve(result);
         }).catch(function(error) {
-            console.log("Error" + error);
+            console.log("Error: " + error);
             reject(error);
         });
     })
 }
 
+//BOE & BOL getter setter
+
+function getBOE(refNum) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.getBOE.call(refNum)
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
+
+function setBOE(refNum, BOEHash) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.setBOE(refNum, BOEHash, {from: account, gas: gasLimit})
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
 
 
 
