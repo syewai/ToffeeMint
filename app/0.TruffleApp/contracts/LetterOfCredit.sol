@@ -13,7 +13,7 @@ contract LetterOfCredit {
 	mapping (string => string) contracts;
 	mapping (string => string) status; 
 	mapping (string => Docs) documents;
-	mapping (string => string) amendment; 
+	mapping (string => string) amendments; 
 
 
 
@@ -30,7 +30,7 @@ contract LetterOfCredit {
 	function createLC(string refNum, string contractJson) returns(bool set) {
 		contracts[refNum] = contractJson;
 		status[refNum] = "pending";
-		amendment[refNum] = "nil";
+		amendments[refNum] = "nil";
 
 		LCCreated(refNum, contractJson);
 		return true;
@@ -59,9 +59,16 @@ contract LetterOfCredit {
 	function getStatus(string refNum) returns(string) {
 		return status[refNum]; 
 	}
-
-
-
+	//get Amendments
+	function getAmendments(string refNum) returns(string) {
+		return amendments[refNum];
+	}
+	//set Amendments
+	function amendContract(string refNum, string amendmentReq ) returns(bool changed) {
+		amendments[refNum] = amendmentReq;
+		StatusChanged(refNum, amendmentReq);
+		return true;
+	}
 
 	//get Bill of Exchange
 	function getBOE(string refNum) returns(string) {
@@ -75,13 +82,9 @@ contract LetterOfCredit {
 	}
 
 
-	function amendContract(string refNum, string amendmentReq ) returns(bool changed) {
-		amendment[refNum] = amendmentReq;
-		StatusChanged(refNum, amendmentReq);
-		return true;
-	}
 
 
+	
 	//get Bill of Lading
 	function getBOL(string refNum) returns(string) {
 		return documents[refNum].billOfLading;

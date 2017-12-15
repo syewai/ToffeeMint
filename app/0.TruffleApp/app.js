@@ -49,6 +49,7 @@ app.get('/lc/getContract/', function (req, res) {
         res.status(200).send(result);
         console.log(result);
     });
+
 })
 
 app.get('/lc/modifyContract', function (req, res) {
@@ -110,6 +111,15 @@ app.get('/lc/amendLC', function(req, res) {
             console.log(result);
         });
     }    
+})
+
+app.get('/lc/getAmendments', function(req, res) {
+    const refNum = req.param("refNum");
+
+    getAmendments(refNum).then(function(result) {
+        res.status(200).send(result);
+        console.log(result);
+    });
 })
 
 
@@ -226,7 +236,18 @@ function amendContract(refNum, amendmentJSON) {
     })
 }
 
-
+function getAmendments(refNum) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.getAmendments.call(refNum)
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
 
 
 /////EVENTS/////
