@@ -13,67 +13,83 @@ contract LetterOfCredit {
 	mapping (string => string) contracts;
 	mapping (string => string) status; 
 	mapping (string => Docs) documents;
+	mapping (string => string) amendment; 
+
+
 
 	//events
-	event LCCreated(string contractID, string contractValues);
-	event LCModified(string contractID, string contractValues);
-	event StatusChanged(string contractID, string contractStatus);
-	event DocumentsModified(string contractID, string contractDocuments);
+	event LCCreated(string refNum, string contractValues);
+	event LCModified(string refNum, string contractValues);
+	event StatusChanged(string refNum, string contractStatus);
+	event DocumentsModified(string refNum, string contractDocuments);
+	// event amendContract(string refNum, string amendmentReq);
+
+
 
 	//adding new lc
-	function createLC(string contractID, string contractJson) returns(bool set) {
-		contracts[contractID] = contractJson;
-		status[contractID] = "pending";
-		LCCreated(contractID, contractJson);
+	function createLC(string refNum, string contractJson) returns(bool set) {
+		contracts[refNum] = contractJson;
+		status[refNum] = "pending";
+		amendment[refNum] = "nil";
+
+		LCCreated(refNum, contractJson);
 		return true;
 	} 
 
 	//modifying lc
-	function modifyLC(string contractID, string contractJson ) returns(bool set) {
-		contracts[contractID] = contractJson;
-		LCModified(contractID, contractJson);
+	function modifyLC(string refNum, string contractJson ) returns(bool set) {
+		contracts[refNum] = contractJson;
+		LCModified(refNum, contractJson);
 		return true;
 	}
 
 	//set lc status
-	function setStatus(string contractID, string stat ) returns(bool changed) {
-		status[contractID] = stat;
-		StatusChanged(contractID, stat);
+	function setStatus(string refNum, string stat ) returns(bool changed) {
+		status[refNum] = stat;
+		StatusChanged(refNum, stat);
 		return true;
 	}
 
 	//get lc
-	function getLC(string contractID) returns(string) {
-		return contracts[contractID];
+	function getLC(string refNum) returns(string) {
+		return contracts[refNum];
 	}
 
 	//get lc status
-	function getStatus(string contractID) returns(string) {
-		return status[contractID]; 
+	function getStatus(string refNum) returns(string) {
+		return status[refNum]; 
 	}
 
 
 
 
 	//get Bill of Exchange
-	function getBOE(string contractID) returns(string) {
-		return documents[contractID].billOfExchange;
+	function getBOE(string refNum) returns(string) {
+		return documents[refNum].billOfExchange;
 	}
 
 	//set Bill of Exchange
-	function setBOE(string contractID, string BOEHash) returns(bool set) {
-		documents[contractID].billOfExchange = BOEHash;
+	function setBOE(string refNum, string BOEHash) returns(bool set) {
+		documents[refNum].billOfExchange = BOEHash;
 		return true;
 	}
 
+
+	function amendContract(string refNum, string amendmentReq ) returns(bool changed) {
+		amendment[refNum] = amendmentReq;
+		StatusChanged(refNum, amendmentReq);
+		return true;
+	}
+
+
 	//get Bill of Lading
-	function getBOL(string contractID) returns(string) {
-		return documents[contractID].billOfLading;
+	function getBOL(string refNum) returns(string) {
+		return documents[refNum].billOfLading;
 	}
 
 	//set Bill of Lading
-	function setBOL(string contractID, string BOLHash) returns(bool set) {
-		documents[contractID].billOfLading = BOLHash;
+	function setBOL(string refNum, string BOLHash) returns(bool set) {
+		documents[refNum].billOfLading = BOLHash;
 		return true;
 	}
 }

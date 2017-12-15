@@ -99,7 +99,18 @@ app.get('/lc/setBOE', function(req, res) {
     });
 })
 
-
+app.get('/lc/amendLC', function(req, res) {
+    const refNum = req.param("refNum");
+    const amendments = req.param("amendments");
+    const lc = getLetterOfCredit(refNum);
+    if(lc != null){
+        setLCStatus(refNum, "Amendments Requested"); 
+        amendContract(refNum, amendments).then(function(result) {
+            res.status(200).send(result);
+            console.log(result);
+        });
+    }    
+})
 
 
 //LC getter setters
@@ -202,6 +213,18 @@ function setBOE(refNum, BOEHash) {
     })
 }
 
+function amendContract(refNum, amendmentJSON) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.amendContract(refNum, amendmentJSON, {from: account, gas: gasLimit})
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
 
 
 
