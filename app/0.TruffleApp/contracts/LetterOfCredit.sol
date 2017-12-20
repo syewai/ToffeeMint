@@ -22,6 +22,7 @@ contract LetterOfCredit {
 	event LCModified(string refNum, string contractValues);
 	event StatusChanged(string refNum, string contractStatus);
 	event DocumentsModified(string refNum, string contractDocuments);
+	event AmendmentsMade(string refNum, string amendments);
 	// event amendContract(string refNum, string amendmentReq);
 
 
@@ -30,8 +31,6 @@ contract LetterOfCredit {
 	function createLC(string refNum, string contractJson) returns(bool set) {
 		contracts[refNum] = contractJson;
 		status[refNum] = "pending";
-		amendments[refNum] = "nil";
-
 		LCCreated(refNum, contractJson);
 		return true;
 	} 
@@ -59,14 +58,16 @@ contract LetterOfCredit {
 	function getStatus(string refNum) returns(string) {
 		return status[refNum]; 
 	}
+
 	//get Amendments
 	function getAmendments(string refNum) returns(string) {
 		return amendments[refNum];
 	}
+
 	//set Amendments
-	function amendContract(string refNum, string amendmentReq ) returns(bool changed) {
+	function amendLC(string refNum, string amendmentReq) returns(bool changed) {
 		amendments[refNum] = amendmentReq;
-		StatusChanged(refNum, amendmentReq);
+		amendmentsMade(refNum, amendmentReq);
 		return true;
 	}
 
@@ -80,10 +81,6 @@ contract LetterOfCredit {
 		documents[refNum].billOfExchange = BOEHash;
 		return true;
 	}
-
-
-
-
 	
 	//get Bill of Lading
 	function getBOL(string refNum) returns(string) {
