@@ -22,7 +22,7 @@ contract LetterOfCredit {
 	event LCModified(string refNum, string contractValues);
 	event StatusChanged(string refNum, string contractStatus);
 	event DocumentsModified(string refNum, string contractDocuments);
-	event AmendmentsMade(string refNum, string amendments);
+	event AmendmentsMade(string refNum, string amendJSON);
 	// event amendContract(string refNum, string amendmentReq);
 
 
@@ -67,7 +67,7 @@ contract LetterOfCredit {
 	//set Amendments
 	function amendLC(string refNum, string amendmentReq) returns(bool changed) {
 		amendments[refNum] = amendmentReq;
-		amendmentsMade(refNum, amendmentReq);
+		AmendmentsMade(refNum, amendmentReq);
 		return true;
 	}
 

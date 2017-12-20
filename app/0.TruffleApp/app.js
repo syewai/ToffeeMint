@@ -100,6 +100,25 @@ app.get('/lc/setBOE', function(req, res) {
     });
 })
 
+app.get('/lc/getBOL', function(req, res) {
+    const lcID = req.param("refNum");
+
+    getBOE(lcID).then(function(result) {
+        res.status(200).send(result);
+        console.log(result);
+    });
+})
+
+app.get('/lc/setBOL', function(req, res) {
+    const lcID = req.param("refNum");
+    const boeHash = req.param("BOL");
+
+    setBOE(lcID, boeHash).then(function(result) {
+        res.status(200).send(result);
+        console.log(result);
+    });
+})
+
 app.get('/lc/amendLC', function(req, res) {
     const refNum = req.param("refNum");
     const amendments = req.param("amendments");
@@ -219,6 +238,37 @@ function setBOE(refNum, BOEHash) {
         });
     })
 }
+
+function getBOL(refNum) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.getBOL.call(refNum)
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
+
+
+function setBOL(refNum, BOLHash) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.setBOL(refNum, BOLHash, {from: account, gas: gasLimit})
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
+
+
+
+// Amendments to LC getter/setter
 
 function amendContract(refNum, amendJSON) {
     return new Promise(function(resolve, reject) {
