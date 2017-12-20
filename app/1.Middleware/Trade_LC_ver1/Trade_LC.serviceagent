@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serviceResource xmlns:wsdl="http://smubank.smu.edu.sg/Trade/LC">
+    <ns0:import xmlns:ns0="http://schemas.xmlsoap.org/wsdl/" namespace="http://smubank.smu.edu.sg/Trade/LC" location="/Trade_LC.wsdl"/>
+    <config>
+        <class>com.tibco.bw.service.serviceAgent.ServiceServiceAgent</class>
+        <implType>bw</implType>
+        <groups>
+            <row isDefault="true" groupName="Default"/>
+        </groups>
+        <serviceChange>Wed Oct 04 14:53:27 SGT 2017</serviceChange>
+        <wsdl namespace="http://smubank.smu.edu.sg/Trade/LC" embedWsdlComponents="true" embedSchemaComponents="true" embedJndiProperties="false"/>
+        <name>Trade_LC</name>
+        <resourceType>service.definition</resourceType>
+        <interfaceImpl>
+            <tab>
+                <tabName>Trade_LC</tabName>
+                <tabType>bw</tabType>
+                <config>
+                    <wsdlDetail location="/Trade_LC.wsdl" portType="Trade_LC" ns="http://smubank.smu.edu.sg/Trade/LC"/>
+                    <detail>
+                        <tab>
+                            <tabName>service.definition.impl.tab.label</tabName>
+                            <tabType>impl</tabType>
+                            <config>
+                                <operations>
+                                    <row opName="Trade_LC_Create" opImpl="/Trade_LC_Create.process"/>
+                                    <row opName="Trade_LC_Update" opImpl="/Trade_LC_Update.process"/>
+                                    <row opName="Trade_LC_Read" opImpl="/Trade_LC_Read.process"/>
+                                    <row opName="Trade_LCList_Read" opImpl="/Trade_LCList_Read.process"/>
+                                    <row opName="Trade_LCStatus_Update" opImpl="/Trade_LCStatus_Update.process"/>
+                                    <row opName="Trade_LC_Create_BC" opImpl="/Trade_LC_Create_BC.process"/>
+                                    <row opName="Trade_LC_Read_BC" opImpl="/Trade_LC_Read_BC.process"/>
+                                    <row opName="Trade_LC_Update_BC" opImpl="/Trade_LC_Update_BC.process"/>
+                                    <row opName="Trade_LCList_Read_BC" opImpl="/Trade_LCList_Read_BC.process"/>
+                                    <row opName="Trade_LCStatus_Update_BC" opImpl="/Trade_LCStatus_Update_BC.process"/>
+                                </operations>
+                            </config>
+                        </tab>
+                        <tab>
+                            <tabName>service.definition.ep.tab.label</tabName>
+                            <tabType>ep</tabType>
+                            <config>
+                                <epBindings>
+                                    <row epName="Trade_LC_JMSEndpoint" epType="soap">
+                                        <config>
+                                            <epDetail>
+                                                <tab>
+                                                    <tabName>soap.service.transport.ui.transport.tab.label</tabName>
+                                                    <tabType>transport</tabType>
+                                                    <config>
+                                                        <sharedChannel>/Shared Connections/JMS Connection.sharedjmscon</sharedChannel>
+                                                        <transport>
+                                                            <config>
+                                                                <JMSTo>trade.endpoint</JMSTo>
+                                                                <JMSDestinationType>queue</JMSDestinationType>
+                                                                <JMSMessageType>Text</JMSMessageType>
+                                                                <JMSAcknowledgementMode>1</JMSAcknowledgementMode>
+                                                                <ApplicationProperties/>
+                                                                <ApplicationPropertiesOutMessage/>
+                                                                <JMSMaxSessions/>
+                                                                <operations>
+                                                                    <operation name="Trade_LC_Create">
+                                                                        <general>
+                                                                            <config>
+                                                                                <JMSDurable>false</JMSDurable>
+                                                                                <JMSDurableName/>
+                                                                            </config>
+                                                                        </general>
+                                                                    </operation>
+                                                                    <operation name="Trade_LC_Update"/>
+                                                                    <operation name="Trade_LC_Read"/>
+                                                                    <operation name="Trade_LCList_Read"/>
+                                                                    <operation name="Trade_LCStatus_Update"/>
+                                                                    <operation name="Trade_LC_Create_BC"/>
+                                                                    <operation name="Trade_LC_Read_BC"/>
+                                                                    <operation name="Trade_LC_Update_BC"/>
+                                                                    <operation name="Trade_LCList_Read_BC"/>
+                                                                    <operation name="Trade_LCStatus_Update_BC"/>
+                                                                </operations>
+                                                            </config>
+                                                        </transport>
+                                                    </config>
+                                                </tab>
+                                                <tab>
+                                                    <tabName>soap.service.transport.ui.details.tab.label</tabName>
+                                                    <tabType>details</tabType>
+                                                    <config>
+                                                        <operationStyle>rpc</operationStyle>
+                                                        <soapVersion>SOAP 1.1</soapVersion>
+                                                        <soap>
+                                                            <operation name="Trade_LC_Create">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LC_Create</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Update">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LC_Update</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Read">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LC_Read</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LCList_Read">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LCList_Read</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LCStatus_Update">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LCStatus_Update</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Create_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LC_Create_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Read_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LC_Read_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Update_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LC_Update_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LCList_Read_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LCList_Read_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LCStatus_Update_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_JMSEndpoint/Trade_LCStatus_Update_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                        </soap>
+                                                    </config>
+                                                </tab>
+                                            </epDetail>
+                                        </config>
+                                    </row>
+                                    <row epName="Trade_LC_HTTPEndpoint" epType="soap">
+                                        <config>
+                                            <epDetail>
+                                                <tab>
+                                                    <tabName>soap.service.transport.ui.transport.tab.label</tabName>
+                                                    <tabType>transport</tabType>
+                                                    <config>
+                                                        <sharedChannel>/Shared Connections/HTTP Connection.sharedhttp</sharedChannel>
+                                                        <transport>
+                                                            <config>
+                                                                <useBasicAuthentication>false</useBasicAuthentication>
+                                                                <httpURI>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint</httpURI>
+                                                            </config>
+                                                        </transport>
+                                                    </config>
+                                                </tab>
+                                                <tab>
+                                                    <tabName>soap.service.transport.ui.details.tab.label</tabName>
+                                                    <tabType>details</tabType>
+                                                    <config>
+                                                        <operationStyle>rpc</operationStyle>
+                                                        <soapVersion>SOAP 1.1</soapVersion>
+                                                        <soap>
+                                                            <operation name="Trade_LC_Create">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LC_Create</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Update">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LC_Update</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Read">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LC_Read</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LCList_Read">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LCList_Read</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LCStatus_Update">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LCStatus_Update</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Create_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LC_Create_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Read_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LC_Read_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LC_Update_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LC_Update_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LCList_Read_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LCList_Read_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                            <operation name="Trade_LCStatus_Update_BC">
+                                                                <general>
+                                                                    <config>
+                                                                        <soapAction>/Trade_LC.serviceagent/Trade_LC_HTTPEndpoint/Trade_LCStatus_Update_BC</soapAction>
+                                                                        <operationStyle>rpc</operationStyle>
+                                                                        <soapUse>literal</soapUse>
+                                                                        <inputNamespace/>
+                                                                        <outputNamespace/>
+                                                                        <faultNamespace/>
+                                                                        <portAddressPrefix/>
+                                                                    </config>
+                                                                </general>
+                                                            </operation>
+                                                        </soap>
+                                                    </config>
+                                                </tab>
+                                            </epDetail>
+                                        </config>
+                                    </row>
+                                </epBindings>
+                            </config>
+                        </tab>
+                    </detail>
+                </config>
+            </tab>
+        </interfaceImpl>
+    </config>
+</serviceResource>

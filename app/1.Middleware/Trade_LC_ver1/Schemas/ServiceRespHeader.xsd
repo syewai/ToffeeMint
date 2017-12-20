@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	 xmlns="http://smubank.smu.edu.sg/schemas/serviceResponseHeader"
+	 targetNamespace="http://smubank.smu.edu.sg/schemas/serviceResponseHeader"
+	 elementFormDefault="qualified"
+	 attributeFormDefault="unqualified">
+	<xs:element name="ServiceRespHeader" type="ServiceRespHeader"/>
+	<xs:element name="GlobalErrorID" type="xs:string"/>
+	<xs:element name="ErrorText" type="xs:string"/>
+	<xs:element name="ErrorDetails" type="xs:string"/>
+	<xs:complexType name="ServiceRespHeader">
+		<xs:sequence>
+			<xs:element ref="GlobalErrorID"/>
+			<xs:element ref="ErrorText"/>
+			<xs:element ref="ErrorDetails"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
