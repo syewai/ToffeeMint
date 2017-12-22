@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<section class="vbox">
+    <section class="scrollable">
+
+        <div class="wrapper-lg">
+            <h2 class="m-b-xs font-bold m-t-none">Apply Letter of Credits</h2>
+
+        </div>
+        <form data-validate="parsley" id="loginForm" class="padder">
+
+            <div class="row">
+                <div class="col-sm-6">
+
+                    <section class="panel panel-default">
+                        <header class="panel-heading">
+                            <span class="h4">Exporter ID</span>
+                        </header>
+                        <div class="panel-body">
+                            <p class="text-muted">Please select an exporter to continue</p>
+                            <div class="form-group">
+
+                                <div class="">
+                                    <select id="exporterId" name="exporterId" id="exporterId" class="form-control m-b ">
+                                        <option value="">--Please select an exporter--</option>
+                                        <option value="1738">ToffeeMint1</option>
+                                        <option value="1738">ToffeeMint2</option>
+                                        <option value="1738">ToffeeMint3</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+                <div class="col-sm-6">
+
+                    <section class="panel panel-default formHidden">
+                        <header class="panel-heading">
+                            <span class="h4">Exporter Information</span>
+                        </header>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <h4>Exporter ID</h4>
+                                <p id="printExpId"></p>
+                            </div>
+                            <div class="form-group">
+                                <h4>Bank</h4>
+                                <p>UOB</p>
+                            </div>
+                            <div class="form-group">
+                                <h4>Account Number</h4>
+                                <p>456789</p>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <section class="panel panel-default formHidden">
+                        <header class="panel-heading">
+                            <span class="h4">Goods Description</span>
+                        </header>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <input id="goodsDesc"  type="text"  class="form-control goodsDesc" name="goodsDesc" data-required="true">
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <section class="panel panel-default formHidden">
+                        <header class="panel-heading">
+                            <span class="h4">Other Information</span>
+                        </header>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label>Amount</label>
+                                <input id="amount" type="text" class="form-control" data-type="digits" data-required="true">
+                            </div>
+                            <div class="form-group">
+                                <label>Expiry Date (YYYY-MM-DD)</label>
+                                <input id="expiryDate" type="text" class="form-control expiryDate" name="expiryDate" data-required="true">
+                            </div>
+                            <div class="form-group">
+                                <label>Additional Conditions</label>
+                                <textarea id="additonalConditions"  class="form-control" rows="6" data-required="true" placeholder="Additional Conditions" name="additonalConditions"></textarea>
+                            </div>
+                            <footer class="text-center bg-light lter">
+                                <button id="create_button" type="button" class="btn btn-success btn-s-xs">Submit</button>
+                            </footer>
+                        </div>
+                    </section>
+
+
+                </div>
+            </div>
+
+        </form>
+        <script type="text/javascript">
+            var elem = document.getElementById("exporterId");
+            elem.onchange = function () {
+                document.getElementById("printExpId").innerHTML = $('#exporterId option:selected').text();
+                var elements = document.getElementsByClassName("formHidden");
+                for (var i = 0, length = elements.length; i < length; i++) {
+                    elements[i].style.display = (elem.value == "") ? "none" : "block";
+                }
+            };
+        </script>
+
+    </section>
+    <!--End of Scrollable-->
+</section>
+<!--End of vbox-->
+<script src="../assets/js/applyLc.js"></script>
