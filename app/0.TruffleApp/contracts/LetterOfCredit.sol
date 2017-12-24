@@ -22,7 +22,7 @@ contract LetterOfCredit {
 	event LCModified(string refNum, string contractValues);
 	event StatusChanged(string refNum, string contractStatus);
 	event DocumentsModified(string refNum, string contractDocuments);
-	event AmendmentsMade(string refNum, string amendJSON);
+	event AmendmentsMade(string refNum, string amendValues);
 	// event amendContract(string refNum, string amendmentReq);
 
 
@@ -79,6 +79,7 @@ contract LetterOfCredit {
 	//set Bill of Exchange
 	function setBOE(string refNum, string BOEHash) returns(bool set) {
 		documents[refNum].billOfExchange = BOEHash;
+		DocumentsModified(refNum, BOEHash);
 		return true;
 	}
 	
@@ -90,6 +91,7 @@ contract LetterOfCredit {
 	//set Bill of Lading
 	function setBOL(string refNum, string BOLHash) returns(bool set) {
 		documents[refNum].billOfLading = BOLHash;
+		DocumentsModified(refNum, BOLHash);
 		return true;
 	}
 }

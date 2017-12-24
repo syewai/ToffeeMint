@@ -300,8 +300,44 @@ function getAmendments(refNum) {
 //////////////EVENTS//////////////
 
 //endpoints
-app.get('/lc/events', function (req, res) {
-    statusChangeListener().then(function(event) {
+app.get('/events/status', function (req, res) {
+    const refNum = req.param("refNum");
+    const stat = req.param("status");
+
+
+    statusChangeListener(refNum, stat).then(function(event) {
+        res.status(200).send(event);
+    })
+})
+
+app.get('/events/LCCreated', function (req, res) {
+    const refNum = req.param("refNum");
+
+    LCCreationListener(refNum).then(function(event) {
+        res.status(200).send(event);
+    })
+})
+
+app.get('/events/LCModified', function (req, res) {
+    const refNum = req.param("refNum");
+
+    LCModifyListener(refNum).then(function(event) {
+        res.status(200).send(event);
+    })
+})
+
+app.get('/events/documentsModified', function (req, res) {
+    const refNum = req.param("refNum");
+
+    documentsModifiedListener(refNum).then(function(event) {
+        res.status(200).send(event);
+    })
+})
+
+app.get('/events/amendments', function (req, res) {
+    const refNum = req.param("refNum");
+
+    amendmentsMadeListener(refNum).then(function(event) {
         res.status(200).send(event);
     })
 })
@@ -309,28 +345,78 @@ app.get('/lc/events', function (req, res) {
 
 
 //event endpoints exposed
-function LCCreationListener() {
-    LetterOfCredit.deployed().then(function(instance) {
-        instance.LCCreated({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
-            console.log(event);
-        })
-    });
-}
-
-function LCModifyListener() {
-    LetterOfCredit.deployed().then(function(instance) {
-        instance.LCModified().watch(function(error, event) {
-            console.log(event);
-        })
-    });
-}
-
-function statusChangeListener() {
+function statusChangeListener(refNum, status) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
+            var arr = [];
             instance.StatusChanged({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
-                console.log(event);
-                resolve(event);
+                if (refNum == "" || refNum == event.args.refNum) {
+                    if (status == "" || status == event.args.contractStatus) {
+                        arr.push([event.args.refNum,event.args.contractStatus]);
+                    }
+                }
+                console.log(arr);
+                resolve(arr);
+            })
+        }); 
+    })
+}
+
+function LCCreationListener(refNum) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            var arr = [];
+            instance.LCCreated({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum){
+                    arr.push([event.args.refNum,event.args.contractValues]);
+                }
+                console.log(arr);
+                resolve(arr);
+            })
+        }); 
+    })
+}
+
+function LCModifyListener(refNum) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            var arr = [];
+            instance.LCModified({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum){
+                    arr.push([event.args.refNum,event.args.contractValues]);
+                }
+                console.log(arr);
+                resolve(arr);
+            })
+        }); 
+    })
+}
+
+function documentsModifiedListener(refNum) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            var arr = [];
+            instance.DocumentsModified({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum){
+                    arr.push([event.args.refNum,event.args.contractDocuments]);
+                }
+                console.log(arr);
+                resolve(arr);
+            })
+        }); 
+    })
+}
+
+function amendmentsMadeListener(refNum) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            var arr = [];
+            instance.AmendmentsMade({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum){
+                    arr.push([event.args.refNum,event.args.amendValues]);
+                }
+                console.log(arr);
+                resolve(arr);
             })
         }); 
     })
