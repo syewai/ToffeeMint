@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<script>
-    
-</script>
+
 <section class="vbox">
 
     <section class="w-f scrollable">
@@ -11,7 +9,7 @@
             <nav class="nav-primary hidden-xs">
                 <ul class="nav">
                     <li class="active">
-                        <a href="home.html">
+                        <a class="pages" id="home">
                             <i class="fa fa-dashboard icon">
                                 <b class="bg-danger"></b>
                             </i>
@@ -32,13 +30,19 @@
                         </a>
                         <ul class="nav lt">
                             <li>
-                                <a href="applyLc">
+                                <a class="pages" id="applyLc">
                                     <i class="fa fa-angle-right"></i>
                                     <span>Apply LC</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="importerViewLcLog.html">
+                                <a class="pages" id="modifyLcDetails">
+                                    <i class="fa fa-angle-right"></i>
+                                    <span>Modify LC</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="pages" id="viewLcLog">
                                     <i class="fa fa-angle-right"></i>
                                     <span>View LC Log</span>
                                 </a>
@@ -61,3 +65,18 @@
     </footer>
 </section>
 
+<script>
+    // collapse/expand menu properly
+        /*$(".panel-heading").find("a").click(function() {
+            $(".panel-collapse").removeClass("in");
+        });*/
+
+        $("body").on("click", ".pages", function() {
+            var title = this.id.trim();
+
+            var pageToLoad = title + ".html";
+            
+            $("#content").load(pageToLoad);
+
+        });
+</script>

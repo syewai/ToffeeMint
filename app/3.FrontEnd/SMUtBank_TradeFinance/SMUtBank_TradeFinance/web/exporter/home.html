@@ -1,88 +1,109 @@
 <!DOCTYPE html>
-<html lang="en" class="app">
+<!--<script src="../assets/js/retrieveLatestLC.js"></script>-->
+<section class="vbox">
+    <section class="scrollable">
+        <div class="wrapper-lg">
+            <h2 class="m-b-xs font-bold m-t-none">Welcome back, Sean</h2>
+            <h4 class="text-primary font-bold">Exporter</h4>
+        </div>
 
-<head>
-    <meta charset="utf-8" />
-    <title>SMU tBank - Trade Finance Application</title>
-    
-    <meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/css/font.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/js/calendar/bootstrap_calendar.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/js/jvectormap/jquery-jvectormap-1.2.2.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
-    <!--[if lt IE 9]>
-    <script src="../assets/js/ie/html5shiv.js"></script>
-    <script src="../assets/js/ie/respond.min.js"></script>
-    <script src="../assets/js/ie/excanvas.js"></script>
-  <![endif]-->
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-    
-    <script>
-        $(function(){
-            $("#header").load("header.html");
-            $("#nav-bar").load("navBar.html");
-            $("#content").load("exporterHomeContent.html");        
-        }
-                );
-    </script>
+        <!--LC Table-->
+        <section class="panel panel-default">
+            <header class="panel-heading wrapper-lg">
+                <h4 class="font-bold">Letters of Credit</h4>
+            </header>
 
-</head>
+            <div class="table-responsive wrapper-lg">
+                <table class="table table-striped b-t b-light" id="lcTable">
+                    <thead>
+                        <tr>
+                            <th>Reference Number</th>
+                            <th>Advising Bank</th>
+                            <th>Date Submitted</th>
+                            <th>Status</th>
+                            <th></th>
 
-<body class="">
-    
-    <section class="vbox">
-        <!--Header-->
-        <header class="bg-black dk header navbar navbar-fixed-top-xs" id="header">
-        </header>
-        <!--End of Header-->
-        <section>
-            <section class="hbox stretch">
-                <!-- .aside -->
-                <aside class="bg-dark lter aside-md hidden-print hidden-xs" id="nav-bar">
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
 
-                </aside>
-                <!-- /.aside -->
-                <!--Content-->
-                <section id="content">
+                            <td><p id="0"></p></td>
+                            <td>UOB</td>
+                            <td>Nov 8, 2017</td>
+                            <td class="text-primary font-bold">
+                                </i>Pending</td>
+                            <td>
 
+                                <a href = "lcDetails.html" type="button" id="button1" 
+                                   class="active btn btn-s-md btn-primary" >View LC</a>
 
-                </section>
-                <!--End of Content-->
+                            </td>
+                        </tr>
+                        <tr>
 
-            </section>
-            <!--End of hbox stretch -->
+                            <td><p id="1"></p></td>
+                            <td>UOB</td>
+                            <td>Nov 8, 2017</td>
+                            <td class="text-primary font-bold">
+                                </i>Pending</td>
+                            <td>
+                                <a type="button" id="button2" 
+                                   class="active btn btn-s-md btn-primary" >View LC</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><p id="2"></p></td>
+                            <td>UOB</td>
+                            <td>Nov 8, 2017</td>
+                            <td class="text-primary font-bold">
+                                </i>Pending</td>
+                            <td>
+                                <a type="button" id="button3" 
+                                   class="active btn btn-s-md btn-primary" >View LC</a>                                                </td>
+                        </tr>
+                        <tr>
+
+                            <td><p id="3"></p></td>
+                            <td>UOB</td>
+                            <td>Nov 8, 2017</td>
+                            <td class="text-primary font-bold">
+                                </i>Pending</td>
+                            <td>
+                                <a type="button" id="button4" 
+                                   class="active btn btn-s-md btn-primary" >View LC</a>                                                </td>
+                        </tr>
+                        <tr>
+                            <td><p id="4"></p></td>
+                            <td>UOB</td>
+                            <td>Nov 8, 2017</td>
+                            <td class="text-primary font-bold">
+                                </i>Pending</td>
+                            <td>
+                                <a type="button" id="button5" 
+                                   class="active btn btn-s-md btn-primary" >View LC</a>                                                </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-4 hidden-xs">
+
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <a href="exporterViewLcLog.html" class="btn btn-s-md btn-dark">View All LC</a>
+                    </div>
+                    <div class="col-sm-4 text-right text-center-xs">
+
+                    </div>
+                </div>
+            </footer>
         </section>
-
+        <!--End of LC Table-->
     </section>
-    <!--End of Vbox-->
+    <!--End of Scrollable-->
+</section>
+<!--End of vbox-->
 
-    <script src="../assets/js/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="../assets/js/bootstrap.js"></script>
-    <!-- App -->
-    <script src="../assets/js/app.js"></script>
-    <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="../assets/js/charts/easypiechart/jquery.easy-pie-chart.js"></script>
-    <script src="../assets/js/charts/sparkline/jquery.sparkline.min.js"></script>
-    <script src="../assets/js/charts/flot/jquery.flot.min.js"></script>
-    <script src="../assets/js/charts/flot/jquery.flot.tooltip.min.js"></script>
-    <script src="../assets/js/charts/flot/jquery.flot.resize.js"></script>
-    <script src="../assets/js/charts/flot/jquery.flot.grow.js"></script>
-    <script src="../assets/js/charts/flot/demo.js"></script>
-
-    <script src="../assets/js/calendar/bootstrap_calendar.js"></script>
-    <script src="../assets/js/calendar/demo.js"></script>
-
-    <script src="../assets/js/sortable/jquery.sortable.js"></script>
-
-    <script src="../assets/js/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="../assets/js/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-    <script src="../assets/js/jvectormap/demo.js"></script>
-    <script src="../assets/js/app.plugin.js"></script>
-</body>
-
-</html>

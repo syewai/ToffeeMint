@@ -5,6 +5,27 @@ function compareStrings(a, b) {
 
                 return (a < b) ? -1 : (a > b) ? 1 : 0;
             }
+function operationAndUrlAssigned(status){
+    //this function is to map the operation and url to coresponding status
+    var operationMatches = {"submitted": ["view lc","lcDetails"], "issued": ["view lc","lcDetails"], "rejected": ["modify","modifyLcDetails"],"advised":"", "accepted":"","requested to amend":["modify","modifyLcDetails"]}; 
+    return operationMatches[status];
+    
+}
+
+function buttonAssigned(status) { // this method is to assign button color (by adding class name to the button element) based on status 
+    var element, name, arr;
+    element = document.getElementById("lcDetails");
+    if (status === "rejected" || status === "requested to amend"){ 
+        name = "btn-danger";  
+    } else {
+        name = "btn-primary";
+    }
+    arr = element.className.split(" ");
+    if (arr.indexOf(name) == -1) {
+          element.className += " " + name;
+    }
+       
+}
 
             if(true){
                 var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
@@ -48,56 +69,31 @@ function compareStrings(a, b) {
                                   return compareStrings(a, b);
                                 })
                                 refNumList = refNumList.reverse();
-                                console.log(refNumList);
-                                $('#0').html(refNumList[0]);
-                                $('#1').html(refNumList[1]);
-                                $('#2').html(refNumList[2]);
-                                $('#3').html(refNumList[3]);
-                                $('#4').html(refNumList[4]);
+                                for (i = 0; i < 5; i++) {
+                                    //call websrevice and get lc details for each ref number 
+                                    var refNum = refNumList[i];
+                                    var link = "localhost:9001/lc/getContract?refNum="+refNum;
+                                    $.getJSON(link).done(function(data){
+                                        //get adv bank as 2nd col 
+                                    //get date submitted as 3rd col
+                                    //get status as 4th col
+                                        
+                                        
+                                        var operationAndUrl = operationAndUrlAssigned(data.status);
+                                        var operation = operationAndUrl[0];
+                                        var url = operationAndUrl[1];
+                                        var href = "/SMUtBank_TradeFinance/importer/"+url+".html?refNum="+refNum;
+                                        var button = "<a type='button' id='lcDetails' class='btn btn-s-md' href='"+href+"'>"+operation+"</a> ";
+                                        button = buttonAssigned(data.status);
+                                        var trHTML = '<tr><td>' + data.refNum + '</td><td>' + data.exporterAccount + '</td><td>' + data.dateSubmitted + '</td><td>' + data.status + '</td><td>' + button + '</td></tr>';
+                                        $('#latestLCs').append(trHTML);
+                                      });
+                    
+                                    //
 
-
-                                $('#button1').click(function(e) {  
-                                    var inputvalue = $("#input").val();
-                                    window.location.replace("/SMUtBank_TradeFinance/lcDetails.html?refNum="
-                                        +refNumList[0]
-                                        );
-
-                                });
-
-                                $('#button2').click(function(e) {  
-                                    var inputvalue = $("#input").val();
-                                    window.location.replace("/SMUtBank_TradeFinance/lcDetails.html?refNum="
-                                        +refNumList[1]
-                                        );
-
-                                });
-
-
-                                $('#button3').click(function(e) {  
-                                    var inputvalue = $("#input").val();
-                                    window.location.replace("/SMUtBank_TradeFinance/lcDetails.html?refNum="
-                                        +refNumList[2]
-                                        );
-
-                                });
-
-
-                                $('#button4').click(function(e) {  
-                                    var inputvalue = $("#input").val();
-                                    window.location.replace("/SMUtBank_TradeFinance/lcDetails.html?refNum="
-                                        +refNumList[3]
-                                        );
-
-                                });
-
-                                $('#button5').click(function(e) {  
-                                    var inputvalue = $("#input").val();
-                                    window.location.replace("/SMUtBank_TradeFinance/lcDetails.html?refNum="
-                                        +refNumList[4]
-                                        );
-
-                                });
-
+                                }
+                                
+                                
                             }
 
                         }
@@ -111,3 +107,4 @@ function compareStrings(a, b) {
 
                 }
             }
+            

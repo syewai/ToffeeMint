@@ -1,5 +1,6 @@
 
 $(document).ready(function () {
+    //create contract
     $("#create_button").click(function (event) {
         var importerAccount = "2365";
         var exporterAccount = document.getElementById("exporterId").value;
