@@ -69,7 +69,7 @@
     <!---Home-->
     <servlet>
         <servlet-name>exporterHome</servlet-name>
-        <jsp-file>/exporter/home.html</jsp-file>
+        <jsp-file>/exporter/exporter.html</jsp-file>
     </servlet>
     <servlet-mapping>
         <servlet-name>exporterHome</servlet-name>

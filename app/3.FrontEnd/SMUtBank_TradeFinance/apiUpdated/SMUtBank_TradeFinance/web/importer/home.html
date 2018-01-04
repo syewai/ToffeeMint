@@ -36,8 +36,8 @@
                             <td class="text-primary font-bold">
                                 </i>Pending</td>
                             <td>
-                                <a type="button" id="button5" 
-                                   class="active btn btn-s-md btn-primary" >Modify LC</a>                                                
+                                <a type="button" id="modifyLcDetails" 
+                                   class="pages active btn btn-s-md btn-primary" >Modify LC</a>                                                
                             </td>
                         </tr>
 
@@ -50,7 +50,7 @@
 
                     </div>
                     <div class="col-sm-4 text-center">
-                        <a href="importer" class="btn btn-s-md btn-dark">View All LC</a>
+                        <a id="viewLcLog" class="pages btn btn-s-md btn-dark">View All LC</a>
                     </div>
                     <div class="col-sm-4 text-right text-center-xs">
 
@@ -64,13 +64,18 @@
 </section>
 <!--End of vbox-->
 
-<script>/*
-    $("body").on("click", "#lcDetails", function() {
+<script>
+    // collapse/expand menu properly
+        /*$(".panel-heading").find("a").click(function() {
+            $(".panel-collapse").removeClass("in");
+        });*/
+
+        $("body").on("click", ".pages", function() {
             var title = this.id.trim();
 
             var pageToLoad = title + ".html";
-
+            
             $("#content").load(pageToLoad);
 
-        });*/
+        });
 </script>
