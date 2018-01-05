@@ -27,7 +27,22 @@
         $(function(){
             $("#header").load("header.html");
             $("#nav-bar").load("navBar.html");
-            $("#content").load("home.html");            
+            
+        /*var g = localStorage.getItem('lists');
+         var page = JSON.parse(g);
+            console.log(g);
+            console.log(g.key);
+            if (g === null || g === "undefined"){
+                $("#content").load("home.html");
+            } else {
+                
+                //for (var somePage in page){
+                  // $("#content").load(somePage+".html?refNum="+page[somePage]); 
+               // }
+                
+            }*/
+        $("#content").load("home.html");
+                      
         }
                 );
     </script>

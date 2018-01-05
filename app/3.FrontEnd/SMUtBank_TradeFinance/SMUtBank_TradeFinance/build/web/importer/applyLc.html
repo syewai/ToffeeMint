@@ -143,53 +143,61 @@ $(document).ready(function () {
         var senderToReceiverInfo = "none";
         var mode = "BC";
         console.log(exporterAccount);
-
-        var headerObj = {
-            Header: {
-                serviceName: "applyLetterOfCredit",
-                userID: "kinetic1",
-                PIN: "123456",
-                OTP: "999999"
+   
+        
+        var contractObj = {
+            Contract : {
+                Header: {
+                    /*serviceName: "applyLetterOfCredit",
+                    userID: "kinetic1",
+                    PIN: "123456",
+                    OTP: "999999"*/
+                    ServiceName:"CreateContract"
+                },
+                Content: {
+                    importerAccount: importerAccount,
+                    exporterAccount: exporterAccount,
+                    expiryDate: expiryDate,
+                    confirmed: confirmed,
+                    revocable: revocable,
+                    availableBy: availableBy,
+                    termDays: termDays,
+                    amount: amount,
+                    currency: currency,
+                    applicableRules: applicableRules,
+                    partialShipments: partialShipments,
+                    shipDestination: shipDestination,
+                    shipDate: shipDate,
+                    shipPeriod: shipPeriod,
+                    goodsDescription: goodsDescription,
+                    docsRequired: docsRequired,
+                    additionalConditions: additionalConditions,
+                    senderToReceiverInfo: senderToReceiverInfo,
+                    mode: mode
+                } 
             }
         };
-        var header = JSON.stringify(headerObj);
-
-        var contentObj = {
-            Content: {
-                importerAccount: importerAccount,
-                exporterAccount: exporterAccount,
-                expiryDate: expiryDate,
-                confirmed: confirmed,
-                revocable: revocable,
-                availableBy: availableBy,
-                termDays: termDays,
-                amount: amount,
-                currency: currency,
-                applicableRules: applicableRules,
-                partialShipments: partialShipments,
-                shipDestination: shipDestination,
-                shipDate: shipDate,
-                shipPeriod: shipPeriod,
-                goodsDescription: goodsDescription,
-                docsRequired: docsRequired,
-                additionalConditions: additionalConditions,
-                senderToReceiverInfo: senderToReceiverInfo,
-                mode: mode
-            }
-        };
-        var content = JSON.stringify(contentObj);
+        var contractJSON = JSON.stringify(contractObj);
+        //var content = JSON.stringify("{'Contract' :"+contractObj+"}");
+        //var content = JSON.stringify(contentObj);
         // console.log(content);                             
 
-        var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
+        //var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
         // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
-
+        //
+        //
+//Method 1 - Original Method by using Javascript --> Still facing Cross Orgin Support Issue (localhost:8084  and localhost:9001)
+        var apiURL = 'localhost:9001/lc/createContract';
+        
         // console.log("heeey");
         var xmlHttp = new XMLHttpRequest();              //setup new http req
         if (xmlHttp === null) {
             alert("Browser does not support HTTP request."); //check for browser thingy
         }
-        var refNum = "";
-        xmlHttp.open("POST", apiURL + "?Header=" + header + "&Content=" + content + "&ConsumerID=TF", true);
+        //var refNum = "";
+        var refNum = "0002";
+        //xmlHttp.open("POST", apiURL + "?Header=" + header + "&Content=" + content + "&ConsumerID=TF", true);
+        xmlHttp.open("POST", apiURL + "?refNum="+refNum+"&contract="+contractJSON, true);
         xmlHttp.timeout = 5000;
 
         // setup http event handlers
@@ -199,10 +207,9 @@ $(document).ready(function () {
                 responseObj = JSON.parse(xmlHttp.responseText);
                 // serviceRespHeader = responseObj.Content.ServiceResponse.ServiceRespHeader;
                 // globalErrorID = serviceRespHeader.GlobalErrorID;
-                refNum = responseObj.Content.ServiceResponse["LC_Details"].ref_num;
+                //refNum = responseObj.Content.ServiceResponse["LC_Details"].ref_num;
                 console.log(refNum);
                 window.location = "/SMUtBank_TradeFinance/importer/importer.html";
-
 
                 // callback();
             }
@@ -213,9 +220,52 @@ $(document).ready(function () {
         };
 
         xmlHttp.send();
+        
+//Method 2 - Call CORS support to resolve cross origin issue
+//
+ // var refNum = "0002";
+ //var contract = JSON.stringify("{" + header + "," + content + "}");
+ //
+// 2.1   jQuery cross domain ajax --> not working
+    /*$.post("localhost:9001/lc/createContract?refNum="+refNum+"&contract="+contract).done(function (data) {
+        console.log(data);
+    });*/
+
+
+        
+//  2.2 xhr request --> not working
+    /*
+        var url = 'localhost:9001/lc/createContract?refNum='+refNum+'&contract='+contract;
+        var xhr = createCORSRequest('POST', url);
+
+        // Create the XHR object
+        function createCORSRequest(method, url) {
+                var xhr = new XMLHttpRequest();
+                if ("withCredentials" in xhr) {
+                        xhr.open('POST', url, true);
+                } else if (typeof XDomainRequest !== "undefined") {
+        // XDomainRequest for IE
+                        xhr = new XDomainRequest();
+                        xhr.open('GET', url);
+                } else {
+        // CORS not supported
+                        xhr = null;
+                        document.getElementById("txtHint").innerHTML = "CORS not supported.";
+                }
+          return xhr;
+        }
+
+        xhr.onload = function () {
+                console.log(xhr.responseText);
+                window.location = "/SMUtBank_TradeFinance/importer/importer.html";
+            };
+            xhr.send();
+        */
 
     });
-});
+   });
+
+
 </script>
 
 

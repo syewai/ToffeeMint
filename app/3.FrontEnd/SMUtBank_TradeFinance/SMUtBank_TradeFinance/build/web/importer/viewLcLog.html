@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<script src="../assets/js/retrieveLatestLC.js"></script>
+<script type="text/javascript">
+    retrieveLcs(10);
+</script>
 <section class="vbox">
     <section class="scrollable">
 
@@ -23,53 +28,10 @@
                             <th>Date Submitted</th>
                             <th>Status</th>
                             <th></th>
-
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-
-                            <td>12345</td>
-                            <td>Idrawfast</td>
-                            <td>Nov 2, 2017</td>
-                            <td class="text-danger font-bold">
-                                </i>Advised to amend</td>
-                            <td>
-                                <a href="lcDetails.html" class="active btn btn-s-md btn-danger">View LC</a>
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td>13333</td>
-                            <td>Idrawfast</td>
-                            <td>Nov 1, 2017</td>
-                            <td class="text-danger font-bold">
-                                </i>Advised to amend</td>
-                            <td>
-                                <a href="#" class="active btn btn-s-md btn-danger" data-toggle="class">View LC</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>14567</td>
-                            <td>Avatar system</td>
-                            <td>Nov 5, 2017</td>
-                            <td class="text-primary font-bold">
-                                </i>Issued</td>
-                            <td>
-                                <a href="#" class="active btn btn-s-md btn-primary" data-toggle="class">View LC</a>
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td>14567</td>
-                            <td>Avatar system</td>
-                            <td>Oct 15, 2017</td>
-                            <td class="text-primary font-bold">
-                                </i>Advised</td>
-                            <td>
-                                <a href="#" class="active btn btn-s-md btn-primary" data-toggle="class">View LC</a>
-                            </td>
-                        </tr>
+                    <tbody id="latestLCs">
+                        
                     </tbody>
                 </table>
             </div>
