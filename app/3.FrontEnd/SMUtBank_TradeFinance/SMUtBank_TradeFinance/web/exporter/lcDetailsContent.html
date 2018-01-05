@@ -78,7 +78,7 @@
                         <div class="col-sm-4 col-sm-offset-2">
                             <!--<button type="submit" class="btn btn-default">Cancel</button>-->
                             <a href="exporter.html"><button type="submit" class="btn btn-primary">Approve</button></a>
-                            <a href="amendLcDetails.html"><button type="submit" class="btn btn-primary">Request for amendment</button></a>
+                            <a id="amendLcDetails" type="submit" class="pages btn btn-primary">Request for amendment</a>
                         </div>
                         
                     </div>
@@ -94,3 +94,24 @@
 </section>
 <!--End of vbox-->
 
+<script>
+    // collapse/expand menu properly
+        /*$(".panel-heading").find("a").click(function() {
+            $(".panel-collapse").removeClass("in");
+        });*/
+        
+        $("body").on("click", ".pages", function() {
+            var title = this.id.trim();
+
+            var pageToLoad = title + ".html";
+            var refNum = $('.refNum').text();
+            var pageRedirection = { pageToLoad: refNum }
+
+            localStorage.setItem('lists', JSON.stringify(pageRedirection)); 
+            //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html"); 
+            //localStorage.setItem('pageToLoad', pageToLoad); 
+            //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");  
+            //$("#content").load(pageToLoad);
+
+        });
+</script>

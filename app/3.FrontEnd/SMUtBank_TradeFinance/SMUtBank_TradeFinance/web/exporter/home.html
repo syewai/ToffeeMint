@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<!--<script src="../assets/js/retrieveLatestLC.js"></script>-->
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<script src="../assets/js/retrieveLatestLC.js"></script>
+<script type="text/javascript">
+    retrieveLcs(5);
+</script>
 <section class="vbox">
     <section class="scrollable">
         <div class="wrapper-lg">
@@ -34,10 +38,7 @@
                             <td class="text-primary font-bold">
                                 </i>Pending</td>
                             <td>
-
-                                <a href = "lcDetails.html" type="button" id="button1" 
-                                   class="active btn btn-s-md btn-primary" >View LC</a>
-
+                                <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a>
                             </td>
                         </tr>
                         <tr>
@@ -48,8 +49,7 @@
                             <td class="text-primary font-bold">
                                 </i>Pending</td>
                             <td>
-                                <a type="button" id="button2" 
-                                   class="active btn btn-s-md btn-primary" >View LC</a>
+                                <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a> 
                             </td>
                         </tr>
                         <tr>
@@ -59,8 +59,8 @@
                             <td class="text-primary font-bold">
                                 </i>Pending</td>
                             <td>
-                                <a type="button" id="button3" 
-                                   class="active btn btn-s-md btn-primary" >View LC</a>                                                </td>
+                                <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a>                                                   
+                            </td>
                         </tr>
                         <tr>
 
@@ -70,8 +70,8 @@
                             <td class="text-primary font-bold">
                                 </i>Pending</td>
                             <td>
-                                <a type="button" id="button4" 
-                                   class="active btn btn-s-md btn-primary" >View LC</a>                                                </td>
+                                 <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a>
+                            </td>
                         </tr>
                         <tr>
                             <td><p id="4"></p></td>
@@ -80,8 +80,8 @@
                             <td class="text-primary font-bold">
                                 </i>Pending</td>
                             <td>
-                                <a type="button" id="button5" 
-                                   class="active btn btn-s-md btn-primary" >View LC</a>                                                </td>
+                                <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a>
+                            </td>
                         </tr>
 
                     </tbody>
@@ -93,7 +93,7 @@
 
                     </div>
                     <div class="col-sm-4 text-center">
-                        <a href="exporterViewLcLog.html" class="btn btn-s-md btn-dark">View All LC</a>
+                        <a id="viewLcLog" class="pages btn btn-s-md btn-dark">View All LC</a>
                     </div>
                     <div class="col-sm-4 text-right text-center-xs">
 
@@ -107,3 +107,24 @@
 </section>
 <!--End of vbox-->
 
+<script>
+    // collapse/expand menu properly
+        /*$(".panel-heading").find("a").click(function() {
+            $(".panel-collapse").removeClass("in");
+        });*/
+        
+        $("body").on("click", ".pages", function() {
+            var title = this.id.trim();
+
+            var pageToLoad = title + ".html";
+            var refNum = $('.refNum').text();
+            var pageRedirection = { pageToLoad: refNum }
+
+            localStorage.setItem('lists', JSON.stringify(pageRedirection)); 
+            //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html"); 
+            //localStorage.setItem('pageToLoad', pageToLoad); 
+            //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");  
+            //$("#content").load(pageToLoad);
+
+        });
+</script>
