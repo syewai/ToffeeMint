@@ -25,7 +25,8 @@
         <header class="panel-heading text-center">
           <strong>Sign in</strong>
         </header>
-        <form class="panel-body wrapper-lg" role="form" id="signInForm" method = "post">
+        <form class="panel-body wrapper-lg" role="form" id="signInForm">
+          <input id="type" type="hidden" class="form-control" name="type" value="login"/>
           <div class="form-group">
             <label class="control-label">Username</label>
             <input type="text" placeholder="Username" class="form-control input-lg" name="username" id="username" required />
@@ -36,16 +37,18 @@
           </div> 
           <div class="form-group">
             <label class="control-label">User Type</label>
-            <select name="account" class="form-control m-b" id="type" required>
+            <select name="usertype" class="form-control m-b" id="usertype" required>
                 <option value="">----Please select a user type----</option>
-                <option value="1">Importer</option>
-                <option value="2">Exporter</option>
-                <option value="3">Issuing Bank</option>
-                <option value="4">Advising Bank</option>
+                <option value="importer">Importer</option>
+                <option value="exporter">Exporter</option>
+                <option value="issuingBank">Issuing Bank</option>
+                <option value="advisingBank">Advising Bank</option>
+                <option value="shipper">Shipper</option>
             </select>          
           </div>
           <div id="authError"></div>
-          <input type="submit" class="btn btn-primary" id="loginBtn" value="Sign in" />
+          <!--<input type="submit" class="btn btn-primary" id="loginBtn" value="Sign in" />-->
+          <button id="loginBtn" type="button" class="btn btn-primary">Sign in</button>
           <div class="line line-dashed"></div>
         </form>
         
@@ -61,7 +64,7 @@ OTP: "999999"-->
         $(document).ready(function() {
             $("#loginBtn").click(function(event) {
                 //temporary redirection without authentication
-                var type = document.getElementById("type").value;
+                /*var type = document.getElementById("type").value;
                 if (type !== ""){
                     if (type === "1"){ //redirect to importer homeage
                     window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");  
@@ -75,35 +78,39 @@ OTP: "999999"-->
                     
                 } else {
                     $("div#authError").html("Please select a type");
-                }
+                }*/
                 
                 //calling authentication service
                 
-                   /* var username = document.getElementById("username").value;
+                    var username = document.getElementById("username").value;
                     var password = document.getElementById("password").value;
-                    var type = document.getElementById("type").value;
-                    if (username.trim() === "" || password.trim() === "" || type.trim() === "") {
+                    var usertype = document.getElementById("usertype").value;
+                    if (username.trim() === "" || password.trim() === "" || usertype.trim() === "") {
                         //showErrorModal("Please fill in both username and password to login.");
+                        $("div#authError").html("Please fill in all fields");
                     } else {
                         // send json to servlet
                         $.ajax({
-                            url: 'localhost:9001://XXX',
+                            url: 'UserServlet',
                             type: 'POST',
                             dataType: 'json',
                             data: $('#signInForm').serialize(),
                             success: function(data) {
                                 if (data.success) { 
-                                    if (type === "1"){
+                                    if (usertype === "1"){
                                        window.location.replace("/SMUtBank_TradeFinance/importer/home.html");  
-                                    } else if (type === "2"){
+                                    } else if (usertype === "2"){
                                        window.location.replace("/SMUtBank_TradeFinance/exporter/home.html");  
-                                    } else if (type === "3"){
+                                    } else if (usertype === "3"){
                                        window.location.replace("/SMUtBank_TradeFinance/issuingBank/home.html");  
-                                    } else {
+                                    } else if (usertype === "4"){
                                        window.location.replace("/SMUtBank_TradeFinance/advisingBank/home.html");  
-                                    }            
+                                    } else {
+                                        console.log("Shipper!")
+                                    }           
                                 } else {
                                     //showErrorModal("Username and password does not match.");
+                                    $("div#authError").html("Username and password does not match.");
                                     return;
                                 }
                             },
@@ -111,7 +118,7 @@ OTP: "999999"-->
                                 alert(xhr.error);
                         }
                         });
-                    }*/
+                    }
                 });
             });
 
