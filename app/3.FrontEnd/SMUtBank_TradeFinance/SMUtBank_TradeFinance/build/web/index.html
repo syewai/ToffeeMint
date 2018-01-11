@@ -97,17 +97,19 @@ OTP: "999999"-->
                             data: $('#signInForm').serialize(),
                             success: function(data) {
                                 if (data.success) { 
-                                    if (usertype === "1"){
-                                       window.location.replace("/SMUtBank_TradeFinance/importer/home.html");  
-                                    } else if (usertype === "2"){
-                                       window.location.replace("/SMUtBank_TradeFinance/exporter/home.html");  
-                                    } else if (usertype === "3"){
-                                       window.location.replace("/SMUtBank_TradeFinance/issuingBank/home.html");  
-                                    } else if (usertype === "4"){
-                                       window.location.replace("/SMUtBank_TradeFinance/advisingBank/home.html");  
+                                    window.location.replace("/SMUtBank_TradeFinance/"+usertype+"/"+usertype+".html");
+                                    /*if (usertype === "importer"){
+                                       window.location.replace("/SMUtBank_TradeFinance/importer/importer.html"); 
+                                       console.log("Importer")
+                                    } else if (usertype === "exporter"){
+                                       window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");  
+                                    } else if (usertype === "issuingBank"){
+                                       window.location.replace("/SMUtBank_TradeFinance/issuingBank/issuingBank.html");  
+                                    } else if (usertype === "advisingBank"){
+                                       window.location.replace("/SMUtBank_TradeFinance/advisingBank/advisingBank.html");  
                                     } else {
                                         console.log("Shipper!")
-                                    }           
+                                    } */          
                                 } else {
                                     //showErrorModal("Username and password does not match.");
                                     $("div#authError").html("Username and password does not match.");
