@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://smubank.smu.edu.sg/schemas/serviceRequestMessage/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://smubank.smu.edu.sg/Product/Parameters_Read" xmlns:ns9="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns5="http://smubank.smu.edu.sg/schemas/BankParameters" xmlns:ns6="http://smubank.smu.edu.sg/schemas/ACH/BankParameters" xmlns:ns7="http://smubank.smu.edu.sg/schemas/ACH/PaymentParameters" xmlns:pfx="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns8="http://www.tibco.com/pe/EngineTypes" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://smubank.smu.edu.sg/logging" xmlns:ns1="http://smubank.smu.edu.sg/schemas/TF/LC" xmlns:ns4="http://smubank.smu.edu.sg/schemas/ProductParameters" xmlns:ns3="http://smubank.smu.edu.sg/schemas/serviceResponseHeader" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx5="http://smubank.smu.edu.sg/ACH/Payment" xmlns:pfx4="http://smubank.smu.edu.sg/ACH/Bank" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx3="http://smubank.smu.edu.sg/ACH/BankParameters" xmlns:pfx2="http://smubank.smu.edu.sg/Bank/Parameters" xmlns:pfx6="http://smubank.smu.edu.sg/Trade/LC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:import namespace="http://smubank.smu.edu.sg/schemas/TF/LC" schemaLocation="/Schemas/LetterOfCredit.xsd"/>
+    <wsdl:import namespace="http://smubank.smu.edu.sg/ACH/Payment" location="/ACH_Payment.wsdl"/>
+    <wsdl:import namespace="http://smubank.smu.edu.sg/Trade/LC" location="/Trade_LC.wsdl"/>
+    <pd:name>Trade_BOE_Read_BC.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType wsMsgRef="pfx6:Trade_BOE_Read-Input"/>
+    <pd:startX>48</pd:startX>
+    <pd:startY>153</pd:startY>
+    <pd:returnBindings>
+        <pfx6:Trade_BOE_Read-Output>
+            <Trade_BOE_Read-Response>
+                <ns1:BOE>
+                    <xsl:value-of select="$Parse-JSON/ns9:ActivityOutputClass/ns1:BOE"/>
+                </ns1:BOE>
+            </Trade_BOE_Read-Response>
+            <ServiceRespHeader>
+                <ns3:GlobalErrorID>
+                    <xsl:value-of select="$Status/root/ErrorCode"/>
+                </ns3:GlobalErrorID>
+                <ns3:ErrorText>
+                    <xsl:value-of select="$Status/root/ErrorText"/>
+                </ns3:ErrorText>
+                <ns3:ErrorDetails>
+                    <xsl:value-of select="$Status/root/ErrorDetail"/>
+                </ns3:ErrorDetails>
+            </ServiceRespHeader>
+        </pfx6:Trade_BOE_Read-Output>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType wsMsgRef="pfx6:Trade_BOE_Read-Output"/>
+    <pd:endX>889</pd:endX>
+    <pd:endY>163</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <Status>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ErrorCode" type="xsd:string"/>
+                        <xsd:element name="ErrorText" type="xsd:string"/>
+                        <xsd:element name="ErrorDetail" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </Status>
+        <Metadata>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ProcessName" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </Metadata>
+    </pd:processVariables>
+    <pd:targetNamespace>http://smubank.smu.edu.sg/Trade/BOE_Read_BC</pd:targetNamespace>
+    <pd:activity name="SetProcessName">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>148</pd:x>
+        <pd:y>154</pd:y>
+        <config>
+            <variableName>Metadata</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ProcessName>
+                    <xsl:value-of select="$_processContext/ns8:ProcessContext/ProjectName"/>
+                </ProcessName>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogPoint4">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>215</pd:x>
+        <pd:y>56</pd:y>
+        <config>
+            <processName>/writeLog.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <ns2:InputMessage>
+                <ConsumerID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Read-Input/ServiceReqHeader/ConsumerID"/>
+                </ConsumerID>
+                <TransactionID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Read-Input/ServiceReqHeader/TransactionID"/>
+                </TransactionID>
+                <RequestUUID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Read-Input/ServiceReqHeader/RequestUUID"/>
+                </RequestUUID>
+                <OperationName>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Read-Input/ServiceReqHeader/OperationName"/>
+                </OperationName>
+                <ProcessName>
+                    <xsl:value-of select="$Metadata/root/ProcessName"/>
+                </ProcessName>
+                <LoggingPointNo>
+                    <xsl:value-of select="4"/>
+                </LoggingPointNo>
+                <ErrorMsg>
+                    <xsl:value-of select="$Status/root/ErrorDetail"/>
+                </ErrorMsg>
+            </ns2:InputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Get Error Text">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>728</pd:x>
+        <pd:y>160</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <maxRows>100</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <statement>SELECT `errortext` 
+FROM `global_errorreference` 
+WHERE `globalerrorid` = ?;</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>errorcode</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <jdbcSharedConfig>/Shared Connections/MDM.sharedjdbc</jdbcSharedConfig>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>errortext</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <errorcode>
+                    <xsl:value-of select="$Status/root/ErrorCode"/>
+                </errorcode>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogPoint5">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>813</pd:x>
+        <pd:y>60</pd:y>
+        <config>
+            <processName>/writeLog.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <ns2:InputMessage>
+                <ConsumerID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Read-Input/ServiceReqHeader/ConsumerID"/>
+                </ConsumerID>
+                <TransactionID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Read-Input/ServiceReqHeader/TransactionID"/>
+                </TransactionID>
+                <RequestUUID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Read-Input/ServiceReqHeader/RequestUUID"/>
+                </RequestUUID>
+                <OperationName>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Read-Input/ServiceReqHeader/OperationName"/>
+                </OperationName>
+                <ProcessName>
+                    <xsl:value-of select="$Metadata/root/ProcessName"/>
+                </ProcessName>
+                <LoggingPointNo>
+                    <xsl:value-of select="5"/>
+                </LoggingPointNo>
+                <ErrorMsg>
+                    <xsl:value-of select="$Status/root/ErrorDetail"/>
+                </ErrorMsg>
+            </ns2:InputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Success">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>587</pd:x>
+        <pd:y>159</pd:y>
+        <config>
+            <variableName>Status</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ErrorCode>
+                    <xsl:value-of select="'010000'"/>
+                </ErrorCode>
+                <ErrorText>
+                    <xsl:value-of select="''"/>
+                </ErrorText>
+                <ErrorDetail>
+                    <xsl:value-of select="''"/>
+                </ErrorDetail>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Blockchain Error">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>520</pd:x>
+        <pd:y>393</pd:y>
+        <config>
+            <variableName>Status</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ErrorCode>
+                    <xsl:value-of select="'010021'"/>
+                </ErrorCode>
+                <ErrorText>
+                    <xsl:value-of select="''"/>
+                </ErrorText>
+                <ErrorDetail>
+                    <xsl:value-of select="'blockchain connection error'"/>
+                </ErrorDetail>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Invoke REST API">
+        <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
+        <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
+        <pd:x>283</pd:x>
+        <pd:y>156</pd:y>
+        <config>
+            <restMethodUI>GET</restMethodUI>
+            <restResponseType>JSON</restResponseType>
+            <authChoiceUI>No Authentication</authChoiceUI>
+            <restURI>http://localhost:9001/lc/getBOE/</restURI>
+            <restInputReferNode>
+                <xsd:element name="Parameters">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Query" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="refNum" type="xsd:string"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Header" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Body" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="Form" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Text" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Binary" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:base64Binary" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Multipart" minOccurs="0" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="filename" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content-type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content-id" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" minOccurs="0">
+                                                        <xsd:complexType>
+                                                            <xsd:choice>
+                                                                <xsd:element name="binary" type="xsd:base64Binary"/>
+                                                                <xsd:element name="text" type="xsd:string"/>
+                                                                <xsd:element name="fileName" type="xsd:string"/>
+                                                            </xsd:choice>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restInputReferNode>
+            <restOutputReferNode>
+                <xsd:element name="header">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Server" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Location" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Allow" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Date" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Set-Cookie" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pragma" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Length" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Encoding" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Range" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Last-Modifie" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restOutputReferNode>
+        </config>
+        <pd:inputBindings>
+            <ns9:ActivityInput>
+                <ns9:Parameters>
+                    <Query>
+                        <refNum>
+                            <xsl:value-of select="$Start/pfx6:Trade_BOE_Read-Input/Trade_BOE_Read-Request/ns1:ref_num"/>
+                        </refNum>
+                    </Query>
+                </ns9:Parameters>
+            </ns9:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Parse JSON">
+        <pd:type>com.tibco.plugin.json.activities.JSONParserActivity</pd:type>
+        <pd:resourceType>ae.activities.JSONParserActivity</pd:resourceType>
+        <pd:x>456</pd:x>
+        <pd:y>157</pd:y>
+        <config>
+            <SchemaType>xsdType</SchemaType>
+            <BadgerfishCheck>false</BadgerfishCheck>
+            <ActivityOutputEditor ref="ns1:BOE"/>
+        </config>
+        <pd:inputBindings>
+            <ns9:ActivityInputClass>
+                <jsonString>
+                    <xsl:value-of select="$Invoke-REST-API/ns9:RESTOutput/msg"/>
+                </jsonString>
+            </ns9:ActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Record Not Found">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>519</pd:x>
+        <pd:y>272</pd:y>
+        <config>
+            <variableName>Status</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ErrorCode>
+                    <xsl:value-of select="'010010'"/>
+                </ErrorCode>
+                <ErrorText>
+                    <xsl:value-of select="''"/>
+                </ErrorText>
+                <ErrorDetail>
+                    <xsl:value-of select="&quot;LC not found on blockchain&quot;"/>
+                </ErrorDetail>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>SetProcessName</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetProcessName</pd:from>
+        <pd:to>Invoke REST API</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetProcessName</pd:from>
+        <pd:to>LogPoint4</pd:to>
+        <pd:xpathDescription>log is on</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_globalVariables/pfx:GlobalVariables/Logging/LogAll = "true" or $_globalVariables/pfx:GlobalVariables/Logging/Log4 = "true"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogPoint4</pd:from>
+        <pd:to>Invoke REST API</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get Error Text</pd:from>
+        <pd:to>LogPoint5</pd:to>
+        <pd:xpathDescription>log is on</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_globalVariables/pfx:GlobalVariables/Logging/LogAll = "true" or $_globalVariables/pfx:GlobalVariables/Logging/Log5 = "true"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogPoint5</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Success</pd:from>
+        <pd:to>Get Error Text</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get Error Text</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Parse JSON</pd:from>
+        <pd:to>Success</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Invoke REST API</pd:from>
+        <pd:to>Parse JSON</pd:to>
+        <pd:xpathDescription>found</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Invoke-REST-API/ns9:RESTOutput/msg!=""</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Invoke REST API</pd:from>
+        <pd:to>Blockchain Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Blockchain Error</pd:from>
+        <pd:to>Get Error Text</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Invoke REST API</pd:from>
+        <pd:to>Record Not Found</pd:to>
+        <pd:xpathDescription>not found</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Record Not Found</pd:from>
+        <pd:to>Get Error Text</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

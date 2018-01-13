@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://smubank.smu.edu.sg/schemas/serviceRequestMessage/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://smubank.smu.edu.sg/Product/Parameters_Read" xmlns:ns5="http://smubank.smu.edu.sg/schemas/BankParameters" xmlns:ns6="http://smubank.smu.edu.sg/schemas/ACH/BankParameters" xmlns:ns7="http://smubank.smu.edu.sg/schemas/TF/LC" xmlns:pfx="http://www.tibco.com/pe/DeployedVarsType" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://smubank.smu.edu.sg/logging" xmlns:ns1="http://smubank.smu.edu.sg/schemas/ACH/PaymentParameters" xmlns:ns4="http://smubank.smu.edu.sg/schemas/ProductParameters" xmlns:ns3="http://smubank.smu.edu.sg/schemas/serviceResponseHeader" xmlns:pfx5="http://smubank.smu.edu.sg/ACH/Payment" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx4="http://smubank.smu.edu.sg/ACH/Bank" xmlns:pfx3="http://smubank.smu.edu.sg/ACH/BankParameters" xmlns:pfx2="http://smubank.smu.edu.sg/Bank/Parameters" xmlns:pfx6="http://smubank.smu.edu.sg/Trade/LC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <wsdl:import namespace="http://smubank.smu.edu.sg/ACH/Payment" location="/ACH_Payment.wsdl"/>
+    <wsdl:import namespace="http://smubank.smu.edu.sg/Trade/LC" location="/Trade_LC.wsdl"/>
+    <pd:name>Trade_LCStatus_Update.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType wsMsgRef="pfx6:Trade_LCStatus_Update-Input"/>
+    <pd:startX>49</pd:startX>
+    <pd:startY>153</pd:startY>
+    <pd:returnBindings>
+        <pfx6:Trade_LCStatus_Update-Output>
+            <ServiceRespHeader>
+                <ns3:GlobalErrorID>
+                    <xsl:value-of select="$Status/root/ErrorCode"/>
+                </ns3:GlobalErrorID>
+                <ns3:ErrorText>
+                    <xsl:value-of select="$Get-Error-Text/resultSet/Record[1]/errortext"/>
+                </ns3:ErrorText>
+                <ns3:ErrorDetails>
+                    <xsl:value-of select="$Status/root/ErrorDetail"/>
+                </ns3:ErrorDetails>
+            </ServiceRespHeader>
+            <Trade_LCStatus_Update-Response>
+                <ns7:status>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/Trade_LCStatus_Update-Request/ns7:status"/>
+                </ns7:status>
+            </Trade_LCStatus_Update-Response>
+        </pfx6:Trade_LCStatus_Update-Output>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType wsMsgRef="pfx6:Trade_LCStatus_Update-Output"/>
+    <pd:endX>810</pd:endX>
+    <pd:endY>157</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <Status>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ErrorCode" type="xsd:string"/>
+                        <xsd:element name="ErrorText" type="xsd:string"/>
+                        <xsd:element name="ErrorDetail" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </Status>
+        <Metadata>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ProcessName" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </Metadata>
+    </pd:processVariables>
+    <pd:targetNamespace>http://smubank.smu.edu.sg/Trade/LCStatus_Update</pd:targetNamespace>
+    <pd:activity name="SetProcessName">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>148</pd:x>
+        <pd:y>153</pd:y>
+        <config>
+            <variableName>Metadata</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ProcessName>
+                    <xsl:value-of select="&quot;Trade_LC&quot;"/>
+                </ProcessName>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogPoint4">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>221</pd:x>
+        <pd:y>62</pd:y>
+        <config>
+            <processName>/writeLog.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <ns2:InputMessage>
+                <ConsumerID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/ConsumerID"/>
+                </ConsumerID>
+                <TransactionID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/TransactionID"/>
+                </TransactionID>
+                <RequestUUID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/RequestUUID"/>
+                </RequestUUID>
+                <OperationName>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/OperationName"/>
+                </OperationName>
+                <ProcessName>
+                    <xsl:value-of select="$Metadata/root/ProcessName"/>
+                </ProcessName>
+                <LoggingPointNo>
+                    <xsl:value-of select="4"/>
+                </LoggingPointNo>
+                <ErrorMsg>
+                    <xsl:value-of select="$Status/root/ErrorDetail"/>
+                </ErrorMsg>
+            </ns2:InputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Get Error Text">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>634</pd:x>
+        <pd:y>157</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <maxRows>100</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <statement>SELECT `errortext` 
+FROM `global_errorreference` 
+WHERE `globalerrorid` = ?;</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>errorcode</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <jdbcSharedConfig>/Shared Connections/MDM.sharedjdbc</jdbcSharedConfig>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>errortext</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <errorcode>
+                    <xsl:value-of select="$Status/root/ErrorCode"/>
+                </errorcode>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogPoint5">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>720</pd:x>
+        <pd:y>59</pd:y>
+        <config>
+            <processName>/writeLog.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <ns2:InputMessage>
+                <ConsumerID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/ConsumerID"/>
+                </ConsumerID>
+                <TransactionID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/TransactionID"/>
+                </TransactionID>
+                <RequestUUID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/RequestUUID"/>
+                </RequestUUID>
+                <OperationName>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/OperationName"/>
+                </OperationName>
+                <ProcessName>
+                    <xsl:value-of select="$Metadata/root/ProcessName"/>
+                </ProcessName>
+                <LoggingPointNo>
+                    <xsl:value-of select="5"/>
+                </LoggingPointNo>
+                <ErrorMsg>
+                    <xsl:value-of select="$Status/root/ErrorDetail"/>
+                </ErrorMsg>
+            </ns2:InputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Success">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>470</pd:x>
+        <pd:y>296</pd:y>
+        <config>
+            <variableName>Status</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ErrorCode>
+                    <xsl:value-of select="'010000'"/>
+                </ErrorCode>
+                <ErrorText>
+                    <xsl:value-of select="''"/>
+                </ErrorText>
+                <ErrorDetail>
+                    <xsl:value-of select="''"/>
+                </ErrorDetail>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Error">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>471</pd:x>
+        <pd:y>157</pd:y>
+        <config>
+            <variableName>Status</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ErrorCode>
+                    <xsl:value-of select="'010009'"/>
+                </ErrorCode>
+                <ErrorText>
+                    <xsl:value-of select="''"/>
+                </ErrorText>
+                <ErrorDetail>
+                    <xsl:value-of select="'unable to create LC version'"/>
+                </ErrorDetail>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Get Current Version">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>300</pd:x>
+        <pd:y>162</pd:y>
+        <config>
+            <processName>/Trade_LC_Read.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx6:Trade_LC_Read-Input>
+                <ServiceReqHeader>
+                    <ConsumerID>
+                        <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/ConsumerID"/>
+                    </ConsumerID>
+                    <TransactionID>
+                        <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/TransactionID"/>
+                    </TransactionID>
+                    <RequestUUID>
+                        <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/RequestUUID"/>
+                    </RequestUUID>
+                    <OperationName>
+                        <xsl:value-of select="'Trade_LC_Read'"/>
+                    </OperationName>
+                    <Priority>
+                        <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/ServiceReqHeader/Priority"/>
+                    </Priority>
+                </ServiceReqHeader>
+                <Trade_LC_Read-Request>
+                    <ns7:ref_num>
+                        <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/Trade_LCStatus_Update-Request/ns7:ref_num"/>
+                    </ns7:ref_num>
+                </Trade_LC_Read-Request>
+            </pfx6:Trade_LC_Read-Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Not Found">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>465</pd:x>
+        <pd:y>54</pd:y>
+        <config>
+            <variableName>Status</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ErrorCode>
+                    <xsl:value-of select="'010010'"/>
+                </ErrorCode>
+                <ErrorText>
+                    <xsl:value-of select="''"/>
+                </ErrorText>
+                <ErrorDetail>
+                    <xsl:value-of select="'LC record not found'"/>
+                </ErrorDetail>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Update Status In New LC Version">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>300</pd:x>
+        <pd:y>302</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/Shared Connections/TF.sharedjdbc</jdbcSharedConfig>
+            <statement>INSERT INTO `lc`(`ref_num`,`creation_datetime`,`status`,`status_details`,`importer_ID`, `exporter_ID`, `importer_account_num`, `exporter_account_num`, `expiry_date`, `expiry_place`, `issue_date`, `confirmed`, `revocable`, `amount`, `currency`, 
+`applicable_rules`, `partial_shipments`, `ship_destination`, `ship_date`, `ship_period`, `goods_description`, `docs_required`, `additional_conditions`, `sender_to_receiver_info`, 
+`issuing_bank_id`, `advising_bank_id`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>ref_num</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>creation_datetime</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>status</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>status_details</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>importer_ID</parameterName>
+                    <dataType>INTEGER</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>exporter_ID</parameterName>
+                    <dataType>INTEGER</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>importer_account_num</parameterName>
+                    <dataType>INTEGER</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>exporter_account_num</parameterName>
+                    <dataType>INTEGER</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>expiry_date</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>expiry_place</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>issue_date</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>confirmed</parameterName>
+                    <dataType>BIT</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>revocable</parameterName>
+                    <dataType>BIT</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>amount</parameterName>
+                    <dataType>DECIMAL</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>currency</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>applicable_rules</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>partial_shipments</parameterName>
+                    <dataType>BIT</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ship_destination</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ship_date</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>ship_period</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>goods_description</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>docs_required</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>additional_conditions</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>sender_to_receiver_info</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>issuing_bank_id</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>advising_bank_id</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <ref_num>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/Trade_LCStatus_Update-Request/ns7:ref_num"/>
+                </ref_num>
+                <creation_datetime>
+                    <xsl:value-of select="tib:format-dateTime(&quot;yyyy-MM-dd HH:mm:ss&quot;,tib:current-dateTime-timezone(8, 0))"/>
+                </creation_datetime>
+                <status>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/Trade_LCStatus_Update-Request/ns7:status"/>
+                </status>
+                <status_details>
+                    <xsl:value-of select="$Start/pfx6:Trade_LCStatus_Update-Input/Trade_LCStatus_Update-Request/ns7:status_details"/>
+                </status_details>
+                <importer_ID>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:importer_ID"/>
+                </importer_ID>
+                <exporter_ID>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:exporter_ID"/>
+                </exporter_ID>
+                <importer_account_num>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:importer_account_num"/>
+                </importer_account_num>
+                <exporter_account_num>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:exporter_account_num"/>
+                </exporter_account_num>
+                <expiry_date>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:expiry_date"/>
+                </expiry_date>
+                <expiry_place>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:expiry_place"/>
+                </expiry_place>
+                <issue_date>
+                    <xsl:value-of select="if ($Start/pfx6:Trade_LCStatus_Update-Input/Trade_LCStatus_Update-Request/ns7:status = 'ISSUED') then tib:format-dateTime(&quot;yyyy-MM-dd&quot;,tib:current-dateTime-timezone(8, 0)) &#xA;else if ($Start/pfx6:Trade_LCStatus_Update-Input/Trade_LCStatus_Update-Request/ns7:status=&quot;PENDING&quot;) then '2099-12-31' &#xA;else if ($Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:issue_date=&quot;0000-00-00&quot;) then tib:format-dateTime(&quot;yyyy-MM-dd HH:mm:ss&quot;,tib:current-dateTime-timezone(8, 0))&#xA;else $Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:issue_date"/>
+                </issue_date>
+                <confirmed>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:confirmed"/>
+                </confirmed>
+                <revocable>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:revocable"/>
+                </revocable>
+                <amount>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:amount"/>
+                </amount>
+                <currency>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:currency"/>
+                </currency>
+                <applicable_rules>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:applicable_rules"/>
+                </applicable_rules>
+                <partial_shipments>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:partial_shipments"/>
+                </partial_shipments>
+                <ship_destination>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:ship_destination"/>
+                </ship_destination>
+                <ship_date>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:ship_date"/>
+                </ship_date>
+                <ship_period>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:ship_period"/>
+                </ship_period>
+                <goods_description>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:goods_description"/>
+                </goods_description>
+                <docs_required>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:docs_required"/>
+                </docs_required>
+                <additional_conditions>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:additional_conditions"/>
+                </additional_conditions>
+                <sender_to_receiver_info>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:sender_to_receiver_info"/>
+                </sender_to_receiver_info>
+                <issuing_bank_id>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:issuing_bank_id"/>
+                </issuing_bank_id>
+                <advising_bank_id>
+                    <xsl:value-of select="$Get-Current-Version/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:advising_bank_id"/>
+                </advising_bank_id>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>SetProcessName</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetProcessName</pd:from>
+        <pd:to>Get Current Version</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetProcessName</pd:from>
+        <pd:to>LogPoint4</pd:to>
+        <pd:xpathDescription>log is on</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_globalVariables/pfx:GlobalVariables/Logging/LogAll = "true" or $_globalVariables/pfx:GlobalVariables/Logging/Log4 = "true"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogPoint4</pd:from>
+        <pd:to>Get Current Version</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get Error Text</pd:from>
+        <pd:to>LogPoint5</pd:to>
+        <pd:xpathDescription>log is on</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_globalVariables/pfx:GlobalVariables/Logging/LogAll = "true" or $_globalVariables/pfx:GlobalVariables/Logging/Log5 = "true"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogPoint5</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Success</pd:from>
+        <pd:to>Get Error Text</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Error</pd:from>
+        <pd:to>Get Error Text</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get Error Text</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get Current Version</pd:from>
+        <pd:to>Not Found</pd:to>
+        <pd:xpathDescription>not found</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Not Found</pd:from>
+        <pd:to>Get Error Text</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get Current Version</pd:from>
+        <pd:to>Update Status In New LC Version</pd:to>
+        <pd:xpathDescription>ok</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Get-Current-Version/pfx6:Trade_LC_Read-Output/ServiceRespHeader/ns3:GlobalErrorID = '010000'</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Update Status In New LC Version</pd:from>
+        <pd:to>Success</pd:to>
+        <pd:xpathDescription>ok</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Update Status In New LC Version</pd:from>
+        <pd:to>Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get Current Version</pd:from>
+        <pd:to>Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

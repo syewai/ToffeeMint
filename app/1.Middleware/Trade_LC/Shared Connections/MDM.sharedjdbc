@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>MDM</name>
+    <resourceType>ae.shared.JDBCSharedResource</resourceType>
+    <config>
+        <driver>com.mysql.jdbc.Driver</driver>
+        <maxConnections>10</maxConnections>
+        <loginTimeout>60</loginTimeout>
+        <connectionType>JDBC</connectionType>
+        <UseSharedJndiConfig>false</UseSharedJndiConfig>
+        <location>jdbc:mysql://localhost:3306/mdm</location>
+        <user>%%SMUBank/JDBC-User%%</user>
+        <password>%%SMUBank/JDBC-Password%%</password>
+    </config>
+</BWSharedResource>

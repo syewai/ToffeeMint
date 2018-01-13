@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:pfx10="http://smubank.smu.edu.sg/ACH/Payment" xmlns:pfx="http://xmlns.example.com/1336703792640" xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx5="http://inquiry.wrapper.xface.chn.fcr.iflex.com" xmlns:pfx4="http://smubank.smu.edu.sg/logging/log" xmlns:pfx3="http://xmlns.example.com/1337597425614" xmlns:pfx2="http://xmlns.example.com/1337254132963" xmlns:pfx9="http://smubank.smu.edu.sg/MasterDataManagement/Beneficiary/Create" xmlns:pfx8="http://smubank.smu.edu.sg/Customer" xmlns:pfx7="http://smubank.smu.edu.sg/ReferenceTestService/testService" xmlns:pfx6="http://smubank.smu.edu.sg/logging">
+    <wsdl:import namespace="http://smubank.smu.edu.sg/logging"/>
+    <wsdl:import namespace="http://smubank.smu.edu.sg/logging" location="/External WSDLs/LoggingFramework v3.0.1.wsdl"/>
+    <pd:name>writeLog.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType wsMsgRef="pfx6:InputMessage"/>
+    <pd:startX>187</pd:startX>
+    <pd:startY>99</pd:startY>
+    <pd:returnBindings>
+        <pfx6:OutputMessage>
+            <Ack>
+                <xsl:value-of select="$SOAPRequestReply/LoggingLogDataAddResponse/Ack"/>
+            </Ack>
+        </pfx6:OutputMessage>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType wsMsgRef="pfx6:OutputMessage"/>
+    <pd:endX>790</pd:endX>
+    <pd:endY>100</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1336448616931</pd:targetNamespace>
+    <pd:activity name="SOAPRequestReply">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>468</pd:x>
+        <pd:y>101</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <soapAttachmentStyle>SwA</soapAttachmentStyle>
+            <service>pfx6:LoggingFrameworkService</service>
+            <servicePort>LoggingFrameworkJMSEndpoint</servicePort>
+            <operation>LoggingLogDataAdd</operation>
+            <soapAction>/LoggingFrameworkService.serviceagent/LoggingFrameworkJMSEndpoint/LoggingLogDataAdd</soapAction>
+            <sharedChannels>
+                <jmsChannel>
+                    <NamingURL>tibjmsnaming://localhost:5678</NamingURL>
+                    <NamingInitialContextFactory>com.tibco.tibjms.naming.TibjmsInitialContextFactory</NamingInitialContextFactory>
+                    <NamingPrincipal>admin</NamingPrincipal>
+                    <NamingCredential/>
+                    <ConnectionFactory>SMUBankQueueConnectionFactory</ConnectionFactory>
+                    <JMSTo>log.dump</JMSTo>
+                    <JMSMessageType>Text</JMSMessageType>
+                    <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                    <JMSPriority>4</JMSPriority>
+                    <JMSTimeToLive>0</JMSTimeToLive>
+                    <JMSUserName>admin</JMSUserName>
+                    <JMSPassword/>
+                    <NamingProperties/>
+                    <shareJms>false</shareJms>
+                    <JMSNamingValidateSecurityContext>true</JMSNamingValidateSecurityContext>
+                </jmsChannel>
+            </sharedChannels>
+            <ConnectionReference>/Shared Connections/JMS Connection.sharedjmscon</ConnectionReference>
+            <timeoutType>Seconds</timeoutType>
+        </config>
+        <pd:inputBindings>
+            <LoggingLogDataAdd>
+                <ConsumerID>
+                    <xsl:value-of select="$Start/pfx6:InputMessage/ConsumerID"/>
+                </ConsumerID>
+                <TransactionID>
+                    <xsl:value-of select="$Start/pfx6:InputMessage/TransactionID"/>
+                </TransactionID>
+                <RequestUUID>
+                    <xsl:value-of select="$Start/pfx6:InputMessage/RequestUUID"/>
+                </RequestUUID>
+                <OperationName>
+                    <xsl:value-of select="$Start/pfx6:InputMessage/OperationName"/>
+                </OperationName>
+                <ProcessName>
+                    <xsl:value-of select="$Start/pfx6:InputMessage/ProcessName"/>
+                </ProcessName>
+                <LoggingPointNo>
+                    <xsl:value-of select="$Start/pfx6:InputMessage/LoggingPointNo"/>
+                </LoggingPointNo>
+                <ErrorMsg>
+                    <xsl:value-of select="$Start/pfx6:InputMessage/ErrorMsg"/>
+                </ErrorMsg>
+            </LoggingLogDataAdd>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>SOAPRequestReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SOAPRequestReply</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://smubank.smu.edu.sg/schemas/serviceRequestMessage/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlPfx="http://smubank.smu.edu.sg/Product/Parameters_Read" xmlns:ns12="http://www.tibco.com/namespaces/tnt/plugins/json" xmlns:ns5="http://smubank.smu.edu.sg/schemas/BankParameters" xmlns:ns6="http://smubank.smu.edu.sg/schemas/ACH/BankParameters" xmlns:ns7="http://smubank.smu.edu.sg/schemas/TF/LC" xmlns:pfx="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns8="http://www.tibco.com/pe/EngineTypes" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns2="http://smubank.smu.edu.sg/logging" xmlns:ns1="http://smubank.smu.edu.sg/schemas/ACH/PaymentParameters" xmlns:ns4="http://smubank.smu.edu.sg/schemas/ProductParameters" xmlns:ns3="http://smubank.smu.edu.sg/schemas/serviceResponseHeader" xmlns:pfx5="http://smubank.smu.edu.sg/ACH/Payment" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:pfx4="http://smubank.smu.edu.sg/ACH/Bank" xmlns:pfx3="http://smubank.smu.edu.sg/ACH/BankParameters" xmlns:pfx2="http://smubank.smu.edu.sg/Bank/Parameters" xmlns:pfx6="http://smubank.smu.edu.sg/Trade/LC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:import namespace="http://smubank.smu.edu.sg/schemas/TF/LC" schemaLocation="/Schemas/LetterOfCredit.xsd"/>
+    <wsdl:import namespace="http://smubank.smu.edu.sg/ACH/Payment" location="/ACH_Payment.wsdl"/>
+    <wsdl:import namespace="http://smubank.smu.edu.sg/Trade/LC" location="/Trade_LC.wsdl"/>
+    <pd:name>LC_Amendments_Update_BC.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType wsMsgRef="pfx6:Trade_Amendments_Update-Input"/>
+    <pd:startX>50</pd:startX>
+    <pd:startY>160</pd:startY>
+    <pd:returnBindings>
+        <pfx6:Trade_Amendments_Update-Output>
+            <ServiceRespHeader>
+                <ns3:GlobalErrorID>
+                    <xsl:value-of select="$Status/root/ErrorCode"/>
+                </ns3:GlobalErrorID>
+                <ns3:ErrorText>
+                    <xsl:value-of select="$Status/root/ErrorText"/>
+                </ns3:ErrorText>
+                <ns3:ErrorDetails>
+                    <xsl:value-of select="$Status/root/ErrorDetail"/>
+                </ns3:ErrorDetails>
+            </ServiceRespHeader>
+            <Trade_BOL_Read-Request>
+                <ns7:ref_num>
+                    <xsl:value-of select="$Read-LC-From-Database/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record/ns7:ref_num"/>
+                </ns7:ref_num>
+                <ns7:status>
+                    <xsl:value-of select="$Invoke-REST-API/ns12:RESTOutput/msg"/>
+                </ns7:status>
+            </Trade_BOL_Read-Request>
+        </pfx6:Trade_Amendments_Update-Output>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType wsMsgRef="pfx6:Trade_Amendments_Update-Output"/>
+    <pd:endX>1113</pd:endX>
+    <pd:endY>150</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <Status>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ErrorCode" type="xsd:string"/>
+                        <xsd:element name="ErrorText" type="xsd:string"/>
+                        <xsd:element name="ErrorDetail" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </Status>
+        <Metadata>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ProcessName" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </Metadata>
+    </pd:processVariables>
+    <pd:targetNamespace>http://smubank.smu.edu.sg/Trade/LC_Amendments_Update_BC</pd:targetNamespace>
+    <pd:activity name="SetProcessName">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>154</pd:x>
+        <pd:y>161</pd:y>
+        <config>
+            <variableName>Metadata</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ProcessName>
+                    <xsl:value-of select="$_processContext/ns8:ProcessContext/ProjectName"/>
+                </ProcessName>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogPoint4">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>283</pd:x>
+        <pd:y>63</pd:y>
+        <config>
+            <processName>/writeLog.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <ns2:InputMessage>
+                <ConsumerID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Update-Input/ServiceReqHeader/ConsumerID"/>
+                </ConsumerID>
+                <TransactionID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Update-Input/ServiceReqHeader/TransactionID"/>
+                </TransactionID>
+                <RequestUUID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Update-Input/ServiceReqHeader/RequestUUID"/>
+                </RequestUUID>
+                <OperationName>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Update-Input/ServiceReqHeader/OperationName"/>
+                </OperationName>
+                <ProcessName>
+                    <xsl:value-of select="$Metadata/root/ProcessName"/>
+                </ProcessName>
+                <LoggingPointNo>
+                    <xsl:value-of select="4"/>
+                </LoggingPointNo>
+                <ErrorMsg>
+                    <xsl:value-of select="$Status/root/ErrorDetail"/>
+                </ErrorMsg>
+            </ns2:InputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Get Error Text">
+        <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+        <pd:x>914</pd:x>
+        <pd:y>152</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <maxRows>100</maxRows>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <statement>SELECT `errortext` 
+FROM `global_errorreference` 
+WHERE `globalerrorid` = ?;</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>errorcode</parameterName>
+                    <dataType>VARCHAR</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+            <jdbcSharedConfig>/Shared Connections/MDM.sharedjdbc</jdbcSharedConfig>
+            <oraObjects/>
+            <oraTables/>
+            <QueryOutputCachedSchemaColumns>errortext</QueryOutputCachedSchemaColumns>
+            <QueryOutputCachedSchemaDataTypes>12</QueryOutputCachedSchemaDataTypes>
+            <QueryOutputCachedSchemaDataTypesName>VARCHAR</QueryOutputCachedSchemaDataTypesName>
+            <QueryOutputCachedSchemaStatus>RequiredElement</QueryOutputCachedSchemaStatus>
+        </config>
+        <pd:inputBindings>
+            <jdbcQueryActivityInput>
+                <errorcode>
+                    <xsl:value-of select="$Status/root/ErrorCode"/>
+                </errorcode>
+            </jdbcQueryActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LogPoint5">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>1016</pd:x>
+        <pd:y>51</pd:y>
+        <config>
+            <processName>/writeLog.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <ns2:InputMessage>
+                <ConsumerID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Update-Input/ServiceReqHeader/ConsumerID"/>
+                </ConsumerID>
+                <TransactionID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Update-Input/ServiceReqHeader/TransactionID"/>
+                </TransactionID>
+                <RequestUUID>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Update-Input/ServiceReqHeader/RequestUUID"/>
+                </RequestUUID>
+                <OperationName>
+                    <xsl:value-of select="$Start/pfx6:Trade_LC_Update-Input/ServiceReqHeader/OperationName"/>
+                </OperationName>
+                <ProcessName>
+                    <xsl:value-of select="$Metadata/root/ProcessName"/>
+                </ProcessName>
+                <LoggingPointNo>
+                    <xsl:value-of select="5"/>
+                </LoggingPointNo>
+                <ErrorMsg>
+                    <xsl:value-of select="$Status/root/ErrorDetail"/>
+                </ErrorMsg>
+            </ns2:InputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Success">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>781</pd:x>
+        <pd:y>252</pd:y>
+        <config>
+            <variableName>Status</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ErrorCode>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="'010000'"/>
+                </ErrorCode>
+                <ErrorText>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="''"/>
+                </ErrorText>
+                <ErrorDetail>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="''"/>
+                </ErrorDetail>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Read LC From Database">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>422</pd:x>
+        <pd:y>173</pd:y>
+        <config>
+            <processName>/Trade_LC_Read.process</processName>
+        </config>
+        <pd:inputBindings>
+            <pfx6:Trade_LC_Read-Input>
+                <xsl:copy-of select="$Start/pfx6:Trade_Amendments_Update-Input/ServiceReqHeader"/>
+                <Trade_LC_Read-Request>
+                    <ns7:ref_num>
+                        <xsl:value-of select="$Start/pfx6:Trade_Amendments_Update-Input/Trade_Amendments_Update-Request/ns7:ref_num"/>
+                    </ns7:ref_num>
+                </Trade_LC_Read-Request>
+            </pfx6:Trade_LC_Read-Input>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="DB Read Error">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>630</pd:x>
+        <pd:y>164</pd:y>
+        <config>
+            <variableName>Status</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ErrorCode>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="$Read-LC-From-Database/pfx6:Trade_LC_Read-Output/ServiceRespHeader/ns3:GlobalErrorID"/>
+                </ErrorCode>
+                <ErrorText>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="$Read-LC-From-Database/pfx6:Trade_LC_Read-Output/ServiceRespHeader/ns3:ErrorText"/>
+                </ErrorText>
+                <ErrorDetail>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="$Read-LC-From-Database/pfx6:Trade_LC_Read-Output/ServiceRespHeader/ns3:ErrorDetails"/>
+                </ErrorDetail>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Render JSON">
+        <pd:type>com.tibco.plugin.json.activities.JSONRenderActivity</pd:type>
+        <pd:resourceType>ae.activities.JSONRenderActivity</pd:resourceType>
+        <pd:x>423</pd:x>
+        <pd:y>376</pd:y>
+        <config>
+            <SchemaType>xsdType</SchemaType>
+            <BadgerfishCheck>false</BadgerfishCheck>
+            <ActivityInputEditor>
+                <xsd:element name="Trade_LC_Create-Request" type="ns7:Trade_LC_Create-Request"/>
+            </ActivityInputEditor>
+        </config>
+        <pd:inputBindings>
+            <ns12:ActivityInputClass>
+                <Trade_LC_Create-Request>
+                    <xsl:copy-of select="$Read-LC-From-Database/pfx6:Trade_LC_Read-Output/Trade_LC_Read-Response/ns7:LC_record"/>
+                </Trade_LC_Create-Request>
+            </ns12:ActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Blockchain Error">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>915</pd:x>
+        <pd:y>376</pd:y>
+        <config>
+            <variableName>Status</variableName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ErrorCode>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="'010021'"/>
+                </ErrorCode>
+                <ErrorText>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="&quot;&quot;"/>
+                </ErrorText>
+                <ErrorDetail>
+                    <xsl:value-of xmlns:xsl="http://www.w3.org/1999/XSL/Transform" select="&quot;blockchain connection error&quot;"/>
+                </ErrorDetail>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Invoke REST API">
+        <pd:type>com.tibco.plugin.json.activities.RestActivity</pd:type>
+        <pd:resourceType>ae.activities.RestActivity</pd:resourceType>
+        <pd:x>683</pd:x>
+        <pd:y>378</pd:y>
+        <config>
+            <restMethodUI>GET</restMethodUI>
+            <restResponseType>JSON</restResponseType>
+            <authChoiceUI>No Authentication</authChoiceUI>
+            <restURI>http://localhost:9001/lc/amendLC</restURI>
+            <trustAllHostUI>true</trustAllHostUI>
+            <restInputReferNode>
+                <xsd:element name="Parameters">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Query" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="refNum" type="xsd:string"/>
+                                        <xsd:element name="amendments" type="xsd:string"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Header" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="Body" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="Form" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="param" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Text" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:string" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Binary" minOccurs="0">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" type="xsd:base64Binary" minOccurs="0"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="Multipart" minOccurs="0" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="filename" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content-type" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content-id" type="xsd:string" minOccurs="0"/>
+                                                    <xsd:element name="content" minOccurs="0">
+                                                        <xsd:complexType>
+                                                            <xsd:choice>
+                                                                <xsd:element name="binary" type="xsd:base64Binary"/>
+                                                                <xsd:element name="text" type="xsd:string"/>
+                                                                <xsd:element name="fileName" type="xsd:string"/>
+                                                            </xsd:choice>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restInputReferNode>
+            <restOutputReferNode>
+                <xsd:element name="header">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Server" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Location" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Allow" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Date" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Set-Cookie" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pragma" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Length" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Encoding" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Range" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Last-Modifie" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </restOutputReferNode>
+        </config>
+        <pd:inputBindings>
+            <ns12:ActivityInput>
+                <ns12:Parameters>
+                    <Query>
+                        <refNum>
+                            <xsl:value-of select="$Start/pfx6:Trade_LC_Update-Input/Trade_LC_Update-Request/ns7:LC_record/ns7:ref_num"/>
+                        </refNum>
+                        <amendments>
+                            <xsl:value-of select="$Render-JSON/ns12:ActivityOutputClass/jsonString"/>
+                        </amendments>
+                    </Query>
+                </ns12:Parameters>
+            </ns12:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>SetProcessName</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetProcessName</pd:from>
+        <pd:to>LogPoint4</pd:to>
+        <pd:xpathDescription>log is on</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_globalVariables/pfx:GlobalVariables/Logging/LogAll = "true" or $_globalVariables/pfx:GlobalVariables/Logging/Log4 = "true"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get Error Text</pd:from>
+        <pd:to>LogPoint5</pd:to>
+        <pd:xpathDescription>log is on</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$_globalVariables/pfx:GlobalVariables/Logging/LogAll = "true" or $_globalVariables/pfx:GlobalVariables/Logging/Log5 = "true"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogPoint5</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get Error Text</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Success</pd:from>
+        <pd:to>Get Error Text</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Read LC From Database</pd:from>
+        <pd:to>Render JSON</pd:to>
+        <pd:xpathDescription>ok</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Read-LC-From-Database/pfx6:Trade_LC_Read-Output/ServiceRespHeader/ns3:GlobalErrorID = "010000"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>DB Read Error</pd:from>
+        <pd:to>Get Error Text</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Blockchain Error</pd:from>
+        <pd:to>Get Error Text</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Read LC From Database</pd:from>
+        <pd:to>DB Read Error</pd:to>
+        <pd:xpathDescription>DB error</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LogPoint4</pd:from>
+        <pd:to>Read LC From Database</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetProcessName</pd:from>
+        <pd:to>Read LC From Database</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Render JSON</pd:from>
+        <pd:to>Invoke REST API</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Invoke REST API</pd:from>
+        <pd:to>Success</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Invoke REST API</pd:from>
+        <pd:to>Blockchain Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
