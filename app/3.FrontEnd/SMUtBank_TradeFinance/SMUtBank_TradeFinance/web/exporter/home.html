@@ -2,87 +2,41 @@
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 <script src="../assets/js/retrieveLatestLC.js"></script>
 <script type="text/javascript">
-    retrieveLcs(5);
+    retrieveLcs(6);
 </script>
+<script>
+    $('#welcomeDetails').load("../welcomeDetails.html");
+</script>
+<!--Retreive latest 5 LCs-->
 <section class="vbox">
     <section class="scrollable">
-        <div class="wrapper-lg">
-            <h2 class="m-b-xs font-bold m-t-none">Welcome back, Sean</h2>
-            <h4 class="text-primary font-bold">Exporter</h4>
-        </div>
 
+        <div class="wrapper-lg" id="welcomeDetails">
+
+        </div>
         <!--LC Table-->
         <section class="panel panel-default">
-            <header class="panel-heading wrapper-lg">
-                <h4 class="font-bold">Letters of Credit</h4>
+            <header class="panel-heading">
+                <div class="bs-example form-horizontal">
+                    <div class="form-group lc-form">
+                        <h4 class="col-sm-12 font-bold">Letters of Credit</h4>
+                </div></div>
             </header>
 
-            <div class="table-responsive wrapper-lg">
+
+
+            <div class="table-responsive">
                 <table class="table table-striped b-t b-light" id="lcTable">
                     <thead>
                         <tr>
                             <th>Reference Number</th>
-                            <th>Advising Bank</th>
+                            <th>Exporter</th>
                             <th>Date Submitted</th>
                             <th>Status</th>
                             <th></th>
-
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-
-                            <td><p id="0"></p></td>
-                            <td>UOB</td>
-                            <td>Nov 8, 2017</td>
-                            <td class="text-primary font-bold">
-                                </i>Pending</td>
-                            <td>
-                                <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a>
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td><p id="1"></p></td>
-                            <td>UOB</td>
-                            <td>Nov 8, 2017</td>
-                            <td class="text-primary font-bold">
-                                </i>Pending</td>
-                            <td>
-                                <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a> 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><p id="2"></p></td>
-                            <td>UOB</td>
-                            <td>Nov 8, 2017</td>
-                            <td class="text-primary font-bold">
-                                </i>Pending</td>
-                            <td>
-                                <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a>                                                   
-                            </td>
-                        </tr>
-                        <tr>
-
-                            <td><p id="3"></p></td>
-                            <td>UOB</td>
-                            <td>Nov 8, 2017</td>
-                            <td class="text-primary font-bold">
-                                </i>Pending</td>
-                            <td>
-                                 <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><p id="4"></p></td>
-                            <td>UOB</td>
-                            <td>Nov 8, 2017</td>
-                            <td class="text-primary font-bold">
-                                </i>Pending</td>
-                            <td>
-                                <a id = "lcDetails" type="button"class="pages active btn btn-s-md btn-primary" >View LC</a>
-                            </td>
-                        </tr>
+                    <tbody id="latestLCs">
 
                     </tbody>
                 </table>
@@ -90,7 +44,6 @@
             <footer class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4 hidden-xs">
-
                     </div>
                     <div class="col-sm-4 text-center">
                         <a id="viewLcLog" class="pages btn btn-s-md btn-dark">View All LC</a>
@@ -98,6 +51,7 @@
                     <div class="col-sm-4 text-right text-center-xs">
 
                     </div>
+
                 </div>
             </footer>
         </section>
@@ -107,24 +61,25 @@
 </section>
 <!--End of vbox-->
 
+
 <script>
     // collapse/expand menu properly
-        /*$(".panel-heading").find("a").click(function() {
-            $(".panel-collapse").removeClass("in");
-        });*/
-        
-        $("body").on("click", ".pages", function() {
-            var title = this.id.trim();
+    /*$(".panel-heading").find("a").click(function() {
+     $(".panel-collapse").removeClass("in");
+     });*/
 
-            var pageToLoad = title + ".html";
-            var refNum = $('.refNum').text();
-            var pageRedirection = { pageToLoad: refNum }
+    $("body").on("click", ".pages", function () {
+        var title = this.id.trim();
 
-            localStorage.setItem('lists', JSON.stringify(pageRedirection)); 
-            //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html"); 
-            //localStorage.setItem('pageToLoad', pageToLoad); 
-            //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");  
-            //$("#content").load(pageToLoad);
+        var pageToLoad = title + ".html";
+        var refNum = $('.refNum').text();
+        var pageRedirection = {pageToLoad: refNum}
 
-        });
+        localStorage.setItem('lists', JSON.stringify(pageRedirection));
+        //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html"); 
+        //localStorage.setItem('pageToLoad', pageToLoad); 
+        //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");  
+        //$("#content").load(pageToLoad);
+
+    });
 </script>

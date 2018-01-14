@@ -25,8 +25,8 @@
 
         <script>
             function capitalizeFirstLetter(word) {
-        return word.charAt(0).toUpperCase() + word.slice(1)
-    };
+            return word.charAt(0).toUpperCase() + word.slice(1)
+        };
             $(function () {
                 $("#header").load("header.html");
                 $("#nav-bar").load("navBar.html");
@@ -101,9 +101,43 @@
                         // console.log(JSON.stringify(responseObj.Content.ServiceResponse.LC_Details.LC_record.LC_ID) );
                         if (true) {
                             fields = responseObj.Content.ServiceResponse.LC_Details.LC_record;
+                            
+                            var headerVariables = ["ref_num","status","creation_datetime"];
+                            var refNum = fields[headerVariables[0]];
+                            var status = fields[headerVariables[1]];
+                            var dateSubmitted = fields[headerVariables[2]];
+                            $('#refNum').html(refNum);
+                            $('#status').html(status);
+                            $('#dateSubmitted').html(dateSubmitted);
+                            
                             original = fields;
                             for (var i in original) {
-                                var lcDetailsHTML = "<label class='col-sm-2 control-label'>"+i+"</label>";
+                                
+                                var isCounted = false;
+                                for (var j in headerVariables){
+
+                                    if (i === headerVariables[j]){
+                                        isCounted = true;
+                                    }
+                                }
+                                if(!isCounted){
+                                    var lcDetailsHTML = "<label class='col-lg-2 control-label lc-label'>" + i + "</label>";
+                                    lcDetailsHTML += "<div class='col-lg-10 font-bold'><p id='" + i + "'></p>";
+                                    lcDetailsHTML += "</div><input id='input' type='text' name ="+i+" data-required='true' placeholder='"+original[i]+"'>";
+                                    //compare 2 json objects, if any of the values is different, highlight the different values 
+                                    if (amendments !== original.i) {
+                                 //var getInputElement = document.getElementsByClassName("input");
+                                 //var color = $(getInputElement).css( "background-color", "yellow" ); 
+                                        $("input[type='text']").css( "background-color", "#fb6b5b" );
+
+                                    } 
+                                    $("label").css( "vertical-align", "center" );
+
+                                    $("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
+                                    $("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");
+
+                                }
+                                /*var lcDetailsHTML = "<label class='col-sm-2 control-label'>"+i+"</label>";
                                  lcDetailsHTML += "<div class='col-sm-10'><p id='"+i+"'></p>";
                                  lcDetailsHTML += "</div><input id='input' type='text' name ="+i+" data-required='true' placeholder='"+original[i]+"'>";
                                  //compare 2 json objects, if any of the values is different, highlight the different values 
@@ -115,7 +149,7 @@
                                  } 
                                  $("label").css( "vertical-align", "center" );
                                  $( "#lcDetails" ).append( "<div class='form-group'>"+lcDetailsHTML+"</div>" ); 
-                                 $( "#lcDetails" ).append( "<div class='line line-dashed line-lg pull-in'></div>" );
+                                 $( "#lcDetails" ).append( "<div class='line line-dashed line-lg pull-in'></div>" );*/
 
 
                             }
@@ -199,6 +233,22 @@
 
                                 <section class="panel panel-default">
                                     <header class="panel-heading font-bold">
+                                        <div class="bs-example form-horizontal">
+                                            <div class="form-group lc-form">
+                                                    <label class="col-sm-2 control-label lc-label">Ref Num </label>
+                                                    <div class="col-sm-2 lc-value">
+                                                        <p id="refNum"></p>
+                                                    </div>
+                                                     <label class="col-sm-2 control-label">Status </label>
+                                                    <div class="col-sm-2 lc-value">
+                                                        <p id="status"></p>
+                                                    </div>
+                                                      <label class="col-sm-2 control-label">Date Submitted</label>
+                                                    <div class="col-sm-2 lc-value">
+                                                        <p id="dateSubmitted" class="lc-value"></p>
+                                                    </div>
+                                            </div>
+                                        </div>
 
                                     </header>
                                     <div class="panel-body"> 
