@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<script src="../assets/js/retrieveRefNumList.js"></script>
+
+
 <section class="vbox">
     <section class="scrollable">
 
@@ -120,9 +124,44 @@
     <!--End of Scrollable-->
 </section>
 <!--End of vbox-->
-<script>
-$(document).ready(function() {
+<script type="text/javascript">
+
+/*$(document).ready(function() {*/
             $("#create_button").click(function() {
+                var refNum = 0000000000;
+                var refNumList = [];
+                console.log(sessionStorage.getItem('refNumListOnBC'));
+                if(sessionStorage.getItem('refNumListOnBC') !== null){
+                    var refNumString = sessionStorage.getItem('refNumListOnBC');
+                    var refNumJson = $.parseJSON(refNumString);
+                    var latestRefNum = refNumJson[0];
+                    refNum = parseInt(latestRefNum);
+                    for (var x in refNumJson){
+                        refNumList.push(refNumJson[x]);
+                     }
+                    
+                } 
+                console.log("push");
+                console.log(refNumList);
+               /* var refNum = 0000000000;
+                returnRefNumList();
+                //check latest lc ref num on bc
+                var refNumList = sessionStorage.getItem('refNumList');
+                var refNumJson = $.parseJSON(refNumList);
+                var latestRefNum = refNumJson[0];
+                // if there is refnum
+                // get latest refNum, increase refNum by 1
+                if (latestRefNum !== ""){
+                    refNum = parseInt(latestRefNum);  
+                }*/
+               
+                refNum += 1;
+                //convert refnum to a string, add extra 0
+                var refString = String(refNum);
+                while (refString.length < 8) { 
+                    refString = "0"+refString;                      
+                }
+                console.log(refString);
                 var importerAccount = "2365";
                 var exporterAccount = document.getElementById("exporterId").value;
                 var expiryDate = document.getElementById("expiryDate").value;
@@ -142,8 +181,7 @@ $(document).ready(function() {
                 var additionalConditions = document.getElementById("additonalConditions").value;
                 var senderToReceiverInfo = "none";
                 var mode = "BC";
-                console.log(exporterAccount);
-
+                
                 var headerObj = {
                     Header: {
                         serviceName: "applyLetterOfCredit",
@@ -184,7 +222,7 @@ $(document).ready(function() {
 
                 //var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
                 // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
-                var refNum = "00001";
+                
                 var apiURL = "http://localhost:9001/lc/createContract"
                     // console.log("heeey");
                 var xmlHttp = new XMLHttpRequest();              //setup new http req
@@ -192,8 +230,9 @@ $(document).ready(function() {
                     alert("Browser does not support HTTP request."); //check for browser thingy
                 }
                 //var refNum = "";
-                //xmlHttp.open("POST", apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF", true);
-                xmlHttp.open("GET", apiURL+"?refNum="+refNum+"&contract="+content, true);
+//                xmlHttp.open("POST", apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF", true);
+                
+                xmlHttp.open("GET", apiURL+"?refNum="+refString+"&contract="+content, true);
                 xmlHttp.timeout = 5000;
 
                 // setup http event handlers
@@ -204,8 +243,14 @@ $(document).ready(function() {
                         // serviceRespHeader = responseObj.Content.ServiceResponse.ServiceRespHeader;
                         // globalErrorID = serviceRespHeader.GlobalErrorID;
                         //refNum = responseObj.Content.ServiceResponse["LC_Details"].ref_num;
-                        console.log(refNum);
-                        window.location = "/SMUtBank_TradeFinance/importer/importer.html";
+                        //console.log(refNum);
+                        //var refNumListOnBc = [];
+                        
+                        refNumList.unshift(refString);
+                        console.log("unshift");
+                        console.log(refNumList);
+                        sessionStorage.setItem('refNumListOnBC', JSON.stringify(refNumList));
+                        window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
                         
                         // callback();
                     }
@@ -218,7 +263,7 @@ $(document).ready(function() {
                 xmlHttp.send();
 
             });
-        });
+        /*});*/
 
 
 </script>
