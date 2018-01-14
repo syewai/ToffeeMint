@@ -1,2 +1,2 @@
 #!/bin/bash
-testrpc -l 100000000000
+ganache-cli -l 100000000000

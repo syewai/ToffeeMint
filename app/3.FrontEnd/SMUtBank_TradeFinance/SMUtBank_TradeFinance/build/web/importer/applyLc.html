@@ -20,6 +20,7 @@
                             <div class="form-group">
 
                                 <div class="">
+                                    <!--get exporter id, account no and name from alan's database-->
                                     <select id="exporterId" name="exporterId" id="exporterId" class="form-control m-b ">
                                         <option value="">--Please select an exporter--</option>
                                         <option value="1738">ToffeeMint1</option>
@@ -120,150 +121,104 @@
 </section>
 <!--End of vbox-->
 <script>
-$(document).ready(function () {
-    //create contract
-    $("#create_button").click(function (event) {
-        var importerAccount = "2365";
-        var exporterAccount = document.getElementById("exporterId").value;
-        var expiryDate = document.getElementById("expiryDate").value;
-        var confirmed = "false";
-        var revocable = "false";
-        var availableBy = "TERM";
-        var termDays = "90";
-        var amount = document.getElementById("amount").value;
-        var currency = "SGD";
-        var applicableRules = "none";
-        var partialShipments = "false";
-        var shipDestination = "London";
-        var shipDate = "2017-12-12";
-        var shipPeriod = "90 Days";
-        var goodsDescription = document.getElementById("goodsDesc").value;
-        var docsRequired = "none";
-        var additionalConditions = document.getElementById("additonalConditions").value;
-        var senderToReceiverInfo = "none";
-        var mode = "BC";
-        console.log(exporterAccount);
-   
-        
-        var contractObj = {
-            Contract : {
-                Header: {
-                    /*serviceName: "applyLetterOfCredit",
-                    userID: "kinetic1",
-                    PIN: "123456",
-                    OTP: "999999"*/
-                    ServiceName:"CreateContract"
-                },
-                Content: {
-                    importerAccount: importerAccount,
-                    exporterAccount: exporterAccount,
-                    expiryDate: expiryDate,
-                    confirmed: confirmed,
-                    revocable: revocable,
-                    availableBy: availableBy,
-                    termDays: termDays,
-                    amount: amount,
-                    currency: currency,
-                    applicableRules: applicableRules,
-                    partialShipments: partialShipments,
-                    shipDestination: shipDestination,
-                    shipDate: shipDate,
-                    shipPeriod: shipPeriod,
-                    goodsDescription: goodsDescription,
-                    docsRequired: docsRequired,
-                    additionalConditions: additionalConditions,
-                    senderToReceiverInfo: senderToReceiverInfo,
-                    mode: mode
-                } 
-            }
-        };
-        var contractJSON = JSON.stringify(contractObj);
-        //var content = JSON.stringify("{'Contract' :"+contractObj+"}");
-        //var content = JSON.stringify(contentObj);
-        // console.log(content);                             
+$(document).ready(function() {
+            $("#create_button").click(function() {
+                var importerAccount = "2365";
+                var exporterAccount = document.getElementById("exporterId").value;
+                var expiryDate = document.getElementById("expiryDate").value;
+                var confirmed = "false";
+                var revocable = "false";
+                var availableBy = "TERM";
+                var termDays = "90";
+                var amount = document.getElementById("amount").value;
+                var currency = "SGD";
+                var applicableRules = "none";
+                var partialShipments = "false";
+                var shipDestination = "London";
+                var shipDate = "2017-12-12";
+                var shipPeriod = "90 Days";
+                var goodsDescription = document.getElementById("goodsDesc").value;
+                var docsRequired = "none" ;
+                var additionalConditions = document.getElementById("additonalConditions").value;
+                var senderToReceiverInfo = "none";
+                var mode = "BC";
+                console.log(exporterAccount);
 
-        //var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
-        // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
-        //
-        //
-//Method 1 - Original Method by using Javascript --> Still facing Cross Orgin Support Issue (localhost:8084  and localhost:9001)
-        var apiURL = 'localhost:9001/lc/createContract';
-        
-        // console.log("heeey");
-        var xmlHttp = new XMLHttpRequest();              //setup new http req
-        if (xmlHttp === null) {
-            alert("Browser does not support HTTP request."); //check for browser thingy
-        }
-        //var refNum = "";
-        var refNum = "0002";
-        //xmlHttp.open("POST", apiURL + "?Header=" + header + "&Content=" + content + "&ConsumerID=TF", true);
-        xmlHttp.open("POST", apiURL + "?refNum="+refNum+"&contract="+contractJSON, true);
-        xmlHttp.timeout = 5000;
+                var headerObj = {
+                    Header: {
+                        serviceName: "applyLetterOfCredit",
+                        userID: "kinetic1",
+                        PIN: "123456",
+                        /*userID: "toffeemint",
+                        PIN: "toffeemint123",*/
+                        OTP: "999999"
+                    }
+                };
+                var header = JSON.stringify(headerObj);
 
-        // setup http event handlers
-        xmlHttp.onreadystatechange = function () {
-            if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                // console.log(xmlHttp.responseText);
-                responseObj = JSON.parse(xmlHttp.responseText);
-                // serviceRespHeader = responseObj.Content.ServiceResponse.ServiceRespHeader;
-                // globalErrorID = serviceRespHeader.GlobalErrorID;
-                //refNum = responseObj.Content.ServiceResponse["LC_Details"].ref_num;
-                console.log(refNum);
-                window.location = "/SMUtBank_TradeFinance/importer/importer.html";
+                var contentObj = {
+                    Content: {
+                        importerAccount: importerAccount, 
+                        exporterAccount: exporterAccount,
+                        expiryDate: expiryDate,
+                        confirmed: confirmed,
+                        revocable: revocable,
+                        availableBy: availableBy,
+                        termDays: termDays,
+                        amount: amount,
+                        currency: currency,
+                        applicableRules: applicableRules,
+                        partialShipments: partialShipments,
+                        shipDestination: shipDestination,
+                        shipDate: shipDate,
+                        shipPeriod: shipPeriod,
+                        goodsDescription: goodsDescription,
+                        docsRequired: docsRequired,
+                        additionalConditions: additionalConditions,
+                        senderToReceiverInfo: senderToReceiverInfo,
+                        mode: mode
+                    }
+                };
+                var content = JSON.stringify(contentObj);   
+                // console.log(content);                             
 
-                // callback();
-            }
-        };
-        xmlHttp.ontimeout = function (e) {
-            alert("Timeout retrieving document type list.");
-            callback();
-        };
-
-        xmlHttp.send();
-        
-//Method 2 - Call CORS support to resolve cross origin issue
-//
- // var refNum = "0002";
- //var contract = JSON.stringify("{" + header + "," + content + "}");
- //
-// 2.1   jQuery cross domain ajax --> not working
-    /*$.post("localhost:9001/lc/createContract?refNum="+refNum+"&contract="+contract).done(function (data) {
-        console.log(data);
-    });*/
-
-
-        
-//  2.2 xhr request --> not working
-    /*
-        var url = 'localhost:9001/lc/createContract?refNum='+refNum+'&contract='+contract;
-        var xhr = createCORSRequest('POST', url);
-
-        // Create the XHR object
-        function createCORSRequest(method, url) {
-                var xhr = new XMLHttpRequest();
-                if ("withCredentials" in xhr) {
-                        xhr.open('POST', url, true);
-                } else if (typeof XDomainRequest !== "undefined") {
-        // XDomainRequest for IE
-                        xhr = new XDomainRequest();
-                        xhr.open('GET', url);
-                } else {
-        // CORS not supported
-                        xhr = null;
-                        document.getElementById("txtHint").innerHTML = "CORS not supported.";
+                //var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
+                // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
+                var refNum = "00001";
+                var apiURL = "http://localhost:9001/lc/createContract"
+                    // console.log("heeey");
+                var xmlHttp = new XMLHttpRequest();              //setup new http req
+                if (xmlHttp === null){
+                    alert("Browser does not support HTTP request."); //check for browser thingy
                 }
-          return xhr;
-        }
+                //var refNum = "";
+                //xmlHttp.open("POST", apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF", true);
+                xmlHttp.open("GET", apiURL+"?refNum="+refNum+"&contract="+content, true);
+                xmlHttp.timeout = 5000;
 
-        xhr.onload = function () {
-                console.log(xhr.responseText);
-                window.location = "/SMUtBank_TradeFinance/importer/importer.html";
-            };
-            xhr.send();
-        */
+                // setup http event handlers
+                xmlHttp.onreadystatechange = function() {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        // console.log(xmlHttp.responseText);
+                        responseObj = JSON.parse(xmlHttp.responseText);
+                        // serviceRespHeader = responseObj.Content.ServiceResponse.ServiceRespHeader;
+                        // globalErrorID = serviceRespHeader.GlobalErrorID;
+                        //refNum = responseObj.Content.ServiceResponse["LC_Details"].ref_num;
+                        console.log(refNum);
+                        window.location = "/SMUtBank_TradeFinance/importer/importer.html";
+                        
+                        // callback();
+                    }
+                };
+                xmlHttp.ontimeout = function (e) {
+                    alert ("Timeout retrieving document type list.");
+                    callback();
+                };      
 
-    });
-   });
+                xmlHttp.send();
+
+            });
+        });
 
 
 </script>

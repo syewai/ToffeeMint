@@ -2,11 +2,16 @@
 const app = require('express')();
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 9001;
+const cors = require('cors');
+
+//Use CORS for cross-origin access
+
+app.use(cors());
 
 //Import web3 & truffle libraries
 const Web3 = require('web3'),
-contract = require("truffle-contract"),
-path = require('path')
+    contract = require("truffle-contract"),
+    path = require('path')
 LetterOfCreditJSON = require(path.join(__dirname, 'build/contracts/LetterOfCredit.json'));
 
 const filePath = path.join(__dirname, 'build/contracts/LetterOfCredit.json');
@@ -25,25 +30,25 @@ const gasLimit = 100000000000;
 //Starting JSON
 app.use(bodyParser.json());
 
-app.listen(PORT, function () {
+app.listen(PORT, function() {
     console.log("app listening on port: " + PORT);
 })
 
 
 //////////////////////////////ENDPOINTS//////////////////////////////
 
-app.get('/lc/createContract/', function(req, res){
-    const lcID = req.param("refNum");    
-    const contract = req.param("contract");   
+app.get('/lc/createContract/', function(req, res) {
+    const lcID = req.param("refNum");
+    const contract = req.param("contract");
 
-    createLetterOfCredit(lcID ,contract).then(function(result) {
+    createLetterOfCredit(lcID, contract).then(function(result) {
         res.status(200).send(result);
         console.log(result);
     });
 })
 
-app.get('/lc/getContract/', function (req, res) {
-    const lcID =  req.param("refNum");  
+app.get('/lc/getContract/', function(req, res) {
+    const lcID = req.param("refNum");
 
     getLetterOfCredit(lcID).then(function(result) {
         res.status(200).send(result);
@@ -52,7 +57,7 @@ app.get('/lc/getContract/', function (req, res) {
 
 })
 
-app.get('/lc/modifyContract', function (req, res) {
+app.get('/lc/modifyContract', function(req, res) {
     const lcID = req.param("refNum");
     const contract = req.param("contract");
 
@@ -62,7 +67,7 @@ app.get('/lc/modifyContract', function (req, res) {
     });
 })
 
-app.get('/lc/getStatus', function (req, res) {
+app.get('/lc/getStatus', function(req, res) {
     const lcID = req.param("refNum");
 
     getLCStatus(lcID).then(function(result) {
@@ -71,7 +76,7 @@ app.get('/lc/getStatus', function (req, res) {
     })
 })
 
-app.get('/lc/setStatus', function (req, res) {
+app.get('/lc/setStatus', function(req, res) {
     const lcID = req.param("refNum");
     const stat = req.param("status");
 
@@ -122,7 +127,7 @@ app.get('/lc/setBOL', function(req, res) {
 app.get('/lc/amendLC', function(req, res) {
     const refNum = req.param("refNum");
     const amendments = req.param("amendments");
-    
+
     amendContract(refNum, amendments).then(function(result) {
         res.status(200).send(result);
         console.log(result);
@@ -144,42 +149,42 @@ app.get('/lc/getAmendments', function(req, res) {
 function createLetterOfCredit(refNum, contract) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
-            return instance.createLC(refNum, contract, {from: account, gas: gasLimit });
+            return instance.createLC(refNum, contract, { from: account, gas: gasLimit });
         }).then(function(result) {
             resolve(result);
         }).catch(function(error) {
             console.log("Error: " + error);
             reject(error);
-        });  
+        });
     })
-    
+
 }
 
 
 function getLetterOfCredit(refNum) {
     return new Promise(function(resolve, reject) {
-        LetterOfCredit.deployed().then(function (instance) {
+        LetterOfCredit.deployed().then(function(instance) {
             return instance.getLC.call(refNum)
-        }).then(function(result) {              
+        }).then(function(result) {
             resolve(result);
         }).catch(function(error) {
-                console.log("Error: " + error);
-                reject(error);
+            console.log("Error: " + error);
+            reject(error);
         });
-    })     
+    })
 }
 
 
 function modifyLetterOfCredit(refNum, contract) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
-            return instance.modifyLC(refNum, contract, {from: account, gas: gasLimit})
+            return instance.modifyLC(refNum, contract, { from: account, gas: gasLimit })
         }).then(function(result) {
             resolve(result);
         }).catch(function(error) {
             console.log("Error: " + error);
             reject(error);
-        });  
+        });
     })
 }
 
@@ -201,9 +206,9 @@ function getLCStatus(refNum) {
 function setLCStatus(refNum, stat) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
-            return instance.setStatus(refNum, stat, {from: account, gas: gasLimit})
+            return instance.setStatus(refNum, stat, { from: account, gas: gasLimit })
         }).then(function(result) {
-                resolve(result);
+            resolve(result);
         }).catch(function(error) {
             console.log("Error: " + error);
             reject(error);
@@ -229,7 +234,7 @@ function getBOE(refNum) {
 function setBOE(refNum, BOEHash) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
-            return instance.setBOE(refNum, BOEHash, {from: account, gas: gasLimit})
+            return instance.setBOE(refNum, BOEHash, { from: account, gas: gasLimit })
         }).then(function(result) {
             resolve(result);
         }).catch(function(error) {
@@ -256,7 +261,7 @@ function getBOL(refNum) {
 function setBOL(refNum, BOLHash) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
-            return instance.setBOL(refNum, BOLHash, {from: account, gas: gasLimit})
+            return instance.setBOL(refNum, BOLHash, { from: account, gas: gasLimit })
         }).then(function(result) {
             resolve(result);
         }).catch(function(error) {
@@ -273,7 +278,7 @@ function setBOL(refNum, BOLHash) {
 function amendContract(refNum, amendJSON) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
-            return instance.amendLC(refNum, amendJSON, {from: account, gas: gasLimit})
+            return instance.amendLC(refNum, amendJSON, { from: account, gas: gasLimit })
         }).then(function(result) {
             resolve(result);
         }).catch(function(error) {
@@ -300,7 +305,7 @@ function getAmendments(refNum) {
 //////////////EVENTS//////////////
 
 //endpoints
-app.get('/events/status', function (req, res) {
+app.get('/events/status', function(req, res) {
     const refNum = req.param("refNum");
     const stat = req.param("status");
 
@@ -310,7 +315,7 @@ app.get('/events/status', function (req, res) {
     })
 })
 
-app.get('/events/LCCreated', function (req, res) {
+app.get('/events/LCCreated', function(req, res) {
     const refNum = req.param("refNum");
 
     LCCreationListener(refNum).then(function(event) {
@@ -318,7 +323,7 @@ app.get('/events/LCCreated', function (req, res) {
     })
 })
 
-app.get('/events/LCModified', function (req, res) {
+app.get('/events/LCModified', function(req, res) {
     const refNum = req.param("refNum");
 
     LCModifyListener(refNum).then(function(event) {
@@ -326,7 +331,7 @@ app.get('/events/LCModified', function (req, res) {
     })
 })
 
-app.get('/events/documentsModified', function (req, res) {
+app.get('/events/documentsModified', function(req, res) {
     const refNum = req.param("refNum");
 
     documentsModifiedListener(refNum).then(function(event) {
@@ -334,7 +339,7 @@ app.get('/events/documentsModified', function (req, res) {
     })
 })
 
-app.get('/events/amendments', function (req, res) {
+app.get('/events/amendments', function(req, res) {
     const refNum = req.param("refNum");
 
     amendmentsMadeListener(refNum).then(function(event) {
@@ -349,16 +354,16 @@ function statusChangeListener(refNum, status) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
             var arr = [];
-            instance.StatusChanged({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
+            instance.StatusChanged({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
                 if (refNum == "" || refNum == event.args.refNum) {
                     if (status == "" || status == event.args.contractStatus) {
-                        arr.push([event.args.refNum,event.args.contractStatus]);
+                        arr.push([event.args.refNum, event.args.contractStatus]);
                     }
                 }
                 console.log(arr);
                 resolve(arr);
             })
-        }); 
+        });
     })
 }
 
@@ -366,14 +371,14 @@ function LCCreationListener(refNum) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
             var arr = [];
-            instance.LCCreated({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
-                if (refNum == "" || refNum == event.args.refNum){
-                    arr.push([event.args.refNum,event.args.contractValues]);
+            instance.LCCreated({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum) {
+                    arr.push([event.args.refNum, event.args.contractValues]);
                 }
                 console.log(arr);
                 resolve(arr);
             })
-        }); 
+        });
     })
 }
 
@@ -381,14 +386,14 @@ function LCModifyListener(refNum) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
             var arr = [];
-            instance.LCModified({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
-                if (refNum == "" || refNum == event.args.refNum){
-                    arr.push([event.args.refNum,event.args.contractValues]);
+            instance.LCModified({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum) {
+                    arr.push([event.args.refNum, event.args.contractValues]);
                 }
                 console.log(arr);
                 resolve(arr);
             })
-        }); 
+        });
     })
 }
 
@@ -396,14 +401,14 @@ function documentsModifiedListener(refNum) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
             var arr = [];
-            instance.DocumentsModified({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
-                if (refNum == "" || refNum == event.args.refNum){
-                    arr.push([event.args.refNum,event.args.contractDocuments]);
+            instance.DocumentsModified({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum) {
+                    arr.push([event.args.refNum, event.args.contractDocuments]);
                 }
                 console.log(arr);
                 resolve(arr);
             })
-        }); 
+        });
     })
 }
 
@@ -411,14 +416,13 @@ function amendmentsMadeListener(refNum) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
             var arr = [];
-            instance.AmendmentsMade({}, {fromBlock: 0, toBlock: 'latest'}).watch(function(error, event) {
-                if (refNum == "" || refNum == event.args.refNum){
-                    arr.push([event.args.refNum,event.args.amendValues]);
+            instance.AmendmentsMade({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum) {
+                    arr.push([event.args.refNum, event.args.amendValues]);
                 }
                 console.log(arr);
                 resolve(arr);
             })
-        }); 
+        });
     })
 }
-

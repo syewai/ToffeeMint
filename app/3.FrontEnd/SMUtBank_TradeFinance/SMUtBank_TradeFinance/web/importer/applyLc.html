@@ -182,16 +182,18 @@ $(document).ready(function() {
                 var content = JSON.stringify(contentObj);   
                 // console.log(content);                             
 
-                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
+                //var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
                 // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
-
+                var refNum = "00001";
+                var apiURL = "http://localhost:9001/lc/createContract"
                     // console.log("heeey");
                 var xmlHttp = new XMLHttpRequest();              //setup new http req
                 if (xmlHttp === null){
                     alert("Browser does not support HTTP request."); //check for browser thingy
                 }
-                var refNum = "";
-                xmlHttp.open("POST", apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF", true);
+                //var refNum = "";
+                //xmlHttp.open("POST", apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF", true);
+                xmlHttp.open("GET", apiURL+"?refNum="+refNum+"&contract="+content, true);
                 xmlHttp.timeout = 5000;
 
                 // setup http event handlers
@@ -201,11 +203,10 @@ $(document).ready(function() {
                         responseObj = JSON.parse(xmlHttp.responseText);
                         // serviceRespHeader = responseObj.Content.ServiceResponse.ServiceRespHeader;
                         // globalErrorID = serviceRespHeader.GlobalErrorID;
-                        refNum = responseObj.Content.ServiceResponse["LC_Details"].ref_num;
+                        //refNum = responseObj.Content.ServiceResponse["LC_Details"].ref_num;
                         console.log(refNum);
                         window.location = "/SMUtBank_TradeFinance/importer/importer.html";
                         
-            
                         // callback();
                     }
                 };
