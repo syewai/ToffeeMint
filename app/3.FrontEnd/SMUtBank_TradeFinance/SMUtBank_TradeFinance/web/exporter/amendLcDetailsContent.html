@@ -7,18 +7,18 @@
       var vars = query.split("&");
       for (var i=0;i<vars.length;i++) {
         var pair = vars[i].split("=");
-        if (pair[0] == variable) {
+        if (pair[0] === variable) {
           return pair[1];
         }
       } 
       alert('Query Variable ' + variable + ' not found');
 }
 
-    var temp = sessionStorage.getItem('refNum');
-    var viewName = $.parseJSON(temp);
+    //var temp = sessionStorage.getItem('refNum');
+    //var viewName = $.parseJSON(temp);
 
-    console.log(viewName);
-    console.log(viewName.refNum);
+    //console.log(viewName);
+    //console.log(viewName.refNum);
     var refNum = getQueryVariable("refNum");
     var LC_ID = "";
     var exporter_ID = "";
@@ -93,7 +93,7 @@
                             if(!isCounted){
                                 var lcDetailsHTML = "<label class='col-lg-2 control-label lc-label'>" + i + "</label>";
                                 lcDetailsHTML += "<div class='col-lg-10 font-bold'><p id='" + i + "'></p>";
-                                lcDetailsHTML += "</div><input id='input' type='text' name ="+i+" data-required='true' placeholder='"+fields[i]+"'>"";
+                                lcDetailsHTML += "</div><input id='input' type='text' name ="+i+" data-required='true' placeholder='"+fields[i]+"'>";
 
                                 $("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
                                 $("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");

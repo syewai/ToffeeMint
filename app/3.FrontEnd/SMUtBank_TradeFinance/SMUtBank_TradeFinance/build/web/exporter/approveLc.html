@@ -22,7 +22,7 @@
 
 
         <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-        <script src="../assets/js/getQueryVariable.js"></script>
+        <!--<script src="../assets/js/getQueryVariable.js"></script>-->
         
         <script>
             $(function () {
@@ -44,7 +44,8 @@
                     alert('Query Variable ' + variable + ' not found');
                     }*/
 
-            var refNum = getQueryVariable("refNum");
+            //var refNum = getQueryVariable("refNum");
+            var refNum = "00000001";
             var LC_ID = "";
             var exporter_ID = "";
             var exporter_account_num = "";
@@ -53,7 +54,8 @@
             var expiry_date = "";
             var additional_conditions = "";
             if (refNum !== "") {
-                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
+                //var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
+                var apiURL = 'http://localhost:9001/lc/getContract?refNum='+refNum;
                     // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
                     // var role = document.getElementByID("role").value;
 
@@ -80,8 +82,8 @@
                         alert("Browser does not support HTTP request."); //check for browser thingy
                     }
 
-                    xmlHttp.open("POST", apiURL + "?Header=" + header + "&Content=" + content + "&ConsumerID=TF", true);
-                    // xmlHttp.open("POST", testURL, true);
+                    //xmlHttp.open("POST", apiURL + "?Header=" + header + "&Content=" + content + "&ConsumerID=TF", true);
+                    xmlHttp.open("GET", apiURL, true);
                     // console.log(apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF");
                     xmlHttp.timeout = 5000;
                     // setup http event handlers
@@ -93,22 +95,24 @@
                                 //when the gateway is ready 
                                 // console.log(JSON.stringify(responseObj.Content.ServiceResponse.LC_Details.LC_record.LC_ID) );
                             if (true) {
-                                fields = responseObj.Content.ServiceResponse.LC_Details.LC_record;
-                                var headerVariables = ["ref_num", "status", "creation_datetime"];
-                                var refNum = fields[headerVariables[0]];
-                                var status = fields[headerVariables[1]];
-                                var dateSubmitted = fields[headerVariables[2]];
+                                //fields = responseObj.Content.ServiceResponse.LC_Details.LC_record;
+                                fields = responseObj.Content;
+                                console.log(responseObj);
+                                //var headerVariables = ["ref_num", "status", "creation_datetime"];
+                                //var refNum = fields[headerVariables[0]];
+                                //var status = fields[headerVariables[1]];
+                                //var dateSubmitted = fields[headerVariables[2]];
                                 $('#refNum').html(refNum);
-                                $('#status').html(status);
-                                $('#dateSubmitted').html(dateSubmitted);
+                                //$('#status').html(status);
+                                //$('#dateSubmitted').html(dateSubmitted);
                                 for (var i in fields) {
                                     var isCounted = false;
-                                    for (var j in headerVariables) {
+                                    /*for (var j in headerVariables) {
 
                                         if (i === headerVariables[j]) {
                                             isCounted = true;
                                         }
-                                    }
+                                    }*/
                                     if (!isCounted) {
                                         var lcDetailsHTML = "<label class='col-lg-2 control-label lc-label'>" + i + "</label>";
                                         lcDetailsHTML += "<div class='col-lg-10 font-bold'><p id='" + i + "'></p>";
@@ -119,25 +123,41 @@
                                 }
                                 var buttons = "<div class='form-group lc-form'>";
                                 buttons += "<div class='col-sm-2 '><button type='submit' class='btn btn-primary' id='approveButton'>Approve</button></div>";
-                                buttons += "<div class='col-sm-2 '><button type='submit' class='btn btn-primary' id='amendButton'>Request to amend</button></div>"
+                                buttons += "<div class='col-sm-2 '><button type='submit' class='btn btn-primary' id='amendButton'>Request to amend</button></div>";
                                 buttons += "</div>";
                                 $("#lcButtons").append(buttons);
                                 
                                 $("#approveButton").click(function() {
                                         //retrieve ref num;
-
+                                        
                                         //set status to "acknowledged"
-
+                                        var status = "acknowledged";
+                                        var contentObj = {
+                                            Content: {
+                                                status: status // to change to variable refNum
+                                                //mode: "BC"
+                                            }
+                                        };
+                                        var content = JSON.stringify(contentObj);
                                         //update new status to bc
+                                         $.ajax({
+                                            type: 'GET',
+                                            url: 'http://localhost:9001/lc/setStatus?refNum='+refNum+'&status='+content,
+                                            dataType: 'json',
+                                            success: function(data){
+                                                console.log(data); 
+                                                //redirect to homepage
+                                                window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
 
-                                        //redirect to homepage
-                                        window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+                                            }
 
+                                        });
+                                        
                                 });
                                 $("#amendButton").click(function() { 
                                          //retrieve ref num
                                          //redirect to amendlcdetails
-                                         sessionStorage.setItem('refNum', JSON.stringify(refNum));
+                                         //sessionStorage.setItem('refNum', JSON.stringify(refNum));
                                          window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum="+refNum);
                                 });
                                 

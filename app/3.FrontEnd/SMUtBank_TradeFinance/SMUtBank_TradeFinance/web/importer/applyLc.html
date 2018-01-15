@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-<script src="../assets/js/retrieveRefNumList.js"></script>
-
 
 <section class="vbox">
     <section class="scrollable">
@@ -101,7 +99,7 @@
                                 <input type="file" class="filestyle" data-icon="false" data-classButton="btn btn-default" data-classInput="form-control inline input-s">
                             </div>
                             <footer class="text-center bg-light lter">
-                                <button id="create_button" type="button" class="btn btn-success btn-s-xs">Submit</button>
+                                <button onclick="applyLc()" id="create_button" type="button" class="btn btn-success btn-s-xs">Submit</button>
                             </footer>
                         </div>
                     </section>
@@ -124,148 +122,21 @@
     <!--End of Scrollable-->
 </section>
 <!--End of vbox-->
+<script src="../assets/js/applyLc.js"></script>
+<script src="../assets/js/retrieveRefNumList.js"></script>
 <script type="text/javascript">
-
-/*$(document).ready(function() {*/
-            $("#create_button").click(function() {
-                var refNum = 0000000000;
-                var refNumList = [];
-                console.log(sessionStorage.getItem('refNumListOnBC'));
-                if(sessionStorage.getItem('refNumListOnBC') !== null){
-                    var refNumString = sessionStorage.getItem('refNumListOnBC');
-                    var refNumJson = $.parseJSON(refNumString);
-                    var latestRefNum = refNumJson[0];
-                    refNum = parseInt(latestRefNum);
-                    for (var x in refNumJson){
-                        refNumList.push(refNumJson[x]);
-                     }
-                    
-                } 
-                console.log("push");
-                console.log(refNumList);
-               /* var refNum = 0000000000;
-                returnRefNumList();
-                //check latest lc ref num on bc
-                var refNumList = sessionStorage.getItem('refNumList');
-                var refNumJson = $.parseJSON(refNumList);
-                var latestRefNum = refNumJson[0];
-                // if there is refnum
-                // get latest refNum, increase refNum by 1
-                if (latestRefNum !== ""){
-                    refNum = parseInt(latestRefNum);  
-                }*/
-               
-                refNum += 1;
-                //convert refnum to a string, add extra 0
-                var refString = String(refNum);
-                while (refString.length < 8) { 
-                    refString = "0"+refString;                      
-                }
-                console.log(refString);
-                var importerAccount = "2365";
-                var exporterAccount = document.getElementById("exporterId").value;
-                var expiryDate = document.getElementById("expiryDate").value;
-                var confirmed = "false";
-                var revocable = "false";
-                var availableBy = "TERM";
-                var termDays = "90";
-                var amount = document.getElementById("amount").value;
-                var currency = "SGD";
-                var applicableRules = "none";
-                var partialShipments = "false";
-                var shipDestination = "London";
-                var shipDate = "2017-12-12";
-                var shipPeriod = "90 Days";
-                var goodsDescription = document.getElementById("goodsDesc").value;
-                var docsRequired = "none" ;
-                var additionalConditions = document.getElementById("additonalConditions").value;
-                var senderToReceiverInfo = "none";
-                var mode = "BC";
-                
-                var headerObj = {
-                    Header: {
-                        serviceName: "applyLetterOfCredit",
-                        userID: "kinetic1",
-                        PIN: "123456",
-                        /*userID: "toffeemint",
-                        PIN: "toffeemint123",*/
-                        OTP: "999999"
-                    }
-                };
-                var header = JSON.stringify(headerObj);
-
-                var contentObj = {
-                    Content: {
-                        importerAccount: importerAccount, 
-                        exporterAccount: exporterAccount,
-                        expiryDate: expiryDate,
-                        confirmed: confirmed,
-                        revocable: revocable,
-                        availableBy: availableBy,
-                        termDays: termDays,
-                        amount: amount,
-                        currency: currency,
-                        applicableRules: applicableRules,
-                        partialShipments: partialShipments,
-                        shipDestination: shipDestination,
-                        shipDate: shipDate,
-                        shipPeriod: shipPeriod,
-                        goodsDescription: goodsDescription,
-                        docsRequired: docsRequired,
-                        additionalConditions: additionalConditions,
-                        senderToReceiverInfo: senderToReceiverInfo,
-                        mode: mode
-                    }
-                };
-                var content = JSON.stringify(contentObj);   
-                // console.log(content);                             
-
-                //var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
-                // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
-                
-                var apiURL = "http://localhost:9001/lc/createContract"
-                    // console.log("heeey");
-                var xmlHttp = new XMLHttpRequest();              //setup new http req
-                if (xmlHttp === null){
-                    alert("Browser does not support HTTP request."); //check for browser thingy
-                }
-                //var refNum = "";
-//                xmlHttp.open("POST", apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF", true);
-                
-                xmlHttp.open("GET", apiURL+"?refNum="+refString+"&contract="+content, true);
-                xmlHttp.timeout = 5000;
-
-                // setup http event handlers
-                xmlHttp.onreadystatechange = function() {
-                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                        // console.log(xmlHttp.responseText);
-                        responseObj = JSON.parse(xmlHttp.responseText);
-                        // serviceRespHeader = responseObj.Content.ServiceResponse.ServiceRespHeader;
-                        // globalErrorID = serviceRespHeader.GlobalErrorID;
-                        //refNum = responseObj.Content.ServiceResponse["LC_Details"].ref_num;
-                        //console.log(refNum);
-                        //var refNumListOnBc = [];
-                        
-                        refNumList.unshift(refString);
-                        console.log("unshift");
-                        console.log(refNumList);
-                        sessionStorage.setItem('refNumListOnBC', JSON.stringify(refNumList));
-                        window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
-                        
-                        // callback();
-                    }
-                };
-                xmlHttp.ontimeout = function (e) {
-                    alert ("Timeout retrieving document type list.");
-                    callback();
-                };      
-
-                xmlHttp.send();
-
-            });
-        /*});*/
-
-
+    returnRefNumList("kinetic1");
+    var temp = sessionStorage.getItem('refNumList');
+    var viewName = $.parseJSON(temp);
+    var refNum = viewName[0];
+    console.log("refNum");
+    console.log(refNum);
+    //console.log(typeof(refNum));
+    
+    applyLc(refNum);
+    
 </script>
+
+
 
 

@@ -47,7 +47,7 @@ function rearrangePosition(e) {
 
 }
 
-function retrieveLcs(num) {
+/*function retrieveLcs(num) {
     
     //for testing purpose
     if (true) {
@@ -111,7 +111,7 @@ function retrieveLcs(num) {
                                 var expiryDate = responseObj.Content.expiryDate;
                                 console.log(expiryDate);
                                 //  status
-                                var status = "";
+                                var status = "pending";
                                 $.ajax({
                                     type: 'GET',
                                     url: statusLink,
@@ -123,14 +123,14 @@ function retrieveLcs(num) {
                                 });
                                 //console.log(status);
                                 //write in html
-                                    //var operationAndUrl = operationAndUrlAssigned(status);
-                                    var operationAndUrl = "";
+                                    var operationAndUrl = operationAndUrlAssigned(status);
+                                    //var operationAndUrl = "";
                                     //get operation 
-                                    //var operation = operationAndUrl[0];
-                                    var operation="";
+                                    var operation = operationAndUrl[0];
+                                    //var operation="";
                                     //get url
-                                    //var url = operationAndUrl[1];
-                                    var url="";
+                                    var url = operationAndUrl[1];
+                                    //var url="";
 
 
                                     var button = "<a type='button' id='"+url+"' class='pages btn btn-s-md' href='"+url+".html?refNum="+refNum+"'>" + operation.charAt(0).toUpperCase() + operation.slice(1) + "</a> ";
@@ -164,6 +164,97 @@ function retrieveLcs(num) {
         }        
 
     }
+    
+}*/
+
+function retrieveLcs(num) {
+    if (true) {
+    var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
+    // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
+
+    // var role = document.getElementByID("role").value;
+    var headerObj = {
+        Header: {
+            serviceName: "getLetterOfCreditRefNumList",
+            userID: "kinetic1",
+            PIN: "123456",
+            OTP: "999999"
+        }
+    };
+    var header = JSON.stringify(headerObj);
+    
+    var contentObj = {
+        Content: {
+            importerID: "kinetic1"
+        }
+
+    };
+    var content = JSON.stringify(contentObj);
+
+    if (true) {
+
+        var xmlHttp = new XMLHttpRequest();              //setup new http req
+        if (xmlHttp === null) {
+            alert("Browser does not support HTTP request."); //check for browser thingy
+        }
+
+        xmlHttp.open("POST", apiURL + "?Header=" + header + "&Content="+content+"&ConsumerID=TF", true);
+        // console.log(apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF");
+        xmlHttp.timeout = 5000;
+
+        // setup http event handlers
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                console.log(xmlHttp.responseText);
+                responseObj = JSON.parse(xmlHttp.responseText);
+                
+                // globalErrorID = responseObj.Content.ServiceRespHeader.GlobalErrorID;
+                //when the gateway is ready 
+                // console.log(JSON.stringify(responseObj.Content.ServiceResponse["Trade_LC_Read-Response"].LC_record.LC_ID) );
+                if (true) {
+                    var refNumList = responseObj.RefNumList.RefNum;
+                    refNumList.sort(function (a, b) {
+                        return compareStrings(a, b);
+                    });
+                    refNumList = refNumList.reverse();
+                    //take top 5 ref nums
+                    for (i = 0; i < num; i++) {
+                        //call web service to get lc details for each ref number 
+                        var refNum = refNumList[i];
+                        var getContractLink = "http://localhost:9001/lc/getContract?refNum=" + refNum;
+                        //var getStatusLink = "http://localhost:9001/lc/getStatus?refNum=" + refNum;
+                        //retreive json string
+                        $.getJSON(getContractLink).done(function (data) {
+                            //call operation and url assigned to Assign operation and url, based on status.
+                            var operationAndUrl = operationAndUrlAssigned(data.status);
+                            //get operation 
+                            var operation = operationAndUrl[0];
+                            //get url
+                            var url = operationAndUrl[1];
+                            //var href = "/SMUtBank_TradeFinance/importer/" + url + ".html?refNum=" + refNum;
+                            
+                            var button = "<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ";
+                            button = buttonAssigned(data.status);
+                            var trHTML = '<tr><td>' + refNum + '</td><td>' + data.exporterAccount + '</td><td>' + data.dateSubmitted + '</td><td>' + data.status + '</td><td>' + button + '</td></tr>';
+                            $('#latestLCs').append(trHTML);
+                        });
+
+                    }
+
+                }
+
+            }
+        };
+        xmlHttp.ontimeout = function (e) {
+            alert("Timeout retrieving document type list.");
+            callback();
+        };
+
+        xmlHttp.send();
+
+    }
+}
+    
     
 }
 

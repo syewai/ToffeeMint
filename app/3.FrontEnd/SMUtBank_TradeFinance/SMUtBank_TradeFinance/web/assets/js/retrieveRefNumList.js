@@ -17,6 +17,14 @@ function returnRefNumList() {
         };
         var header = JSON.stringify(headerObj);
         //var refNum = "00001";
+        var contentObj = {
+        Content: {
+            importerID: "kinetic1"
+        }
+
+        };
+        var content = JSON.stringify(contentObj);
+
         if (true) {
 
             var xmlHttp = new XMLHttpRequest();              //setup new http req
@@ -24,7 +32,8 @@ function returnRefNumList() {
                 alert("Browser does not support HTTP request."); //check for browser thingy
             }
 
-            xmlHttp.open("POST", apiURL + "?Header=" + header + "&ConsumerID=TF", true);
+            //xmlHttp.open("POST", apiURL + "?Header=" + header + "&ConsumerID=TF", true);
+            xmlHttp.open("POST", apiURL + "?Header=" + header + "&Content="+content+"&ConsumerID=TF", true);
             //xmlHttp.open("GET", apiURL + "?refNum="+refNum, true);
             // console.log(apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF");
             xmlHttp.timeout = 5000;

@@ -1,43 +1,48 @@
 <!DOCTYPE html>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-<script src="../assets/js/retrieveLatestLC_1.js"></script>
+<script src="assets/js/retrieveLatestLC_1.js"></script>
 <script type="text/javascript">
-    retrieveLcs(6);
+    retrieveLcs(5,"kinetic1");         
 </script>
 <script>
-    $('#welcomeDetails').load("../welcomeDetails.html");
+    $('#welcomeDetails').load("welcomeDetails.html"); 
+    var temp = sessionStorage.getItem('user');
+    var viewName = $.parseJSON(temp);
+    var username = viewName.username;
+    var usertype = viewName.usertype;
+    if (usertype ==='exporter'){ //change 3rd col to importer
+        
+    } else if (usertype === 'importer'){ // change 3rd col to exporter
+        
+    }
+    //retrieve lc by parsing in num of lc AND imp/exp ID
+    retrieveLcs(5);
 </script>
-<!--Retreive latest 5 LCs-->
 <section class="vbox">
     <section class="scrollable">
 
         <div class="wrapper-lg" id="welcomeDetails">
-
+           
         </div>
         <!--LC Table-->
         <section class="panel panel-default">
             <header class="panel-heading">
-                <div class="bs-example form-horizontal">
-                    <div class="form-group lc-form">
-                        <h4 class="col-sm-12 font-bold">Letters of Credit</h4>
-                </div></div>
+                <h4 class="font-bold">Letter of Credit</h4>
             </header>
-
-
 
             <div class="table-responsive">
                 <table class="table table-striped b-t b-light" id="lcTable">
                     <thead>
                         <tr>
                             <th>Reference Number</th>
-                            <th>Exporter</th>
-                            <th>Date Submitted</th>
+                            <th>Exporter</th> <!--This col will be changed according to the role-->
+                            <th>Expiry Date</th>
                             <th>Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody id="latestLCs">
-
+                        
                     </tbody>
                 </table>
             </div>
@@ -56,30 +61,11 @@
             </footer>
         </section>
         <!--End of LC Table-->
+
+
     </section>
-    <!--End of Scrollable-->
+    <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen, open" data-target="#nav,html"></a>
 </section>
-<!--End of vbox-->
-
-
-<script>
-    // collapse/expand menu properly
-    /*$(".panel-heading").find("a").click(function() {
-     $(".panel-collapse").removeClass("in");
-     });*/
-
-    $("body").on("click", ".pages", function () {
-        var title = this.id.trim();
-
-        var pageToLoad = title + ".html";
-        var refNum = $('.refNum').text();
-        var pageRedirection = {pageToLoad: refNum}
-
-        localStorage.setItem('lists', JSON.stringify(pageRedirection));
-        //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html"); 
-        //localStorage.setItem('pageToLoad', pageToLoad); 
-        //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");  
-        //$("#content").load(pageToLoad);
-
-    });
-</script>
+<aside class="bg-light lter b-l aside-md hide" id="notes">
+    <div class="wrapper">Notification</div>
+</aside>
