@@ -35,8 +35,11 @@ function buttonAssigned(status) { // this method is to assign button color (by a
         name = "btn-danger";
         text = "text-danger";
     } 
-    $(".btn").addClass(name);
-    $(".status").addClass(text);
+    $("#lcDetails").addClass(name);
+    $("#status").addClass(text);
+    /*$(".btn").addClass(name);
+    $(".status").addClass(text);*/
+    //return [name, text];
     
     //var d = document.getElementById("lcDetails");
     //d.className += " "+name;
@@ -167,7 +170,72 @@ function rearrangePosition(e) {
     
 }*/
 
-function retrieveLcs(num) {
+function retrieveLcsBC(num) {
+    returnRefNumList();
+    var temp = sessionStorage.getItem('refNumList');
+    var viewName = $.parseJSON(temp);
+    //var refNum = viewName[0];
+    var lcDetails = {};
+    console.log(viewName);
+    for (i = 0; i < num; i++) {
+        //call web service to get lc details for each ref number 
+        
+        var refNum = viewName[i];
+        
+        var refNumInt = parseInt(refNum);
+        
+        var getContractLink = "http://localhost:9001/lc/getContract?refNum=" + refNumInt;
+        var getStatusLink = "http://localhost:9001/lc/getStatus?refNum=" + refNumInt;
+        var status = "pending";
+        console.log(status);
+        /*$.get(getStatusLink).done(function (data) {
+            status = data;
+            //retreive json string
+            
+        });*/
+        $.getJSON(getContractLink).done(function (data) {
+                var items = [];
+               /* $.each( data.Content, function( key, val ) {
+                  items.push( "<li id='" + key + "'>" + val + "</li>" );
+                });
+                $( "<ul/>", {
+                  "class": "my-new-list",
+                  html: items.join( "" )
+                }).appendTo( "body" );
+               */
+              //var status = data.Content.status;
+              var exporterAcct = data.Content.exporterAccount;
+              var expiryDate = data.Content.expiryDate;
+              var operationAndUrl = operationAndUrlAssigned(status);
+              console.log(operationAndUrl);
+                            //get operation 
+              var operation = operationAndUrl[0];
+              console.log(operation);
+                            //get url
+              var url = operationAndUrl[1];
+              var href = "/SMUtBank_TradeFinance/importer/" + url + ".html?refNum=" + refNumInt;
+                            
+               var button = "<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ";
+               
+                var trHTML = "<tr><td>" + refNumInt + "</td><td>" + exporterAcct + "</td><td>" + expiryDate + "</td><td id='status' class='font-bold'>" + status+ "</td><td>" + button + "</td></tr>";
+                //var name = buttonAssigned(status);
+                $('#latestLCs').append(trHTML);
+                buttonAssigned(status);
+             });
+
+        /*var status = "";
+        $.get(getStatusLink).done(function (data) {
+            status = data;
+            //retreive json string
+            
+        });*/
+        
+        
+     }
+}
+
+
+/*function retrieveLcs(num) {
     if (true) {
     var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
     // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
@@ -256,7 +324,7 @@ function retrieveLcs(num) {
 }
     
     
-}
+}*/
 
 //main function --> retrieve latest 5 ref nums
 /*

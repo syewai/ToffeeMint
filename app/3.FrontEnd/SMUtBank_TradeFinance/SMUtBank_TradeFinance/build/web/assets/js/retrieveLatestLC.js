@@ -59,7 +59,10 @@ if (true) {
         //var latestRefNum = refNumJson[0];
         //refNum = parseInt(latestRefNum);
         for (var x in refNumJson){
-            refNumList.push(refNumJson[x]);
+            //for bc only - convert jsonstring to int
+            var refNumInt = parseInt(refNumJson[x]);
+            console.log(refNumInt);
+            refNumList.push(refNumInt);
         }
             
     } 
