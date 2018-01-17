@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-<script src="assets/js/retrieveLatestLC_1.js"></script>
+<script src="../assets/js/retrieveLatestLC_1_1.js"></script>
+<script src="../assets/js/retrieveRefNumList.js"></script>
 <script type="text/javascript">
-    retrieveLcs(5,"kinetic1");         
+    retrieveLcsBC(5);         
 </script>
 <script>
-    $('#welcomeDetails').load("welcomeDetails.html"); 
-    var temp = sessionStorage.getItem('user');
-    var viewName = $.parseJSON(temp);
-    var username = viewName.username;
-    var usertype = viewName.usertype;
-    if (usertype ==='exporter'){ //change 3rd col to importer
-        
-    } else if (usertype === 'importer'){ // change 3rd col to exporter
-        
-    }
-    //retrieve lc by parsing in num of lc AND imp/exp ID
-    retrieveLcs(5);
+    $('#welcomeDetails').load("../welcomeDetails.html"); 
 </script>
 <section class="vbox">
     <section class="scrollable">
@@ -30,12 +20,13 @@
                 <h4 class="font-bold">Letter of Credit</h4>
             </header>
 
+
             <div class="table-responsive">
                 <table class="table table-striped b-t b-light" id="lcTable">
                     <thead>
                         <tr>
                             <th>Reference Number</th>
-                            <th>Exporter</th> <!--This col will be changed according to the role-->
+                            <th>Exporter</th>
                             <th>Expiry Date</th>
                             <th>Status</th>
                             <th></th>

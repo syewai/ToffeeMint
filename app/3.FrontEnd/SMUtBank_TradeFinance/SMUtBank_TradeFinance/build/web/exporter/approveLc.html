@@ -23,9 +23,9 @@
 
         <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
         <script src="../assets/js/retrieveLcDetails.js"></script>
-<script src="../assets/js/getQueryVariable.js"></script>
-<script src="../assets/js/taskButtonAllocation.js"></script>
-  
+        <script src="../assets/js/getQueryVariable.js"></script>
+        <script src="../assets/js/taskButtonAllocation.js"></script>
+
         <script>
             $(function () {
                 $("#header").load("../header.html");
@@ -35,8 +35,14 @@
 
         <script>
             retrieveLc();
+            //viewLcButton();
             approveLcButton();
-          
+            /*var refNum = getQueryVariable("refNum");
+             var buttons = "<div class='form-group lc-form'>";
+             buttons += "<div class='col-sm-2 '><button type='submit' class='btn btn-primary' id='approveButton'>Approve</button></div>";
+             buttons += "<div class='col-sm-2 '><button type='submit' class='btn btn-primary' id='amendButton'>Request to amend</button></div>";
+             buttons += "</div>";
+             $("#lcButtons").append(buttons);*/
             $("#approveButton").click(function () {
                 approveLc();
 
@@ -44,7 +50,7 @@
             $("#amendButton").click(function () {
                 var refNum = getQueryVariable("refNum");
                 window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
-               
+
             });
 
             function capitalizeFirstLetter(word) {
@@ -140,26 +146,26 @@
         <script src="../assets/js/app.plugin.js"></script>
 
         <script>
-            
-           /* $(document).ready(function() {
-                var refNum = getQueryVariable("refNum");
-                $("#approveButton").click(function() {
-                    //retrieve ref num;
-                    
-                    //set status to "acknowledged"
 
-                    //upload status change to bc
-
-                    //redirect to homepage
-                    window.location = "/SMUtBank_TradeFinance/exporter/exporter.html";
-
-                });
-                 $("#amendButton").click(function() { 
-                     //retrieve ref num
-                     //redirect to amendlcdetails
-                     window.location = "/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum="+refNum;
-                 });
-            });*/
+            /* $(document).ready(function() {
+             var refNum = getQueryVariable("refNum");
+             $("#approveButton").click(function() {
+             //retrieve ref num;
+             
+             //set status to "acknowledged"
+             
+             //upload status change to bc
+             
+             //redirect to homepage
+             window.location = "/SMUtBank_TradeFinance/exporter/exporter.html";
+             
+             });
+             $("#amendButton").click(function() { 
+             //retrieve ref num
+             //redirect to amendlcdetails
+             window.location = "/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum="+refNum;
+             });
+             });*/
         </script>
 
     </body>

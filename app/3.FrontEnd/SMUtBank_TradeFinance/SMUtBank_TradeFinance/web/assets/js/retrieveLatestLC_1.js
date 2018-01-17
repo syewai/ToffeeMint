@@ -35,8 +35,7 @@ function buttonAssigned(status) { // this method is to assign button color (by a
         name = "btn-danger";
         text = "text-danger";
     } 
-    $("#lcDetails").addClass(name);
-    $("#status").addClass(text);
+    return [name,text];
     /*$(".btn").addClass(name);
     $(".status").addClass(text);*/
     //return [name, text];
@@ -177,6 +176,8 @@ function retrieveLcsBC(num) {
     //var refNum = viewName[0];
     var lcDetails = {};
     console.log(viewName);
+    var items = [];
+    var statusList = ["pending","requested to modify","issued","rejected"];
     for (i = 0; i < num; i++) {
         //call web service to get lc details for each ref number 
         
@@ -186,23 +187,21 @@ function retrieveLcsBC(num) {
         
         var getContractLink = "http://localhost:9001/lc/getContract?refNum=" + refNumInt;
         var getStatusLink = "http://localhost:9001/lc/getStatus?refNum=" + refNumInt;
-        var status = "pending";
+        var status = statusList[i];
         console.log(status);
         /*$.get(getStatusLink).done(function (data) {
             status = data;
             //retreive json string
             
         });*/
+        var $refNumInt = refNumInt; 
+        console.log($refNumInt);
+        var refList = [];
+        refList.push($refNumInt);
         $.getJSON(getContractLink).done(function (data) {
-                var items = [];
-               /* $.each( data.Content, function( key, val ) {
-                  items.push( "<li id='" + key + "'>" + val + "</li>" );
-                });
-                $( "<ul/>", {
-                  "class": "my-new-list",
-                  html: items.join( "" )
-                }).appendTo( "body" );
-               */
+              console.log(refList);
+              var $row = $('<tr></tr>');
+              console.log(status);
               //var status = data.Content.status;
               var exporterAcct = data.Content.exporterAccount;
               var expiryDate = data.Content.expiryDate;
@@ -214,13 +213,34 @@ function retrieveLcsBC(num) {
                             //get url
               var url = operationAndUrl[1];
               var href = "/SMUtBank_TradeFinance/importer/" + url + ".html?refNum=" + refNumInt;
-                            
-               var button = "<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ";
+              var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
+              $button.addClass(buttonAssigned(status)[0]);
+              
+              var $refNumCell = $('<td></td>');
+              $refNumCell.append($refNumInt);
+              $row.append($refNumCell);
+              
+              var $exporterAcctCell = $('<td>'+exporterAcct+'</td>');
+              $row.append($exporterAcctCell);
+              var $expiryDateCell = $('<td>'+expiryDate+'</td>');
+              $row.append($expiryDateCell);
+
+              var $statusCell = $('<td id="status" class="font-bold">'+status+'</td>');
+              $statusCell.addClass(buttonAssigned(status)[1]);
+              $row.append($statusCell);
+              
+              var $buttonCell = $('<td></td>');
+              $buttonCell.append($button);
+              $row.append($buttonCell);
+              
+              $('#latestLCs').append($row);
                
-                var trHTML = "<tr><td>" + refNumInt + "</td><td>" + exporterAcct + "</td><td>" + expiryDate + "</td><td id='status' class='font-bold'>" + status+ "</td><td>" + button + "</td></tr>";
+                //var trHTML = "<tr><td>" + refNumInt + "</td><td>" + exporterAcct + "</td><td>" + expiryDate + "</td><td id='status' class='font-bold'>" + status+ "</td><td>" + button + "</td></tr>";*/
+               
                 //var name = buttonAssigned(status);
-                $('#latestLCs').append(trHTML);
-                buttonAssigned(status);
+                //$('#latestLCs').append(items);
+               
+                
              });
 
         /*var status = "";
