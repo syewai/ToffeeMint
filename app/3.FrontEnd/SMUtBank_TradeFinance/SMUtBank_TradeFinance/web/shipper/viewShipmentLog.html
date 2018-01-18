@@ -1,13 +1,81 @@
 <!DOCTYPE html>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<script src="../assets/js/retrieveRefNumList.js"></script>
+
+
 <section class="vbox">
     <section class="scrollable">
 
         <div class="wrapper-lg">
-            <h2 class="m-b-xs font-bold m-t-none">View Shipment Log</h2>
+            <h2 class="m-b-xs font-bold m-t-none">Shipment Logs</h2>
 
         </div>
-        <!--LC Table-->
-        <section class="panel panel-default">
+        <form data-validate="parsley" id="loginForm" class="padder">
+
+            <div class="row">
+                <div class="col-sm-6">
+
+                    <section class="panel panel-default">
+                        <header class="panel-heading">
+                            <span class="h4">Step 1</span>
+                        </header>
+                        <div class="panel-body">
+                            <p class="text-muted">Please select a destination to continue</p>
+                            <div class="form-group">
+
+                                <div class="">
+                                    <!--get exporter id, account no and name from alan's database-->
+                                    <select id="exporterId" name="exporterId" id="exporterId" class="form-control m-b ">
+                                        <option value="">--Please select the country destination--</option>
+                                        <option value="1738">Thailand</option>
+                                        <option value="1738">United States</option>
+                                        <option value="1738">Shanghai</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+                <div class="col-sm-6">
+                    
+                    <section class="panel panel-default formHidden">
+                        <header class="panel-heading">
+                            <span class="h4">Step 2</span>
+                        </header>
+                        <div class="panel-body">
+                            <div class="form-group">  
+                                <h4>Destination</h4>
+                                <p id="printExpId"></p>
+                                </div
+                            </div>
+                            <div class="form-group">
+                                <label for="shipDate">Ship Date</label>
+                                <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="shipDate" data-link-format="yyyy-mm-dd">
+                                    <input id="shipDate" type="text" class="form-control shipDate" name="shipDate" data-required="true" required>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                                <!--<input type="hidden" id="dtp_input2" value="" /><br/>-->
+                            </div>
+<!--                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Date1:</label>
+                      <div class="col-sm-10">
+                        <input class="input-sm input-s datepicker-input form-control" size="12" type="text" value="12-02-2013" data-date-format="dd-mm-yyyy" >
+                      </div>
+                    </div>-->
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+
+
+
+        </form>
+        
+            <div class="row">
+    <section class="panel panel-default formHidden1">
             <header class="panel-heading">
                 <h4 class="font-bold">All LC</h4>
             </header>
@@ -20,7 +88,7 @@
                         <tr>
                             <th>Reference Number</th>
                             <th>Exporter</th>
-                            <th>Date Submitted</th>
+                            <th>Ship Date</th>
                             <th>Status</th>
                             <th></th>
 
@@ -98,11 +166,44 @@
             </footer>
         </section>
         <!--End of LC Table-->
+                    </section>
+            </div>
+        
+<script type="text/javascript">
+    $('.form_date').datetimepicker({
+
+            weekStart: 1,
+            todayBtn:  1,
+                    autoclose: 1,
+                    todayHighlight: 1,
+                    startView: 2,
+                    minView: 2,
+                    forceParse: 0
+        });
+</script>
+<script type="text/javascript">
+    var elem = document.getElementById("exporterId");
+    elem.onchange = function () {
+        document.getElementById("printExpId").innerHTML = $('#exporterId option:selected').text();
+        var elements = document.getElementsByClassName("formHidden");
+        for (var i = 0, length = elements.length; i < length; i++) {
+            elements[i].style.display = !(elem.value == "") ? "none" : "block";
+        }
+    };
+</script>
+<script type="text/javascript">
+    var elem = document.getElementById("shipDate");
+    elem.onchange = function () {
+        document.getElementById("shipDate").innerHTML = $('#shipDate option:selected').text();
+        var elements = document.getElementsByClassName("formHidden1");
+        for (var i = 0, length = elements.length; i < length; i++) {
+            elements[i].style.display = (elem.value == "") ? "none" : "block";
+        }
+    };
+</script>
 
 
     </section>
-    <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen, open" data-target="#nav,html"></a>
+    <!--End of Scrollable-->
 </section>
-<aside class="bg-light lter b-l aside-md hide" id="notes">
-    <div class="wrapper">Notification</div>
-</aside>
+<!--End of vbox-->
