@@ -92,7 +92,7 @@ function applyLcBc(refNumber) {
                         //var refNumListOnBc = [];
                         
                         
-                        //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+                        window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
                         
                         // callback();
                     }

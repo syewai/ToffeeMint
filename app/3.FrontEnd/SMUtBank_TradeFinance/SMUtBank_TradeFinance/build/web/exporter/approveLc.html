@@ -30,6 +30,7 @@
             $(function () {
                 $("#header").load("../header.html");
                 $("#nav-bar").load("navBar.html");
+                $("#content").load("../lcDetailsTemplate.html");
             });
         </script>
 
@@ -37,20 +38,13 @@
             retrieveLc();
             //viewLcButton();
             approveLcButton();
-            /*var refNum = getQueryVariable("refNum");
-             var buttons = "<div class='form-group lc-form'>";
-             buttons += "<div class='col-sm-2 '><button type='submit' class='btn btn-primary' id='approveButton'>Approve</button></div>";
-             buttons += "<div class='col-sm-2 '><button type='submit' class='btn btn-primary' id='amendButton'>Request to amend</button></div>";
-             buttons += "</div>";
-             $("#lcButtons").append(buttons);*/
             $("#approveButton").click(function () {
-                approveLc();
+                setStatus("acknowledged");
 
             });
             $("#amendButton").click(function () {
                 var refNum = getQueryVariable("refNum");
                 window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
-
             });
 
             function capitalizeFirstLetter(word) {
@@ -73,56 +67,6 @@
                     <!-- /.aside -->
                     <!--Content-->
                     <section id="content">
-                        <section class="vbox">
-                            <section class="scrollable">
-                                <div class="wrapper-lg">
-                                    <h2 class="m-b-xs font-bold m-t-none">Approve LC</h2>
-                                </div>
-
-                                <section class="panel panel-default">
-                                    <header class="panel-heading font-bold">
-                                        <div class="bs-example form-horizontal">
-                                            <div class="form-group lc-form">
-                                                <h4 class="col-sm-12 font-bold">LC Details</h4>
-                                            </div>
-                                        </div>
-                                    </header>
-                                    <header class="panel-heading font-bold">
-                                        <div class="bs-example form-horizontal">
-                                            <div class="form-group lc-form">
-                                                <label class="col-sm-2 control-label lc-label">Ref Num </label>
-                                                <div class="col-sm-2 lc-value">
-                                                    <p id="refNum"></p>
-                                                </div>
-                                                <label class="col-sm-2 control-label">Status </label>
-                                                <div class="col-sm-2 lc-value">
-                                                    <p id="status"></p>
-                                                </div>
-                                                <label class="col-sm-2 control-label">Date Submitted</label>
-                                                <div class="col-sm-2 lc-value">
-                                                    <p id="dateSubmitted" class="lc-value"></p>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </header>
-                                    <div class="panel-body">
-                                        <div class="bs-example form-horizontal" id="lcDetails">
-
-                                        </div>
-                                        <div class="bs-example form-horizontal" id="lcButtons">
-
-                                        </div>
-                                    </div>
-
-                                </section>
-
-
-                            </section>
-                            <!--End of Scrollable-->
-                        </section>
-                        <!--End of vbox-->
-
                     </section>
                     <!--End of Content-->
 

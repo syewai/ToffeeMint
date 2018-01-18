@@ -24,7 +24,7 @@ function approveLc() {
         success: function (data) {
             console.log(data);
             //redirect to homepage
-            window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+            //window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
 
         }
 

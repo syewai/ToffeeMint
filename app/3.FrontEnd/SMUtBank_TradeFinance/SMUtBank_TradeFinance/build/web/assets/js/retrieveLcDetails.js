@@ -83,10 +83,11 @@
                                             }
                                         }*/
                                         if(!isCounted){
-                                            var lcDetailsHTML = "<label class='col-lg-2 control-label lc-label'>" + i + "</label>";
-                                            lcDetailsHTML += "<div class='col-lg-10 font-bold'><p id='" + i + "'></p>";
-                                            lcDetailsHTML += fields[i] + "</div>";
 
+                                            var lcDetailsHTML = "<label class='col-lg-2 control-label lc-label'>" + i + "</label>";
+                                            lcDetailsHTML += "<div class='col-lg-10 font-bold' id='lcValue'><p id='" + i + "'></p>"+fields[i];
+                                            lcDetailsHTML += "</div><input style='display:none' id='input' type='text' name ="+i+" data-required='true' placeholder='"+fields[i]+"'>";
+                                            
                                             $("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
                                             $("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");
 
@@ -110,4 +111,5 @@
 
                 }
             }
-            }
+}
+
