@@ -26,10 +26,10 @@ function amendLcButton() {
     $("#lcButtons").append(buttons);
 }
 
-function viewLcButton() {
-    var buttons = "<div class='form-group'><div class='col-sm-4 col-sm-offset-2'><a href='importer.html'><button type='submit' class='btn btn-primary'>Home</button></a></div>";
+function viewLcButton(usertype) {
+    var buttons = "<div class='form-group'><div class='col-sm-4 col-sm-offset-2'><a href='"+usertype+".html'><button type='submit' class='btn btn-primary'>Home</button></a></div>";
     buttons += "</div>";
-
+    console.log(usertype);
     $("#lcButtons").append(buttons);
 }
 

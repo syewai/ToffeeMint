@@ -35,8 +35,10 @@ function buttonAssigned(status) { // this method is to assign button color (by a
         name = "btn-danger";
         text = "text-danger";
     } 
-    $(".btn").addClass(name);
-    $(".status").addClass(text);
+    return [name,text];
+    /*$(".btn").addClass(name);
+    $(".status").addClass(text);*/
+    //return [name, text];
     
     //var d = document.getElementById("lcDetails");
     //d.className += " "+name;
@@ -47,117 +49,313 @@ function rearrangePosition(e) {
 
 }
 
-function retrieveLcs(num) {
+/*function retrieveLcs(num) {
     
     //for testing purpose
-if (true) {
-    //var refNum = 00000000;
-    var refNumList = [];
-    if(sessionStorage.getItem('refNumListOnBC') !== null){
-        var refNumString = sessionStorage.getItem('refNumListOnBC');
-        var refNumJson = $.parseJSON(refNumString);
-        //var latestRefNum = refNumJson[0];
-        //refNum = parseInt(latestRefNum);
-        for (var x in refNumJson){
-            //for bc only - convert jsonstring to int
-            var refNumInt = parseInt(refNumJson[x]);
-            console.log(refNumInt);
-            refNumList.push(refNumInt);
+    if (true) {
+        //var refNum = 00000000;
+        var refNumList = [];
+        if(sessionStorage.getItem('refNumListOnBC') !== null){
+            var refNumString = sessionStorage.getItem('refNumListOnBC');
+            var refNumJson = $.parseJSON(refNumString);
+            //var latestRefNum = refNumJson[0];
+            //refNum = parseInt(latestRefNum);
+            for (var x in refNumJson){
+                refNumList.push(refNumJson[x]);
+            }
+           
         }
-            
-    } 
-  
-        
-    
-        //var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
-        var apiURL = 'http://localhost:9001/lc/getContract';
-        var headerObj = {
-            Header: {
-                serviceName: "getLetterOfCreditRefNumList",
-                userID: "kinetic1",
-                PIN: "123456",
-                OTP: "999999"
+        console.log("ref num list");
+        console.log(sessionStorage.getItem('refNumListOnBC'));
+        console.log(refNumList);
+        if (refNumList.length !== 0){
+            if (refNumList.length < num){
+                num = refNumList.length;
             }
-        };
-        var header = JSON.stringify(headerObj);
-        //var refNum = "00001";
-        if (true) {
+            console.log("done");
+            for (i = 0; i < num; i++) {
+                var refNum = refNumList[i];
+            //var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
+                var apiURL = 'http://localhost:9001/lc/getContract';
+                var headerObj = {
+                    Header: {
+                        serviceName: "getLetterOfCredit",
+                        userID: "kinetic1",
+                        PIN: "123456",
+                        OTP: "999999"
+                    }
+                };
+                var header = JSON.stringify(headerObj);
+                //var refNum = "00001";
 
-            var xmlHttp = new XMLHttpRequest();              //setup new http req
-            if (xmlHttp === null) {
-                alert("Browser does not support HTTP request."); //check for browser thingy
-            }
+                if (true) {
+                    var xmlHttp = new XMLHttpRequest();              //setup new http req
+                    if (xmlHttp === null) {
+                        alert("Browser does not support HTTP request."); //check for browser thingy
+                    }
 
-            //xmlHttp.open("POST", apiURL + "?Header=" + header + "&ConsumerID=TF", true);
-            xmlHttp.open("GET", apiURL + "?refNum="+refNum, true);
-            // console.log(apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF");
-            xmlHttp.timeout = 5000;
+                    //xmlHttp.open("POST", apiURL + "?Header=" + header + "&ConsumerID=TF", true);
+                    xmlHttp.open("GET", apiURL + "?refNum="+refNum, true);
+                    // console.log(apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF");
+                    xmlHttp.timeout = 5000;
+                     // setup http event handlers
+                    xmlHttp.onreadystatechange = function () {
+                        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                            console.log(xmlHttp.responseText);
+                            responseObj = JSON.parse(xmlHttp.responseText);
+                            if (true) {
+                                var statusLink = "http://localhost:9001/lc/getStatus?refNum="+refNum;
+                                console.log(responseObj);
+                                //get exporter;
+                                var exporter = responseObj.Content.exporterAccount;
+                                console.log(exporter);
+                                //get date submiited;
+                                var expiryDate = responseObj.Content.expiryDate;
+                                console.log(expiryDate);
+                                //  status
+                                var status = "pending";
+                                $.ajax({
+                                    type: 'GET',
+                                    url: statusLink,
+                                    dataType: 'json',
+                                    success: function(data){
+                                        console.log(data);  
+                                    }
+                                    
+                                });
+                                //console.log(status);
+                                //write in html
+                                    var operationAndUrl = operationAndUrlAssigned(status);
+                                    //var operationAndUrl = "";
+                                    //get operation 
+                                    var operation = operationAndUrl[0];
+                                    //var operation="";
+                                    //get url
+                                    var url = operationAndUrl[1];
+                                    //var url="";
 
-            // setup http event handlers
-            xmlHttp.onreadystatechange = function () {
-                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                    console.log(xmlHttp.responseText);
-                    responseObj = JSON.parse(xmlHttp.responseText);
 
-                    // globalErrorID = responseObj.Content.ServiceRespHeader.GlobalErrorID;
-                    //when the gateway is ready 
-                    // console.log(JSON.stringify(responseObj.Content.ServiceResponse["Trade_LC_Read-Response"].LC_record.LC_ID) );
-                    if (true) {
+                                    var button = "<a type='button' id='"+url+"' class='pages btn btn-s-md' href='"+url+".html?refNum="+refNum+"'>" + operation.charAt(0).toUpperCase() + operation.slice(1) + "</a> ";
 
-                        console.log(responseObj);
-                        /*var refNumList = responseObj.RefNumList.RefNum;
-                        refNumList.sort(function (a, b) {
-                            return compareStrings(a, b);
-                        });
-                        refNumList = refNumList.reverse();*/
+                                    var trHTML = "<tr><td class='refNum'>" + refNum + '</td><td>' + exporter + '</td><td>'+expiryDate+'</td><td class="status font-bold">' + status.charAt(0).toUpperCase() + status.slice(1) + '</td><td>' + button + '</td></tr>';
+                                    $('#latestLCs').append(trHTML);
+                                    $("td").css("text-align","center");
+                                    $("th").css("text-align","center");
+                                    buttonAssigned(status);
+                                //
 
-                        //take top 5 ref nums
-                        var statusList = ["requested to amend","pending","pending","rejected","issued"];
-                        var advisingBank = ["UOB","OCBC","DBS","HSBC","Standard Charted"];
-                        for (i = 0; i < num; i++) {
-                            //call web service to get lc details for each ref number 
-                               var refNum = refNumList[i];
-                            //var link = "localhost:9001/lc/getContract?refNum=" + refNum;
-                            //retreive json string
-                                var status = statusList[i];
-                            //$.getJSON(link).done(function (data) {
-                                //call operation and url assigned to Assign operation and url, based on status.
-                                var operationAndUrl = operationAndUrlAssigned(status);
-                                //get operation 
-                                var operation = operationAndUrl[0];
-                                //get url
-                                var url = operationAndUrl[1];
-
-
-                                var button = "<a type='button' id='"+url+"' class='pages btn btn-s-md' href='"+url+".html?refNum="+refNum+"'>" + operation.charAt(0).toUpperCase() + operation.slice(1) + "</a> ";
-
-                                var trHTML = "<tr><td class='refNum'>" + refNum + '</td><td>' + advisingBank[i] + '</td><td>testing Date</td><td class="status font-bold">' + status.charAt(0).toUpperCase() + status.slice(1) + '</td><td>' + button + '</td></tr>';
-                                $('#latestLCs').append(trHTML);
-                                $("td").css("text-align","center");
-                                $("th").css("text-align","center");
-                                buttonAssigned(status);
-                            //});
-
-                            //
+                            }
+                            console.log("testing");
 
                         }
+
+
+                    };
+                    xmlHttp.ontimeout = function (e) {
+                        alert("Timeout retrieving document type list.");
+                        callback();
+                     };
+
+                    xmlHttp.send();
+
+                }
+
+            }
+
+
+        }        
+
+    }
+    
+}*/
+
+function retrieveLcsBC(num) {
+    returnRefNumList();
+    var temp = sessionStorage.getItem('refNumList');
+    var viewName = $.parseJSON(temp);
+    var user= sessionStorage.getItem('user');
+    var userObj = $.parseJSON(user);
+    var userType = userObj.usertype;
+    //var statusList = ["pending","requested to amend","issued","rejected"];
+    
+    for (i = 0; i < num; i++) {
+        //call web service to get lc details for each ref number 
+        
+        var refNum = viewName[i];
+        
+        var refNumInt = parseInt(refNum);
+        
+        var getContractLink = "http://localhost:9001/lc/getContract?refNum=" + refNumInt;
+        var getStatusLink = "http://localhost:9001/lc/getStatus?refNum=" + refNumInt;
+        //var status = statusList[i];
+        //console.log(status);
+        var status = "something";
+        /*for testing backend by using getStatus*/
+        $.ajax({
+            async: false,
+            url: getStatusLink,
+            //dataType: "json",
+            success: function(data) {
+                status = data;
+            }
+        });
+        /*This ajax call is to retrieve latest lcs using async requests --> 
+         * sync request can only retrive the data from the latest one request*/
+        $.ajax({
+            async: false,
+            url: getContractLink,
+            dataType: "json",
+            success: function(data) {
+                //console.log(status);
+                var $row = $('<tr></tr>');
+                //var status = data.Content.status;
+                var exporterAcct = data.Content.exporterAccount;
+                var expiryDate = data.Content.expiryDate;
+                /*var operationAndUrl = operationAndUrlAssigned(status);
+                console.log(operationAndUrl);
+                              //get operation 
+                var operation = operationAndUrl[0];
+                console.log(operation);
+                              //get url
+                var url = operationAndUrl[1];*/
+                var url = "lcDetails";
+                if (userType === "importer"){
+                    if (status === "rejected" || status === "requested to amend"){
+                        url = "modifyLcDetails";
+                    } 
+                    
+                } else {
+                    if (status === "advised") {
+                        url = "approveLc";
+                    } else if (status === "acknowledged"){
+                        url = "shipGoods";
+                    }
+                }
+                
+                var href = "/SMUtBank_TradeFinance/"+userType+"/" + url + ".html?action="+url+"&refNum=" + refNumInt;
+                //var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
+                var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + status + "</a> ");
+                //var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md'>" + status + "</a> ");
+                $button.addClass(buttonAssigned(status)[0]);
+
+                var $refNumCell = $('<td></td>');
+                $refNumCell.append(refNumInt);
+                $row.append($refNumCell);
+
+                var $exporterAcctCell = $('<td>'+exporterAcct+'</td>');
+                $row.append($exporterAcctCell);
+                var $expiryDateCell = $('<td>'+expiryDate+'</td>');
+                $row.append($expiryDateCell);
+
+                var $statusCell = $('<td id="status" class="font-bold">'+status+'</td>');
+                $statusCell.addClass(buttonAssigned(status)[1]);
+                $row.append($statusCell);
+
+                var $buttonCell = $('<td></td>');
+                $buttonCell.append($button);
+                $row.append($buttonCell);
+
+                $('#latestLCs').append($row);
+               
+            
+            }
+        });
+        
+        
+     }
+}
+
+
+/*function retrieveLcs(num) {
+    if (true) {
+    var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
+    // var testURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway?Header={"Header":{"PIN":"123456","OTP":"999999","serviceName":"getLetterOfCreditRefNumList","userID":"kinetic1"}}&ConsumerID=TF';
+
+    // var role = document.getElementByID("role").value;
+    var headerObj = {
+        Header: {
+            serviceName: "getLetterOfCreditRefNumList",
+            userID: "kinetic1",
+            PIN: "123456",
+            OTP: "999999"
+        }
+    };
+    var header = JSON.stringify(headerObj);
+    
+    var contentObj = {
+        Content: {
+            importerID: "kinetic1"
+        }
+
+    };
+    var content = JSON.stringify(contentObj);
+
+    if (true) {
+
+        var xmlHttp = new XMLHttpRequest();              //setup new http req
+        if (xmlHttp === null) {
+            alert("Browser does not support HTTP request."); //check for browser thingy
+        }
+
+        xmlHttp.open("POST", apiURL + "?Header=" + header + "&Content="+content+"&ConsumerID=TF", true);
+        // console.log(apiURL+"?Header="+header+"&Content="+content+"&ConsumerID=TF");
+        xmlHttp.timeout = 5000;
+
+        // setup http event handlers
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                console.log(xmlHttp.responseText);
+                responseObj = JSON.parse(xmlHttp.responseText);
+                
+                // globalErrorID = responseObj.Content.ServiceRespHeader.GlobalErrorID;
+                //when the gateway is ready 
+                // console.log(JSON.stringify(responseObj.Content.ServiceResponse["Trade_LC_Read-Response"].LC_record.LC_ID) );
+                if (true) {
+                    var refNumList = responseObj.RefNumList.RefNum;
+                    refNumList.sort(function (a, b) {
+                        return compareStrings(a, b);
+                    });
+                    refNumList = refNumList.reverse();
+                    //take top 5 ref nums
+                    for (i = 0; i < num; i++) {
+                        //call web service to get lc details for each ref number 
+                        var refNum = refNumList[i];
+                        var getContractLink = "http://localhost:9001/lc/getContract?refNum=" + refNum;
+                        //var getStatusLink = "http://localhost:9001/lc/getStatus?refNum=" + refNum;
+                        //retreive json string
+                        $.getJSON(getContractLink).done(function (data) {
+                            //call operation and url assigned to Assign operation and url, based on status.
+                            var operationAndUrl = operationAndUrlAssigned(data.status);
+                            //get operation 
+                            var operation = operationAndUrl[0];
+                            //get url
+                            var url = operationAndUrl[1];
+                            //var href = "/SMUtBank_TradeFinance/importer/" + url + ".html?refNum=" + refNum;
+                            
+                            var button = "<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ";
+                            button = buttonAssigned(data.status);
+                            var trHTML = '<tr><td>' + refNum + '</td><td>' + data.exporterAccount + '</td><td>' + data.dateSubmitted + '</td><td>' + data.status + '</td><td>' + button + '</td></tr>';
+                            $('#latestLCs').append(trHTML);
+                        });
 
                     }
 
                 }
-            };
-            xmlHttp.ontimeout = function (e) {
-                alert("Timeout retrieving document type list.");
-                callback();
-            };
 
-            xmlHttp.send();
+            }
+        };
+        xmlHttp.ontimeout = function (e) {
+            alert("Timeout retrieving document type list.");
+            callback();
+        };
 
-        }
-    /*}*/
+        xmlHttp.send();
+
+    }
 }
     
-}
+    
+}*/
 
 //main function --> retrieve latest 5 ref nums
 /*

@@ -102,7 +102,7 @@
                                     <input id="expiryDate" type="text" class="form-control expiryDate" name="expiryDate" data-required="true" required>
                                     
                                 </div>
-                                <!--<input type="hidden" id="dtp_input2" value="" /><br/>-->
+                                <input type="hidden" id="dtp_input2" value="" /><br/>
                             </div>
                             <!--<div class="form-group">
                                 <label>Expiry Date (YYYY-MM-DD)</label>
@@ -118,7 +118,7 @@
                             </div>
                             <footer class="text-center bg-light lter">
                                 <button id="create_button_api" type="button" class="btn btn-success btn-s-xs">Submit</button>
-                                <button id="create_button_bc" type="button" class="btn btn-success btn-s-xs">Submit TO Block chain</button>
+                                <!--<button id="create_button_bc" type="button" class="btn btn-success btn-s-xs">Submit TO Block chain</button>-->
                             </footer>
                         </div>
                     </section>
@@ -153,7 +153,7 @@
  
 <script src="../assets/js/applyLc.js"></script>
 <script src="../assets/js/retrieveRefNumList.js"></script>
-<script src="../assets/js/applyLcBc.js"></script>
+<!--<script src="../assets/js/applyLcBc.js"></script>-->
 
 <script type="text/javascript">
 $('.form_date').datetimepicker({
@@ -168,7 +168,7 @@ $('.form_date').datetimepicker({
     });
 </script>
 <script type="text/javascript">
-
+$("#create_button_api").click(function(){
 //apply lc from api
     applyLc();
 //retrieve ref num from 
@@ -183,7 +183,7 @@ $('.form_date').datetimepicker({
 // apply lc from blockchain
     applyLcBc(refNum);
     
-    
+    } )  
 </script>
 
 

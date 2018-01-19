@@ -1,6 +1,6 @@
 /* 
  * This function will be handling data input/amendments from users, set status to requested to amend, redirecting to homepage
- * 
+ * involved pagess - amendLcContent_1_1.html, modifyLcDetailsContent.html
  */
 
 function amendLc(serviceName, parameter) {
