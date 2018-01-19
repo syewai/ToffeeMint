@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<script src="../assets/js/retrieveLatestLC_1_1.js"></script>
+<script src="../assets/js/retrieveRefNumList.js"></script>
+<script type="text/javascript">
+    retrieveLcsBC(5);         
+</script>
+<script>
+    $('#welcomeDetails').load("../welcomeDetails.html"); 
+</script>
+<section class="vbox">
+    <section class="scrollable">
+
+        <div class="wrapper-lg" id="welcomeDetails">
+           
+        </div>
+        <!--LC Table-->
+        <section class="panel panel-default">
+            <header class="panel-heading">
+                <h4 class="font-bold">Letter of Credit</h4>
+            </header>
+
+
+            <div class="table-responsive">
+                <table class="table table-striped b-t b-light" id="lcTable">
+                    <thead>
+                        <tr>
+                            <th>Reference Number</th>
+                            <th>Exporter</th>
+                            <th>Expiry Date</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="latestLCs">
+                        
+                    </tbody>
+                </table>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-4 hidden-xs">
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <a id="viewLcLog" class="pages btn btn-s-md btn-dark">View All LC</a>
+                    </div>
+                    <div class="col-sm-4 text-right text-center-xs">
+
+                    </div>
+
+                </div>
+            </footer>
+        </section>
+        <!--End of LC Table-->
+
+
+    </section>
+    <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen, open" data-target="#nav,html"></a>
+</section>
+<aside class="bg-light lter b-l aside-md hide" id="notes">
+    <div class="wrapper">Notification</div>
+</aside>
