@@ -7,9 +7,9 @@ and open the template in the editor.
 -->
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 <script>
-$(document).ready(function(){
+/*$(document).ready(function(){
     $("button").click(function(){
         var refNumList = [1039,1038,1037,1036,1035];
         for (var i in refNumList){
@@ -19,33 +19,137 @@ $(document).ready(function(){
                 $.each( data.Content, function( key, val ) {
                   items.push( "<li id='" + key + "'>" + val + "</li>" );
                 });
-                /*$( "<ul/>", {
-                  "class": "my-new-list",
-                  html: items.join( "what is this" )
-                }).appendTo( "body" );*/
+                
                 $("body").append(items);
                
-                /*var items = [];
-                $.each( data, function( key, val ) {
-                  items.push( "<li id='" + key + "'>" + val + "</li>" );
-                });
-
-                $( "<ul/>", {
-                  "class": "my-new-list",
-                  html: items.join( "" )
-                }).appendTo( "body" );*/
+               
             console.log(data.Content);
              });
             
         }
         
     });
-});
+});*/
 </script>
 </head>
 <body>
 
-<button>Send an HTTP GET request to a page and get the result back</button>
+<button id="button1">Get customer details</button>
+<button id="button2">Get customer accounts</button>
+<button id="button3">Get all types</button>
+<button id="button4">Get all types</button>
+<div id="content"></div>
+<!--<div id="nav">
+</div>
+<div id="content"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="assets/js/pageLoad.js"></script>
+ <script>
+     $('#nav').load("nav.html");
+</script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="assets/js/retrieveRefNumList.js"></script>
+<script src="assets/js/getTypes.js"></script>
+<script>
+    $("#button1").click(function(){
+                var headerObj = {
+                    Header: {
+                        serviceName: "getCustomerDetails",
+                        userID: "toffeemint",
+                        PIN: "123456",
+                        OTP: "301369"
+                    }
+                };
+                var header = JSON.stringify(headerObj);
+                          
+
+                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
+
+                var xmlHttp = new XMLHttpRequest();              //setup new http req
+                if (xmlHttp === null){
+                    alert("Browser does not support HTTP request."); //check for browser thingy
+                }
+
+                xmlHttp.open("POST", apiURL+"?Header="+header, true);
+                xmlHttp.timeout = 5000;
+
+                // setup http event handlers
+                xmlHttp.onreadystatechange = function() {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        
+                        responseObj = JSON.parse(xmlHttp.responseText);
+                        //var cdmCustomer = responseObj.Content.ServiceResponse["CDMCustomer"].address;
+                        //$("#content").html(cdmCustomer);
+                        console.log(responseObj);
+                    }
+                };
+                xmlHttp.ontimeout = function (e) {
+                    alert ("Timeout retrieving document type list.");
+                    callback();
+                };      
+
+                xmlHttp.send();
+           });
+        $("#button2").click(function(){
+                var headerObj = {
+                    Header: {
+                        serviceName: "getCustomerAccounts",
+                        userID: "kinetic1",
+                        PIN: "123456",
+                        OTP: "999999"
+                    }
+                };
+                var header = JSON.stringify(headerObj);
+                          
+
+                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
+
+                var xmlHttp = new XMLHttpRequest();              //setup new http req
+                if (xmlHttp === null){
+                    alert("Browser does not support HTTP request."); //check for browser thingy
+                }
+
+                xmlHttp.open("POST", apiURL+"?Header="+header, true);
+                xmlHttp.timeout = 5000;
+
+                // setup http event handlers
+                xmlHttp.onreadystatechange = function() {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        
+                        responseObj = JSON.parse(xmlHttp.responseText);
+                        $("#content").html("<pre id='json'>"+responseObj.Content.ServiceResponse+"</pre>");
+                        console.log(responseObj.Content);
+                    }
+                };
+                xmlHttp.ontimeout = function (e) {
+                    alert ("Timeout retrieving document type list.");
+                    callback();
+                };      
+
+                xmlHttp.send();
+           });
+           
+           
+           $("#button3").click(function(){
+             console.log(loadRefNumList());
+         } );
+         
+          $("#button4").click(function(){//
+              
+             //console.log(getRefNumListAjax());
+             //var numList = getRefNumListAjax();
+             
+             
+            var refNum;
+            getRefNumListAjax(function(refNumList) {
+                 refNum = refNumList.RefNumList.RefNum;
+             });
+             console.log(refNum[0]);
+
+         } );
+                  
+    
+</script>
 
 </body>
 </html>

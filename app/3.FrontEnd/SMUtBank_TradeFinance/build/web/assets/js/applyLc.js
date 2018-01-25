@@ -205,3 +205,97 @@ function applyLcBc(refNumber) {
             //});
         //});
 }
+
+function applyLcTrialBC(refNumber) {
+    var apiURL = "http://localhost:9001/lc/createContract";
+    //var apiUrl = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
+    var refNum = parseInt(refNumber);
+    var importerAccount = "2365";
+    var exporterAccount = document.getElementById("exporterId").value;
+    var expiryDate = document.getElementById("expiryDate").value;
+    var confirmed = "false";
+    var revocable = "false";
+    var availableBy = "TERM";
+    var termDays = "90";
+    var amount = document.getElementById("amount").value;
+    var currency = "SGD";
+    var applicableRules = "none";
+    var partialShipments = "false";
+    var shipDestination = "London";
+    var shipDate = "2017-12-12";
+    var shipPeriod = "90 Days";
+    var goodsDescription = document.getElementById("goodsDesc").value;
+    var docsRequired = "none";
+    var additionalConditions = document.getElementById("additonalConditions").value;
+    var senderToReceiverInfo = "none";
+    var mode = "BC";
+
+    var headerObj = {
+        Header: {
+            serviceName: "applyLetterOfCredit",
+            userID: "kinetic1",
+            PIN: "123456",
+            /*userID: "toffeemint",
+             PIN: "toffeemint123",*/
+            OTP: "999999"
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    var contentObj = {
+        Content: {
+            importerAccount: importerAccount,
+            exporterAccount: exporterAccount,
+            expiryDate: expiryDate,
+            confirmed: confirmed,
+            revocable: revocable,
+            availableBy: availableBy,
+            termDays: termDays,
+            amount: amount,
+            currency: currency,
+            applicableRules: applicableRules,
+            partialShipments: partialShipments,
+            shipDestination: shipDestination,
+            shipDate: shipDate,
+            shipPeriod: shipPeriod,
+            goodsDescription: goodsDescription,
+            docsRequired: docsRequired,
+            additionalConditions: additionalConditions,
+            senderToReceiverInfo: senderToReceiverInfo,
+            mode: mode
+        }
+    };
+    var content = JSON.stringify(contentObj);
+
+    // setup http request
+    var xmlHttp = new XMLHttpRequest();
+    if (xmlHttp === null) {
+        alert("Browser does not support HTTP request.");
+        return;
+    }
+    xmlHttp.open("GET", apiURL + "?refNum=" + refNum + "&contract=" + content, true);
+    xmlHttp.timeout = 5000;
+
+    // setup http event handlers
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            responseObj = JSON.parse(xmlHttp.responseText);
+            serviceRespHeader = responseObj.Content.ServiceResponse.ServiceRespHeader;
+            globalErrorID = serviceRespHeader.GlobalErrorID;
+            if (globalErrorID === "010000") {
+                //var productTypes = responseObj.Content.ServiceResponse.ProductList.Product;
+                return "Lc has been submitted successfully on bc (ref num"+refNum;
+            } else {
+                alert("Error retrieving document type list.");
+            }
+            callback();
+        }
+    };
+    xmlHttp.ontimeout = function (e) {
+        alert("Timeout retrieving document type list.");
+        callback();
+    };
+
+    // send the http request
+    xmlHttp.send();
+}

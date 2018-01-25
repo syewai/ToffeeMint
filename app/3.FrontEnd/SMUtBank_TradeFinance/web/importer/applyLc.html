@@ -170,18 +170,18 @@ $('.form_date').datetimepicker({
 <script type="text/javascript">
 $("#create_button_api").click(function(){
 //apply lc from api
-    applyLc();
+    //applyLc();
 //retrieve ref num from 
-    returnRefNumList();
-    var temp = sessionStorage.getItem('refNumList');
+    //returnRefNumList();
+    /*var temp = sessionStorage.getItem('refNumList');
     var viewName = $.parseJSON(temp);
     var refNum = viewName[0];
     console.log("refNum");
-    console.log(refNum);
-    //console.log(typeof(refNum));
+    console.log(refNum);*/
+    console.log(loadRefNumList());
 
 // apply lc from blockchain
-    applyLcBc(refNum);
+    //applyLcBc(refNum);
     
     } )  
 </script>
