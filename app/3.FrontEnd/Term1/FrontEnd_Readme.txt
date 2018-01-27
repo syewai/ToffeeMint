@@ -1,1 +1,0 @@
-current status: combine UI + convert to JSON object from user input
