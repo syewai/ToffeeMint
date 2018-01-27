@@ -14,21 +14,16 @@
     <link rel="stylesheet" href="../assets/js/calendar/bootstrap_calendar.css" type="text/css" />
     <link rel="stylesheet" href="../assets/js/jvectormap/jquery-jvectormap-1.2.2.css" type="text/css" />
     <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/js/select2/select2.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/js/select2/theme.css" type="text/css" />
     <!--[if lt IE 9]>
     <script src="../assets/js/ie/html5shiv.js"></script>
     <script src="../assets/js/ie/respond.min.js"></script>
     <script src="../assets/js/ie/excanvas.js"></script>
   <![endif]-->
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-    
-    <script>
-        $(function(){
-            $("#header").load("../header.html");
-            $("#nav-bar").load("navBar.html");
-            $("#content").load("../homeTemplate.html");    
-        }
-                );
-    </script>
+   
+
+   
 
 </head>
 
@@ -52,6 +47,13 @@
 
                 </section>
                 <!--End of Content-->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+                
+                <script src="../assets/js/Utility/pageLoad.js"></script>
+                 <script>
+                     $("#header").load("../header.html");
+                     $('#nav-bar').load("navBar.html");
+                </script>
 
             </section>
             <!--End of hbox stretch -->
@@ -83,6 +85,10 @@
     <script src="../assets/js/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
     <script src="../assets/js/jvectormap/demo.js"></script>
     <script src="../assets/js/app.plugin.js"></script>
+    <!-- file input -->  
+    <script src="../assets/js/file-input/bootstrap-filestyle.min.js"></script>
+    <!-- select2 -->
+    <script src="../assets/js/select2/select2.min.js"></script>   
 </body>
 
 </html>

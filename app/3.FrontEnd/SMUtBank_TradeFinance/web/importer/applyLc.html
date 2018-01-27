@@ -95,19 +95,12 @@
                                 <label>Amount</label>
                                 <input id="amount" type="text" class="form-control" data-type="digits" data-required="true" required>
                             </div>
+                            
                             <div class="form-group">
                                 <label for="expiryDate">Expiry Date</label>
-                                <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd">
-                                    <!--<input class="form-control" size="16" type="text" value="" readonly>-->
-                                    <input id="expiryDate" type="text" class="form-control expiryDate" name="expiryDate" data-required="true" required>
-                                    
-                                </div>
-                                <input type="hidden" id="dtp_input2" value="" /><br/>
+                                <input type='text' class="form-control form_date" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" data-required="true" required/>
                             </div>
-                            <!--<div class="form-group">
-                                <label>Expiry Date (YYYY-MM-DD)</label>
-                                <input id="expiryDate" type="text" class="form-control expiryDate" name="expiryDate" data-required="true" required>
-                            </div>-->
+                            
                             <div class="form-group">
                                 <label>Additional Conditions</label>
                                 <textarea id="additonalConditions"  class="form-control" rows="6" data-required="true" placeholder="Additional Conditions" name="additonalConditions" required></textarea>
@@ -156,34 +149,23 @@
 <!--<script src="../assets/js/applyLcBc.js"></script>-->
 
 <script type="text/javascript">
-$('.form_date').datetimepicker({
-  
-        weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		minView: 2,
-		forceParse: 0
-    });
+    $('.form_date').datetimepicker({
+
+            weekStart: 1,
+            todayBtn:  1,
+                    autoclose: 1,
+                    todayHighlight: 1,
+                    startView: 2,
+                    minView: 2,
+                    forceParse: 0
+        });
 </script>
 <script type="text/javascript">
 $("#create_button_api").click(function(){
-//apply lc from api
-    //applyLc();
-//retrieve ref num from 
-    //returnRefNumList();
-    /*var temp = sessionStorage.getItem('refNumList');
-    var viewName = $.parseJSON(temp);
-    var refNum = viewName[0];
-    console.log("refNum");
-    console.log(refNum);*/
-    console.log(loadRefNumList());
 
-// apply lc from blockchain
-    //applyLcBc(refNum);
+    applyLcOperation(); //caling this method from assets/js/Utility/lcOperations.js
     
-    } )  
+    } );  
 </script>
 
 

@@ -6,54 +6,62 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html>
-<head>
+    <head>
 
-<script>
-/*$(document).ready(function(){
-    $("button").click(function(){
-        var refNumList = [1039,1038,1037,1036,1035];
-        for (var i in refNumList){
-            var getContractLink = "http://localhost:9001/lc/getContract?refNum="+refNumList[i];
-            $.getJSON(getContractLink).done(function (data) {
-                var items = [];
-                $.each( data.Content, function( key, val ) {
-                  items.push( "<li id='" + key + "'>" + val + "</li>" );
-                });
-                
-                $("body").append(items);
-               
-               
-            console.log(data.Content);
+        <script>
+            /*$(document).ready(function(){
+             $("button").click(function(){
+             var refNumList = [1039,1038,1037,1036,1035];
+             for (var i in refNumList){
+             var getContractLink = "http://localhost:9001/lc/getContract?refNum="+refNumList[i];
+             $.getJSON(getContractLink).done(function (data) {
+             var items = [];
+             $.each( data.Content, function( key, val ) {
+             items.push( "<li id='" + key + "'>" + val + "</li>" );
              });
-            
-        }
-        
-    });
-});*/
-</script>
-</head>
-<body>
+             
+             $("body").append(items);
+             
+             
+             console.log(data.Content);
+             });
+             
+             }
+             
+             });
+             });*/
+        </script>
+    </head>
+    <body>
 
-<button id="button1">Get customer details</button>
-<button id="button2">Get customer accounts</button>
-<button id="button3">Get all types</button>
-<button id="button4">Get all types</button>
-<button id="button5">Get ref num list</button>
-<div id="content"></div>
-<!--<div id="nav">
-</div>
-<div id="content"></div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="assets/js/pageLoad.js"></script>
- <script>
-     $('#nav').load("nav.html");
-</script>-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="assets/js/retrieveRefNumList.js"></script>
-<script src="assets/js/getTypes.js"></script>
-<script src="assets/js/lcHandling.js"></script>
-<script>
-    $("#button1").click(function(){
+        <button id="button1">Get customer details</button>
+        <button id="button2">Get customer accounts</button>
+        <button id="button3">Get all types</button>
+        <button id="button4">Get all types</button>
+        <button id="button5">Get ref num list</button>
+        <button id="button6">Get game questions</button>
+        <div id="content"></div>
+        <!--<div id="nav">
+        </div>
+        <div id="content"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="assets/js/pageLoad.js"></script>
+         <script>
+             $('#nav').load("nav.html");
+        </script>-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="assets/js/DAO/apiUrl.js"></script>
+        <script src="assets/js/retrieveRefNumList.js"></script>
+        <script src="assets/js/getTypes.js"></script>
+        <script src="assets/js/DAO/lcHandling.js"></script>
+        <script src="assets/js/DAO/gameHandling.js"></script>
+
+<script type="text/javascript">
+    console.log("api address");
+    console.log(getApiUrl());
+</script>
+        <script>
+            $("#button1").click(function () {
                 var headerObj = {
                     Header: {
                         serviceName: "getCustomerDetails",
@@ -63,22 +71,22 @@ and open the template in the editor.
                     }
                 };
                 var header = JSON.stringify(headerObj);
-                          
 
-                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
+
+                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
 
                 var xmlHttp = new XMLHttpRequest();              //setup new http req
-                if (xmlHttp === null){
+                if (xmlHttp === null) {
                     alert("Browser does not support HTTP request."); //check for browser thingy
                 }
 
-                xmlHttp.open("POST", apiURL+"?Header="+header, true);
+                xmlHttp.open("POST", apiURL + "?Header=" + header, true);
                 xmlHttp.timeout = 5000;
 
                 // setup http event handlers
-                xmlHttp.onreadystatechange = function() {
+                xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                        
+
                         responseObj = JSON.parse(xmlHttp.responseText);
                         //var cdmCustomer = responseObj.Content.ServiceResponse["CDMCustomer"].address;
                         //$("#content").html(cdmCustomer);
@@ -86,13 +94,13 @@ and open the template in the editor.
                     }
                 };
                 xmlHttp.ontimeout = function (e) {
-                    alert ("Timeout retrieving document type list.");
+                    alert("Timeout retrieving document type list.");
                     callback();
-                };      
+                };
 
                 xmlHttp.send();
-           });
-        $("#button2").click(function(){
+            });
+            $("#button2").click(function () {
                 var headerObj = {
                     Header: {
                         serviceName: "getCustomerAccounts",
@@ -102,78 +110,156 @@ and open the template in the editor.
                     }
                 };
                 var header = JSON.stringify(headerObj);
-                          
 
-                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
+
+                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
 
                 var xmlHttp = new XMLHttpRequest();              //setup new http req
-                if (xmlHttp === null){
+                if (xmlHttp === null) {
                     alert("Browser does not support HTTP request."); //check for browser thingy
                 }
 
-                xmlHttp.open("POST", apiURL+"?Header="+header, true);
+                xmlHttp.open("POST", apiURL + "?Header=" + header, true);
                 xmlHttp.timeout = 5000;
 
                 // setup http event handlers
-                xmlHttp.onreadystatechange = function() {
+                xmlHttp.onreadystatechange = function () {
                     if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                        
+
                         responseObj = JSON.parse(xmlHttp.responseText);
-                        $("#content").html("<pre id='json'>"+responseObj.Content.ServiceResponse+"</pre>");
+                        $("#content").html("<pre id='json'>" + responseObj.Content.ServiceResponse + "</pre>");
                         console.log(responseObj.Content);
                     }
                 };
                 xmlHttp.ontimeout = function (e) {
-                    alert ("Timeout retrieving document type list.");
+                    alert("Timeout retrieving document type list.");
                     callback();
-                };      
+                };
 
                 xmlHttp.send();
-           });
-           
-           
-           $("#button3").click(function(){
-             console.log(loadRefNumList());
-         } );
-         
-          $("#button4").click(function(){//
-              
-             //console.log(getRefNumListAjax());
-             //var numList = getRefNumListAjax();
-             
-             
-            var refNum;
-            getRefNumListAjax(function(refNumList) {
-                 refNum = refNumList.RefNumList.RefNum;
-             });
-             console.log(refNum[0]);
+            });
 
-         } );
-         
-         $("#button5").click(function(){//
-              
-             //console.log(getRefNumListAjax());
-             //var numList = getRefNumListAjax();
-             
-             
-             //console.log(getRefNumList("kinetic1", refNumList));
-             
-            var userId = "kinetic1";
-            var PIN = "123456";
-            var OTP = "999999";
-             
-             
-            var refNum;
-            getRefNumList(
-               userId,PIN,OTP ,function(refNumList) {
-                    refNum = refNumList.RefNumList.RefNum[0];
-               });
-             console.log(refNum);
-         } );
-         
-                  
-    
-</script>
 
-</body>
+            $("#button3").click(function () {
+                console.log(loadRefNumList());
+            });
+
+            $("#button4").click(function () {//
+                function LetterOfCredits(importerAccount,
+                        exporterAccount,
+                        expiryDate,
+                        confirmed, revocable,
+                        availableBy,
+                        termDays,
+                        amount,
+                        currency,
+                        applicableRules,
+                        partialShipments,
+                        shipDestination,
+                        shipDate,
+                        shipPeriod,
+                        goodsDescription,
+                        docsRequired,
+                        additionalConditions,
+                        senderToReceiverInfo,
+                        mode)
+                {
+                    this.importerAccount = importerAccount,
+                            this.exporterAccount = exporterAccount,
+                            this.expiryDate = expiryDate,
+                            this.confirmed = confirmed,
+                            this.revocable = revocable,
+                            this.availableBy = availableBy,
+                            this.termDays = termDays,
+                            this.amount = amount,
+                            this.currency = currency,
+                            this.applicableRules = applicableRules,
+                            this.partialShipments = partialShipments,
+                            this.shipDestination = shipDestination,
+                            this.shipDate = shipDate,
+                            this.shipPeriod = shipPeriod,
+                            this.goodsDescription = goodsDescription,
+                            this.docsRequired = docsRequired,
+                            this.additionalConditions = additionalConditions,
+                            this.senderToReceiverInfo = senderToReceiverInfo,
+                            this.mode = mode
+                }
+
+                //console.log(getRefNumListAjax());
+                //var numList = getRefNumListAjax();
+                var importerAccount = "2365";
+                var exporterAccount = "12345";
+                var expiryDate = "2019-09-11";
+                var confirmed = "false";
+                var revocable = "false";
+                var availableBy = "TERM";
+                var termDays = "90";
+                var amount = "20000";
+                var currency = "SGD";
+                var applicableRules = "none";
+                var partialShipments = "false";
+                var shipDestination = "London";
+                var shipDate = "2017-12-12";
+                var shipPeriod = "90 Days";
+                var goodsDescription = "ssssss";
+                var docsRequired = "none";
+                var additionalConditions = "xxxxxx";
+                var senderToReceiverInfo = "none";
+                var mode = "BC";
+
+                var lc = new LetterOfCredits(importerAccount,
+                        exporterAccount,
+                        expiryDate,
+                        confirmed, revocable,
+                        availableBy,
+                        termDays,
+                        amount,
+                        currency,
+                        applicableRules,
+                        partialShipments,
+                        shipDestination,
+                        shipDate,
+                        shipPeriod,
+                        goodsDescription,
+                        docsRequired,
+                        additionalConditions,
+                        senderToReceiverInfo,
+                        mode);
+                var lcJson = JSON.stringify(lc);
+                console.log(lcJson);
+
+
+            });
+
+            $("#button5").click(function () {//
+
+                //console.log(getRefNumListAjax());
+                //var numList = getRefNumListAjax();
+
+
+                //console.log(getRefNumList("kinetic1", refNumList));
+
+                var userId = "kinetic1";
+                var PIN = "123456";
+                var OTP = "999999";
+
+
+                var refNum;
+                getRefNumList(
+                        userId, PIN, OTP, function (refNumList) {
+                            refNum = refNumList.RefNumList.RefNum[0];
+                        });
+                console.log(refNum);
+            });
+
+            $("#button6").click(function () {//
+
+            getGameQuestion("", "", "", 1, function(data){
+                console.log(data);
+            })
+            });
+
+        </script>
+
+    </body>
 </html>

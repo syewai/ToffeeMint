@@ -2,8 +2,9 @@
  * This script stores all lc handling logic (exposing web service)
  */
 
-var apiUrl = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
-var apiUrlBC = 'http://localhost:9001/lc/';
+//calling getApiUrl() and getApiUrlBC() from assets/js/DAO/apiUrl.js
+var apiUrl = getApiUrl();
+var apiUrlBC = getApiUrlBC();
 
 function LetterOfCredits(importerAccount,
         exporterAccount,
@@ -46,25 +47,6 @@ function LetterOfCredits(importerAccount,
 }
 
 function applyLc(userId, PIN, OTP, refNum, lc, callback) {
-    /*var importerAccount = lc.importerAccount;
-    var exporterAccount = lc.exporterAccount;
-    var expiryDate = lc.expiryDate;
-    var confirmed = lc.confirmed;
-    var revocable = lc.revocable;
-    var availableBy = lc.availableBy;
-    var termDays = lc.termDays;
-    var amount = lc.amount;
-    var currency = lc.currency;
-    var applicableRules = lc.applicableRules;
-    var partialShipments = lc.partialShipments;
-    var shipDestination = lc.shipDestination;
-    var shipDate = lc.shipDate;
-    var shipPeriod = lc.shipPeriod;
-    var goodsDescription = lc.goodsDescription;
-    var docsRequired = lc.docsRequired;
-    var additionalConditions = lc.additionalConditions;
-    var senderToReceiverInfo = lc.senderToReceiverInfo;
-    var mode = lc.mode;*/
 
     var headerObj = {
         Header: {
@@ -91,23 +73,37 @@ function applyLc(userId, PIN, OTP, refNum, lc, callback) {
 
 }
 
-function amendLc(userId, PIN, OTP, refNum, amendments, callback) { //exporter
-    /*UI Logic*/
+function applyLcApi(userId, PIN, OTP, lc, callback) {
 
-    var refNum = getQueryVariable("refNum");
-    var amendments = {};
 
-    $("input").each(function () {
-        //elements.push(this.value);
-        //console.log(this.name);
-        if (this.value === "") {
-            this.value = this.placeholder;
+    var headerObj = {
+        Header: {
+            serviceName: "applyLetterOfCredit",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
         }
-        amendments[this.name] = this.value;
+    };
+    var header = JSON.stringify(headerObj);
 
+    var contentObj = {
+        Content: lc
+    };
+    var content = JSON.stringify(contentObj);
+    console.log("content");
+    console.log(content);
+    $.ajax({
+        async: false,
+        type: 'POST',
+        url: apiUrl +"?Header="+header+"&Content="+content+"&ConsumerID=TF",
+        dataType: 'json',
+        success: callback
     });
 
-//calling web service
+}
+
+function amendLc(userId, PIN, OTP, refNum, amendments, callback) { //exporter
+
     var headerObj = {
         Header: {
             serviceName: "amendLetterOfCredit",
@@ -132,7 +128,33 @@ function amendLc(userId, PIN, OTP, refNum, amendments, callback) { //exporter
 
     });
 
+}
 
+function getLcAmendments(userId, PIN, OTP, refNum, callback) { //exporter
+
+    var headerObj = {
+        Header: {
+            serviceName: "getAmendments",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    var contentObj = {
+        ReferenceNumber: refNum
+    };
+    var content = JSON.stringify(contentObj);
+
+    $.ajax({
+        async: false,
+        type: 'GET',
+        url: apiUrlBC + "getAmendments?Header=" + header + "&refNum=" + refNum,
+        dataType: 'json',
+        success: callback
+
+    });
 
 }
 

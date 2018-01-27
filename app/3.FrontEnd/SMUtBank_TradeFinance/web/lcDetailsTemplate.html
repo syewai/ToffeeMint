@@ -1,41 +1,16 @@
 <!DOCTYPE html>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-<script src="../assets/js/retrieveLcDetails.js"></script>
-<script src="../assets/js/getQueryVariable.js"></script>
-<script src="../assets/js/taskButtonAllocation.js"></script>
-<script src="../assets/js/setStatus.js"></script>
+
+<script src="../assets/js/Utility/globalFunctions.js"></script>
+<script src="../assets/js/DAO/apiUrl.js"></script>
+<script src="../assets/js/DAO/lcHandling.js"></script>
+<script src="../assets/js/DAO/statusHandling.js"></script>
+<script src="../assets/js/Utility/lcOperations.js"></script>
+<script src="../assets/js/Utility/taskButtonAllocation.js"></script>
 <script>
-    retrieveLc();
-    //get url pattern
-    // if approve lc --> change button
-    // if view lc --> load home button
-    var temp = sessionStorage.getItem('user');
-    var viewName = $.parseJSON(temp);
-    var usertype = viewName.usertype;
-
-    console.log(viewName.usertype);
-    var url = getQueryVariable("action");
-    if (usertype === "exporter" && url === "approveLc"){
-        approveLcButton();
-        
-        $("#approveButton").click(function () {
-            setStatus("acknowledged");
-            window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
-
-        });
-        $("#amendButton").click(function () {
-            var refNum = getQueryVariable("refNum");
-            window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
-        });
-
-    } else {
-         viewLcButton(usertype);
     
-    }
-    function capitalizeFirstLetter(word) {
-        return word.charAt(0).toUpperCase() + word.slice(1)
-    }
-
+    lcDetailsOperation();//this method is called from utility/lcOperations.js
+ 
 </script>
 <section class="vbox">
     <section class="scrollable">

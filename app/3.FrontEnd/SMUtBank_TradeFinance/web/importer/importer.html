@@ -21,33 +21,9 @@
     <script src="../assets/js/ie/respond.min.js"></script>
     <script src="../assets/js/ie/excanvas.js"></script>
   <![endif]-->
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+   
 
-    <script src="../assets/js/retrieveRefNumList.js"></script>  
-    
-    <script>
-        $(function(){
-            $("#header").load("../header.html");
-            $("#nav-bar").load("navBar.html");
-            
-        /*var g = localStorage.getItem('lists');
-         var page = JSON.parse(g);
-            console.log(g);
-            console.log(g.key);
-            if (g === null || g === "undefined"){
-                $("#content").load("home.html");
-            } else {
-                
-                //for (var somePage in page){
-                  // $("#content").load(somePage+".html?refNum="+page[somePage]); 
-               // }
-                
-            }*/
-        $("#content").load("../homeTemplate.html");
-                      
-        }
-                );
-    </script>
+   
 
 </head>
 
@@ -71,6 +47,13 @@
 
                 </section>
                 <!--End of Content-->
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+                
+                <script src="../assets/js/Utility/pageLoad.js"></script>
+                 <script>
+                     $("#header").load("../header.html");
+                     $('#nav-bar').load("navBar.html");
+                </script>
 
             </section>
             <!--End of hbox stretch -->

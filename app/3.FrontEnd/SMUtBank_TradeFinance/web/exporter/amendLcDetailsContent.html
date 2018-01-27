@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-<script src="../assets/js/retrieveLcInput.js"></script>
-<script src="../assets/js/getQueryVariable.js"></script>
-<script src="../assets/js/taskButtonAllocation.js"></script>
-<script src="../assets/js/amendLc.js"></script>
-<script src="../assets/js/setStatus.js"></script>
+
+<script src="../assets/js/Utility/globalFunctions.js"></script>
+<script src="../assets/js/DAO/apiUrl.js"></script>
+<script src="../assets/js/DAO/lcHandling.js"></script>
+<script src="../assets/js/DAO/statusHandling.js"></script>
+<script src="../assets/js/Utility/lcOperations.js"></script>
+<script src="../assets/js/Utility/taskButtonAllocation.js"></script>
 <script>
-    retrieveLcInput();
+    /*retrieveLcInput();
     
     amendLcButton();
 
@@ -19,7 +21,9 @@
     
     function capitalizeFirstLetter(word) {
         return word.charAt(0).toUpperCase() + word.slice(1)
-    }
+    }*/
+    
+    amendLcOperation();
 
 </script>
 <section class="vbox">

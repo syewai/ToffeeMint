@@ -34,25 +34,6 @@
             });
         </script>
 
-        <script>
-            retrieveLc();
-            //viewLcButton();
-            approveLcButton();
-            $("#approveButton").click(function () {
-                setStatus("acknowledged");
-
-            });
-            $("#amendButton").click(function () {
-                var refNum = getQueryVariable("refNum");
-                window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
-            });
-
-            function capitalizeFirstLetter(word) {
-                return word.charAt(0).toUpperCase() + word.slice(1)
-            }
-        </script>
-
-
     </head>
 
     <body class="">
@@ -88,29 +69,6 @@
         <script src="../assets/js/parsley/parsley.extend.js"></script>
         <script src="../assets/js/app.plugin.js"></script>
         <script src="../assets/js/app.plugin.js"></script>
-
-        <script>
-
-            /* $(document).ready(function() {
-             var refNum = getQueryVariable("refNum");
-             $("#approveButton").click(function() {
-             //retrieve ref num;
-             
-             //set status to "acknowledged"
-             
-             //upload status change to bc
-             
-             //redirect to homepage
-             window.location = "/SMUtBank_TradeFinance/exporter/exporter.html";
-             
-             });
-             $("#amendButton").click(function() { 
-             //retrieve ref num
-             //redirect to amendlcdetails
-             window.location = "/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum="+refNum;
-             });
-             });*/
-        </script>
 
     </body>
 

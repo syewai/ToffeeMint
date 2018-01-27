@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 <section class="vbox">
 
     <section class="w-f scrollable">
@@ -8,8 +9,8 @@
             <!-- nav -->
             <nav class="nav-primary hidden-xs">
                 <ul class="nav">
-                    <li class="active">
-                        <a class="pages" id="home">
+                    <li class="liHeader active" id="header1">
+                        <a class="pages" id="homeTemplate" href="homeTemplate">
                             <i class="fa fa-dashboard icon">
                                 <b class="bg-danger"></b>
                             </i>
@@ -17,7 +18,7 @@
                         </a>
                     </li>
 
-                    <li>
+                    <li class="liHeader" id="header2">
                         <a href="#layout">
                             <i class="fa fa-file-text icon">
                                 <b class="bg-warning"></b>
@@ -29,20 +30,20 @@
                             <span>Letter of Credits</span>
                         </a>
                         <ul class="nav lt">
-                            <li>
-                                <a class="pages" id="applyLc">
+                            <li class="liSub">
+                                <a class="pages" id="applyLc" href="applyLc">
                                     <i class="fa fa-angle-right"></i>
                                     <span>Apply LC</span>
                                 </a>
                             </li>
-                            <li>
-                                <a class="pages" id="modifyLcDetails">
+                            <li class="liSub" style="display:none">
+                                <a class="pages" id="modifyLcDetails" href="modifyLcDetails">
                                     <i class="fa fa-angle-right"></i>
                                     <span>Modify LC</span>
                                 </a>
                             </li>
-                            <li>
-                                <a class="pages" id="viewLcLog">
+                            <li class="liSub">
+                                <a class="pages" id="viewLcLogTemplate" href="viewLcLogTemplate">
                                     <i class="fa fa-angle-right"></i>
                                     <span>View LC Log</span>
                                 </a>
@@ -65,15 +66,43 @@
     </footer>
 </section>
 
-<script>
-    /*This script is used to do nav bar page loading, based on html file name */
+<script type="text/javascript">
 
-        $("body").on("click", ".pages", function() {
-            var title = this.id.trim();
+    /*$(".pages").click(function(){
+     var page = this.id;
+     
+     if(page === "homeTemplate" || page === "viewLcLogTemplate"){
+     page = "../"+page;
+     }
+     $('#content').load(page+".html");
+     });
+     /*This script is used to do nav bar page loading, based on html file name */
+    //$("#content").load(page+".html");
+    /*$(".pages").click(function(){
+     var page = this.id;
+     console.log(page);
+     
+     //sessionStorage.setItem('page', JSON.stringify(page));
+     
+     //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+     //var temp = sessionStorage.getItem('user');
+     //var viewName = $.parseJSON(temp);
+     //var usertype = viewName.usertype;
+     //$("#content").load(page+".html");
+     //sessionStorage.setItem('page', JSON.stringify(page));       
+     //window.location.replace("/SMUtBank_TradeFinance/"+usertype+"/"+usertype+".html");
+     
+     //  
+     });
+     
+     //load nav
+     //load content
+     //redirect page
+     
+     /*function clicked(ele) {
+     $(ele).click(function(){
+     $(ele).removeClass("active"); 
+     });
+     }*/
 
-            var pageToLoad = title + ".html";
-            
-            $("#content").load(pageToLoad);
-
-        });
 </script>

@@ -5,12 +5,11 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <script>
-    var temp = sessionStorage.getItem('user');
-    var viewName = $.parseJSON(temp);
-    $('#username').html("Welcome back, "+viewName.username);
-    $('#usertype').html(viewName.usertype);
-    console.log(viewName.username);
-    console.log(viewName.usertype);
+    var getUserItem = sessionStorage.getItem('user');
+    var user = $.parseJSON(getUserItem);
+    $('#username').html("Welcome back, "+user.username);
+    $('#usertype').html(user.usertype);
+
     //e.preventDefault();
 </script>
 <h2 class="m-b-xs font-bold m-t-none" id="username"></h2>
