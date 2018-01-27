@@ -3,9 +3,9 @@
  */
 
 var apiUrl = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
-var apiUrlBC = 'http://localhost:9001/lc/'
+var apiUrlBC = 'http://localhost:9001/lc/';
 
-function lc(importerAccount,
+function LetterOfCredits(importerAccount,
         exporterAccount,
         expiryDate,
         confirmed, revocable,
@@ -46,7 +46,7 @@ function lc(importerAccount,
 }
 
 function applyLc(userId, PIN, OTP, refNum, lc, callback) {
-    var importerAccount = lc.importerAccount;
+    /*var importerAccount = lc.importerAccount;
     var exporterAccount = lc.exporterAccount;
     var expiryDate = lc.expiryDate;
     var confirmed = lc.confirmed;
@@ -64,42 +64,20 @@ function applyLc(userId, PIN, OTP, refNum, lc, callback) {
     var docsRequired = lc.docsRequired;
     var additionalConditions = lc.additionalConditions;
     var senderToReceiverInfo = lc.senderToReceiverInfo;
-    var mode = lc.mode;
+    var mode = lc.mode;*/
 
     var headerObj = {
         Header: {
             serviceName: "applyLetterOfCredit",
-            userID: "kinetic1",
-            PIN: "123456",
-            /*userID: "toffeemint",
-             PIN: "toffeemint123",*/
-            OTP: "999999"
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
         }
     };
     var header = JSON.stringify(headerObj);
 
     var contentObj = {
-        Content: {
-            importerAccount: importerAccount,
-            exporterAccount: exporterAccount,
-            expiryDate: expiryDate,
-            confirmed: confirmed,
-            revocable: revocable,
-            availableBy: availableBy,
-            termDays: termDays,
-            amount: amount,
-            currency: currency,
-            applicableRules: applicableRules,
-            partialShipments: partialShipments,
-            shipDestination: shipDestination,
-            shipDate: shipDate,
-            shipPeriod: shipPeriod,
-            goodsDescription: goodsDescription,
-            docsRequired: docsRequired,
-            additionalConditions: additionalConditions,
-            senderToReceiverInfo: senderToReceiverInfo,
-            mode: mode
-        }
+        Content: lc
     };
     var content = JSON.stringify(contentObj);
     $.ajax({

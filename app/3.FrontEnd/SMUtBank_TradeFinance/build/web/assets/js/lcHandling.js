@@ -3,9 +3,9 @@
  */
 
 var apiUrl = 'http://smu.tbankonline.com/SMUtBank_API/Gateway';
-var apiUrlBC = 'http://localhost:9001/lc/';
+var apiUrlBC = 'http://localhost:9001/lc/'
 
-function LetterOfCredits(importerAccount,
+function lc(importerAccount,
         exporterAccount,
         expiryDate,
         confirmed, revocable,
@@ -46,7 +46,7 @@ function LetterOfCredits(importerAccount,
 }
 
 function applyLc(userId, PIN, OTP, refNum, lc, callback) {
-    /*var importerAccount = lc.importerAccount;
+    var importerAccount = lc.importerAccount;
     var exporterAccount = lc.exporterAccount;
     var expiryDate = lc.expiryDate;
     var confirmed = lc.confirmed;
@@ -64,26 +64,48 @@ function applyLc(userId, PIN, OTP, refNum, lc, callback) {
     var docsRequired = lc.docsRequired;
     var additionalConditions = lc.additionalConditions;
     var senderToReceiverInfo = lc.senderToReceiverInfo;
-    var mode = lc.mode;*/
+    var mode = lc.mode;
 
     var headerObj = {
         Header: {
             serviceName: "applyLetterOfCredit",
-            userID: userId,
-            PIN: PIN,
-            OTP: OTP
+            userID: "kinetic1",
+            PIN: "123456",
+            /*userID: "toffeemint",
+             PIN: "toffeemint123",*/
+            OTP: "999999"
         }
     };
     var header = JSON.stringify(headerObj);
 
     var contentObj = {
-        Content: lc
+        Content: {
+            importerAccount: importerAccount,
+            exporterAccount: exporterAccount,
+            expiryDate: expiryDate,
+            confirmed: confirmed,
+            revocable: revocable,
+            availableBy: availableBy,
+            termDays: termDays,
+            amount: amount,
+            currency: currency,
+            applicableRules: applicableRules,
+            partialShipments: partialShipments,
+            shipDestination: shipDestination,
+            shipDate: shipDate,
+            shipPeriod: shipPeriod,
+            goodsDescription: goodsDescription,
+            docsRequired: docsRequired,
+            additionalConditions: additionalConditions,
+            senderToReceiverInfo: senderToReceiverInfo,
+            mode: mode
+        }
     };
     var content = JSON.stringify(contentObj);
-    $.ajax({
+     $.ajax({
         async: false,
         type: 'GET',
-        url: apiUrlBC + 'createContract?Header=' + header + '&refNum=' + refNum + '&contract=' + content,
+        url: apiUrlBC + 'createContract?Header=' + header + '&refNum='+refNum+'&contract=' + content,
         dataType: 'json',
         success: callback
 
@@ -93,8 +115,8 @@ function applyLc(userId, PIN, OTP, refNum, lc, callback) {
 
 function amendLc(userId, PIN, OTP, refNum, amendments, callback) { //exporter
     /*UI Logic*/
-
-    var refNum = getQueryVariable("refNum");
+    
+     var refNum = getQueryVariable("refNum");
     var amendments = {};
 
     $("input").each(function () {
@@ -111,9 +133,9 @@ function amendLc(userId, PIN, OTP, refNum, amendments, callback) { //exporter
     var headerObj = {
         Header: {
             serviceName: "amendLetterOfCredit",
-            userID: userId,
-            PIN: PIN,
-            OTP: OTP
+            userID: "kinetic1",
+            PIN: "123456",
+            OTP: "999999"
         }
     };
     var header = JSON.stringify(headerObj);
@@ -122,75 +144,25 @@ function amendLc(userId, PIN, OTP, refNum, amendments, callback) { //exporter
         Content: amendments
     };
     var content = JSON.stringify(contentObj);
-
+    
     $.ajax({
         async: false,
         type: 'GET',
-        url: apiUrlBC + "amendLC?Header=" + header + "&refNum=" + refNum + "&amendments=" + content,
+        url: apiUrlBC + "?Header="+header+"&refNum=" + refNum + "&amendments=" + content,
         dataType: 'json',
         success: callback
 
     });
-
-
+    
+    
 
 }
 
-function modifyLc(userId, PIN, OTP, refNum, contract, callback) {//importer
+function modifyLc() {//importer
 
-    var headerObj = {
-        Header: {
-            serviceName: "modifyLetterOfCredit",
-            userID: userId,
-            PIN: PIN,
-            OTP: OTP
-        }
-    };
-    var header = JSON.stringify(headerObj);
-
-    var contentObj = {
-        Content: contract
-    };
-    var content = JSON.stringify(contentObj);
-    
-    $.ajax({
-        async: false,
-        type: 'GET',
-        url: apiUrlBC + "modifyContract?Header="+header+"&refNum=" + refNum + "&contract=" + content,
-        dataType: 'json',
-        success: callback
-
-    });
 }
 
-function getLcDetails(userId, PIN, OTP, refNum, callback) {
-    
-    var headerObj = {
-        Header: {
-            serviceName: "getLetterOfCredit",
-            userID: userId,
-            PIN: PIN,
-            OTP: OTP
-        }
-    };
-    var header = JSON.stringify(headerObj);
-
-    var contentObj = {
-        Content: {
-            referenceNumber: refNum,
-            mode: "BC"
-        }
-    };
-    var content = JSON.stringify(contentObj);
-    
-    $.ajax({
-        async: false,
-        type: 'GET',
-        url: apiUrlBC + "getContract?Header="+header+"&refNum=" + refNum,
-        dataType: 'json',
-        success: callback
-
-    });
+function getLcDetails() {
 
 }
 

@@ -3,15 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/setStatus.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/retrieveRefNumList.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/sendSMS.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/login_1.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/retrieveLatestLC.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/taskButtonAllocation.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/amendLc.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/retrieveLcDetails.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/WEB-INF/lib/gson-2.2.4.jar</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/lcHandling.js</file>
         </group>
     </open-files>
 </project-private>
