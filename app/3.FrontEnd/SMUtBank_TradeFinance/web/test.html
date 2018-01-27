@@ -34,11 +34,16 @@ and open the template in the editor.
 </head>
 <body>
 
-<button id="button1">Get customer details</button>
-<button id="button2">Get customer accounts</button>
-<button id="button3">Get all types</button>
-<button id="button4">Get all types</button>
-<button id="button5">Get ref num list</button>
+    <button id="button1">Get customer details</button>
+    <button id="button2">Get customer accounts</button>
+    <button id="button3">Get all types</button>
+    <button id="button4">Get all types</button>
+    <button id="button5">Get ref num list</button>
+    <button id="button6">Get game question</button>
+    <button id="button7">Get game answer</button>
+    <button id="button8">Set question score</button>
+    <button id="button9">Get game score</button>
+    <button id="button10">Get game leaders</button>
 <div id="content"></div>
 <!--<div id="nav">
 </div>
@@ -51,7 +56,8 @@ and open the template in the editor.
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="assets/js/retrieveRefNumList.js"></script>
 <script src="assets/js/getTypes.js"></script>
-<script src="assets/js/lcHandling.js"></script>
+<script src="assets/js/DAO/lcHandling.js"></script>
+<script src="assets/js/DAO/gameHandling.js"></script>
 <script>
     $("#button1").click(function(){
                 var headerObj = {
@@ -170,6 +176,40 @@ and open the template in the editor.
                });
              console.log(refNum);
          } );
+
+        //game test
+         $("#button6").click(function() {
+             getGameQuestion("", "", "", 1, function(callback)   {
+                 console.log(callback);
+             });
+         });
+         
+         $("#button7").click(function() {
+             getGameAnswer("", "", "", 1, function(callback)   {
+                 console.log(callback);
+             });
+         });
+         
+         $("#button8").click(function() {
+             setQuestionScore("kinetic1", "123456", "999999", 1, 1, 10, "Pretest", 1, function(callback)   {
+                 console.log(callback);
+             });
+         });
+         
+         $("#button9").click(function() {
+             getGameScore("kinetic1", "123456", "999999", 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function(callback)   {
+                 console.log(callback);
+             });
+         });
+         
+         $("#button10").click(function() {
+             getGameLeaders("kinetic1", "123456", "999999", 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", true, function(callback)   {
+                 console.log(callback);
+             });
+         });
+         
+         
+                  
          
                   
     
