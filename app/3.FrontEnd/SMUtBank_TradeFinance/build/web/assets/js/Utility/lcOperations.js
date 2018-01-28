@@ -21,8 +21,8 @@ function applyLcOperation() {
     var currency = "SGD";
     var applicableRules = "none";
     var partialShipments = "false";
-    var shipDestination = "London";
-    var shipDate = "2017-12-12";
+    var shipDestination = document.getElementById("goodsDesc").value;;
+    var shipDate = document.getElementById("expiryDate").value; // for testing purpose, Remember to change it!!
     var shipPeriod = "90 Days";
     var goodsDescription = document.getElementById("goodsDesc").value;
     var docsRequired = "none";
@@ -154,6 +154,141 @@ function homeOperation() {
     }
 }
 
+//this function handles ui logic of homepage
+function shipperHomeOperation() {
+    var refNumberList;
+    getRefNumList(//calling this method from assets/js/DAO/lcHandling.js
+            userId, PIN, OTP, function (refNumList) {
+                refNumberList = refNumList.RefNumList.RefNum;
+            });
+    console.log(refNumberList);
+    var numOfRows = 5;
+    for (var i = 0; i < numOfRows; i++) {
+        //call web service to get lc details for each ref number 
+
+        var refNum = refNumberList[i];
+
+        var refNumInt = parseInt(refNum);
+
+        //get status of the ref num
+        //getStatus(userId, PIN, OTP, refNum, callback)
+        var status = "";
+        getStatus(userId, PIN, OTP, refNumInt, function (data) {
+            status = data;
+        });
+        if (status !== "") {
+            //get contract of the ref num
+            var exporterAcct = "";
+            var expiryDate = "";
+            getLcDetails(userId, PIN, OTP, refNumInt, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+                if (contract !== "") {
+                    exporterAcct = contract.Content.exporterAccount;
+                    expiryDate = contract.Content.expiryDate;
+                }
+
+            });
+
+            //get operation of the status
+            var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
+
+            var operation = operations[0];
+            var url = operations[1];
+
+
+            var $row = $('<tr></tr>');
+
+
+            var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNumInt;
+            var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
+
+            $button.addClass(buttonAssigned(status)[0]);
+
+            var $refNumCell = $('<td></td>');
+            $refNumCell.append(refNumInt);
+            $row.append($refNumCell);
+
+            var $exporterAcctCell = $('<td>' + exporterAcct + '</td>');
+            $row.append($exporterAcctCell);
+            var $expiryDateCell = $('<td>' + expiryDate + '</td>');
+            $row.append($expiryDateCell);
+
+            var $statusCell = $('<td id="status" class="font-bold">' + status + '</td>');
+            $statusCell.addClass(buttonAssigned(status)[1]);
+            $row.append($statusCell);
+
+            var $buttonCell = $('<td></td>');
+            $buttonCell.append($button);
+            $row.append($buttonCell);
+
+            $('#latestLCs').append($row);
+
+        }
+
+
+    }
+}
+
+
+function getAllLcDetailsShipper(){
+        var refNumberList;
+    getRefNumList(//calling this method from assets/js/DAO/lcHandling.js
+            userId, PIN, OTP, function (refNumList) {
+                refNumberList = refNumList.RefNumList.RefNum;
+            });
+    console.log(refNumberList);
+    var numOfRows = refNumberList.length;
+    var allLcDetails = {};
+    for (var i = 0; i < numOfRows; i++) {
+        //call web service to get lc details for each ref number 
+
+        var refNum = refNumberList[i];
+
+        var refNumInt = parseInt(refNum);
+
+        //get status of the ref num
+        //getStatus(userId, PIN, OTP, refNum, callback)
+        var status = "";
+        getStatus(userId, PIN, OTP, refNumInt, function (data) {
+            status = data;
+        });
+        var availableStatus = ["shipped to carrier", "documents uploaded","bg requested","documents issued","payment advised","documents accepted","bol verifed","item colleccted"];
+        if (status !== "" && availableStatus.contains(status)) {
+            //get contract of the ref num
+            var country = "";
+            var exporterAcct = "";
+            var shipDate = "";
+            
+            getLcDetails(userId, PIN, OTP, refNumInt, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+                if (contract !== "") {
+                    exporterAcct = contract.Content.exporterAccount;
+                    shipDate = contract.Content.shipDate;
+                    country = contract.Content.country;
+                }
+
+            });
+
+            //get operation of the status
+            var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
+            
+            var operation = operations[0];
+            var url = operations[1];
+            
+            var lcObject = {
+                refNum : refNumInt,
+                country : country,
+                exporter : exporterAcct,
+                shipDate : shipDate,
+                status : status,
+                operation : operation,
+                url : url    
+            };
+            allLcDetails[i] = lcObject;
+        }
+    }
+    return allLcDetails;
+    
+    
+}
 
 //this function handles ui logic of view lc details
 function lcDetailsOperation() {
@@ -417,6 +552,14 @@ function operationMatch(status, usertype) {
         } else if (status === "acknowledged") {
             url = "shipGoods";
             operation = "ship goods";
+        }
+    } else if (usertype === "shipper"){
+        if (status === "shipped to carrier"){
+            url="submitBol";
+            operation = "submit bol"          
+        } else {
+            url = "view contract";
+            operation = "view contract";
         }
     }
     return [operation, url];

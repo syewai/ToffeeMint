@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <head>
-  <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
-  <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
-  <link rel="stylesheet" href="../assets/css/font-awesome.min.css" type="text/css" />
-  <link rel="stylesheet" href="../assets/css/font.css" type="text/css" />
-  <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
-  <link rel="stylesheet" href="../assets/css/bootstrap-datetimepicker.min.css">
-  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/font.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/bootstrap-datetimepicker.min.css">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 </head>
 
 
@@ -32,11 +32,11 @@
 
                                 <div class="">
                                     <!--get exporter id, account no and name from alan's database-->
-                                    <select id="exporterId" name="exporterId" id="exporterId" class="form-control m-b ">
+                                    <select id="exporterId" name="exporterId" class="form-control m-b ">
                                         <option value="">--Please select an exporter--</option>
-                                        <option value="1738">ToffeeMint1</option>
-                                        <option value="1738">ToffeeMint2</option>
-                                        <option value="1738">ToffeeMint3</option>
+                                        <option value="1001">ToffeeMint1</option>
+                                        <option value="1002">ToffeeMint2</option>
+                                        <option value="1003">ToffeeMint3</option>
                                     </select>
                                 </div>
                             </div>
@@ -44,6 +44,8 @@
                     </section>
 
                 </div>
+
+                
                 <div class="col-sm-6">
 
                     <section class="panel panel-default formHidden">
@@ -95,12 +97,12 @@
                                 <label>Amount</label>
                                 <input id="amount" type="text" class="form-control" data-type="digits" data-required="true" required>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="expiryDate">Expiry Date</label>
                                 <input type='text' class="form-control form_date" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" data-required="true" required/>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label>Additional Conditions</label>
                                 <textarea id="additonalConditions"  class="form-control" rows="6" data-required="true" placeholder="Additional Conditions" name="additonalConditions" required></textarea>
@@ -128,44 +130,57 @@
                     elements[i].style.display = (elem.value == "") ? "none" : "block";
                 }
             };
+            
+            var country = "Norway";
+            if (elem === "1002") {
+                country = "China";
+            } else if (elem === "1002") {
+                country = "UK";
+            }
+            var countryInput = "<input type ='hidden' name = 'country' id='country' value='"+country+"' >";
+            $("#loginForm").append(countryInput);
+            
         </script>
 
     </section>
     <!--End of Scrollable-->
 </section>
 <!--End of vbox-->
-  <script src="../assets/js/jquery.min.js"></script>
-  <!-- Bootstrap -->
-  <script src="../assets/js/bootstrap.js"></script>
-  <!-- App -->
-  <script src="../assets/js/app.js"></script> 
-  <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
- 
+<script src="../assets/js/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="../assets/js/bootstrap.js"></script>
+<!-- App -->
+<script src="../assets/js/app.js"></script> 
+<script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
+
 <script type="text/javascript" src="../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>
- 
-<script src="../assets/js/applyLc.js"></script>
+
+<!--<script src="../assets/js/applyLc.js"></script>
 <script src="../assets/js/retrieveRefNumList.js"></script>
 <!--<script src="../assets/js/applyLcBc.js"></script>-->
-
+<script src="../assets/js/Utility/globalFunctions.js"></script>
+<script src="../assets/js/DAO/apiUrl.js"></script>
+<script src="../assets/js/DAO/lcHandling.js"></script>
+<script src="../assets/js/DAO/statusHandling.js"></script>
+<script src="../assets/js/Utility/lcOperations.js"></script>
 <script type="text/javascript">
-    $('.form_date').datetimepicker({
-
-            weekStart: 1,
-            todayBtn:  1,
-                    autoclose: 1,
-                    todayHighlight: 1,
-                    startView: 2,
-                    minView: 2,
-                    forceParse: 0
-        });
+            $('.form_date').datetimepicker({
+                weekStart: 1,
+                todayBtn: 1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 0
+            });
 </script>
 <script type="text/javascript">
-$("#create_button_api").click(function(){
+    $("#create_button_api").click(function () {
 
-    applyLcOperation(); //caling this method from assets/js/Utility/lcOperations.js
-    
-    } );  
+        applyLcOperation(); //caling this method from assets/js/Utility/lcOperations.js
+
+    });
 </script>
 
 
