@@ -45,7 +45,7 @@
 
                 </div>
 
-                
+
                 <div class="col-sm-6">
 
                     <section class="panel panel-default formHidden">
@@ -129,17 +129,21 @@
                 for (var i = 0, length = elements.length; i < length; i++) {
                     elements[i].style.display = (elem.value == "") ? "none" : "block";
                 }
+                var exporterId = $('#exporterId option:selected').val();
+               
+                var country = "Norway";
+                if (exporterId === "1002") {
+                    country = "China";
+                } else if (exporterId === "1003") {
+                    country = "UK";
+                }
+                var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + country + "' >";
+                $("#loginForm").append(countryInput);
+                
             };
-            
-            var country = "Norway";
-            if (elem === "1002") {
-                country = "China";
-            } else if (elem === "1002") {
-                country = "UK";
-            }
-            var countryInput = "<input type ='hidden' name = 'country' id='country' value='"+country+"' >";
-            $("#loginForm").append(countryInput);
-            
+
+
+
         </script>
 
     </section>

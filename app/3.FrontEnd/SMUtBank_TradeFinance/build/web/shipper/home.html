@@ -53,37 +53,74 @@
                         </div>
 
                         <script>
-                            var filter = [];
+
                             //get all ref num
-                                //get all contract details
-                                //get all status
-                                
-                            var allLcs = getAllLcDetailsShipper(); 
+                            //get all contract details
+                            //get all status
+
+                            var allLcs = getAllLcDetailsShipper();  // this method is calleed from Utility/lcOperations.js
                             //print all 
-                            shipperHomeOperation();
+                            console.log(allLcs);
+
+                            shipperHomeOperation(allLcs);
                             var country = document.getElementById("country");
-                            country.onchange = function () {
-                                country = $('#country option:selected').val();
-                                console.log(country);
-                                filter[0] = country;
-                                
-                                if (filter[0] !== null || filter[0] !== "") {
-                                   for  
-                                }
-                                //if (filter[0] != )
-                                
-                            };
+
+                            var filters = {"country": '', "shipDate": ''};
                             
+                            country.onchange = function () {
+                                emptyShipperHome();
+                                var lcs = [];
+                                country = $('#country option:selected').val();
+                                filters["country"] = country;
+                                for (var i in allLcs) {
+                                    var countryCondition = allLcs[i]["country"] === filters["country"];
+                                    var shipDateCondition = allLcs[i]["shipDate"] === filters["shipDate"];
+                                    if(filters["shipDate"] === ''){
+                                        shipDateCondition = true;
+                                    }
+                                    if(filters["country"] === ''){
+                                        countryCondition = true;
+                                    }
+                                    if(countryCondition && shipDateCondition){
+                                        lcs.unshift(allLcs[i]);
+                                    }
+                                }
+                                shipperHomeOperation(lcs);
+                                console.log(filters);
+                                console.log(lcs);
+
+
+
+                            };
+
                             var shipDate = document.getElementById("shipDate");
-                                shipDate.onchange = function () {
+                            shipDate.onchange = function () {
+                                emptyShipperHome();
+                                var lcs = [];
                                 shipDate = $('#shipDate').val();
                                 console.log(shipDate);
-                                filter[1] = shipDate;
-                                console.log(filter);
-                                
+                                filters["shipDate"] = shipDate;
+                                for (var i in allLcs) {
+                                    var countryCondition = allLcs[i]["country"] === filters["country"];
+                                    var shipDateCondition = allLcs[i]["shipDate"] === filters["shipDate"];
+                                    if(filters["shipDate"] === ''){
+                                        shipDateCondition = true;
+                                    }
+                                    if(filters["country"] === ''){
+                                        countryCondition = true;
+                                    }
+                                    if(countryCondition && shipDateCondition){
+                                        lcs.unshift(allLcs[i]);
+                                    }
+                                }
+                                shipperHomeOperation(lcs);
+                                console.log(filters);
+                                console.log(lcs);
+
+
                             };
                             //console.log(filter);
-                            
+
                         </script>
                     </div>
                     <div class="col-sm-4">
@@ -134,7 +171,7 @@
                     <div class="col-sm-4 hidden-xs">
                     </div>
                     <div class="col-sm-4 text-center">
-                        <a id="viewLcLog" class="pages btn btn-s-md btn-dark">View All LC</a>
+                        
                     </div>
                     <div class="col-sm-4 text-right text-center-xs">
 

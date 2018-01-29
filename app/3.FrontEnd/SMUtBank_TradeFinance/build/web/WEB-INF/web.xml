@@ -10,13 +10,13 @@
     </filter-mapping>
     <!---Login-->
     <servlet>
-        <servlet-name>logIn</servlet-name>
-        <jsp-file>/logIn.html</jsp-file>
+        <servlet-name>login</servlet-name>
+        <jsp-file>/login.html</jsp-file>
     </servlet>
     <servlet-mapping>
-        <servlet-name>logIn</servlet-name>
+        <servlet-name>login</servlet-name>
         
-        <url-pattern>/logIn</url-pattern>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
     
     <!--Importer Features-->
