@@ -1,27 +1,35 @@
 <!DOCTYPE html>
-<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-<script src="../assets/js/Utility/globalFunctions.js"></script>
-<script src="../assets/js/DAO/apiUrl.js"></script>
-<script src="../assets/js/DAO/lcHandling.js"></script>
-<script src="../assets/js/DAO/statusHandling.js"></script>
-<script src="../assets/js/Utility/lcOperations.js"></script>
 
 <script type="text/javascript">
-    console.log("api address");
-    console.log(getApiUrl());
+    protectUser();
 </script>
 <script type="text/javascript">
     homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
-    
+
 </script>
 <script>
-    $('#welcomeDetails').load("../welcomeDetails.html"); 
+    //$('#modal').load("../game/gameModal.html");
+    // $('#welcomeDetails').load("../welcomeDetails.html");
+
+    var getUserItem = sessionStorage.getItem('user');
+    var user = $.parseJSON(getUserItem);
+    $('#username').html("Welcome back, " + user.username);
+    $('#usertype').html(user.usertype);
+
+    //e.preventDefault();
 </script>
+
+
+<script>
+
+</script>
+
 <section class="vbox">
     <section class="scrollable">
 
         <div class="wrapper-lg" id="welcomeDetails">
-           
+            <h2 class="m-b-xs font-bold m-t-none" id="username"></h2>
+            <h4 class="text-primary font-bold" id="usertype"></h4>
         </div>
         <!--LC Table-->
         <section class="panel panel-default">
@@ -42,7 +50,7 @@
                         </tr>
                     </thead>
                     <tbody id="latestLCs">
-                        
+
                     </tbody>
                 </table>
             </div>
