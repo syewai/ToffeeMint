@@ -13,7 +13,7 @@
 
     var getUserItem = sessionStorage.getItem('user');
     var user = $.parseJSON(getUserItem);
-    $('#username').html("Welcome back, " + user.username);
+    $('#username').html("Welcome back, " + user.userID);
     $('#usertype').html(user.usertype);
 
     //e.preventDefault();

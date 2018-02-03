@@ -76,7 +76,7 @@
                             <div class="form-group">
                                 <label class="col-sm-4 control-label"> </label>
                                 <div class="col-sm-7" id="errorMsg">
-                                    
+
                                 </div>
                             </div>
                             <div class="form-group">
@@ -98,18 +98,28 @@
        PIN: "123456",
        OTP: "999999"-->
         <script src="assets/js/DAO/apiUrl.js"></script>
+        <script src="assets/js/DAO/system.js"></script>
+        <script src="assets/js/DAO/network.js"></script>
         <script src="assets/js/DAO/userHandling.js"></script>
         <script src="assets/js/DAO/notificationHandling.js"></script>
-        <script src="assets/js/Utility/formValidation.js"></script>
+        <script src="assets/js/Utility/login.js"></script>
 
         <script>
             $(document).ready(function () {
-                 
+                var userId = "";
+                var PIN = "";
+                var usertype = "";
                 var getErrorItem = sessionStorage.getItem('error');
-                var error = $.parseJSON(getErrorItem);
-                console.log("loginerror");
-                console.log(error);
-                $("#authError").html(error.errorMsg);
+                if (getErrorItem !== null) {
+                    var error = $.parseJSON(getErrorItem);
+                    console.log("loginerror");
+                    console.log("are you here??");
+                    $("#authError").html(error.errorMsg);
+                }
+
+                //console.log(error);
+
+
                 $("#showOTPModal").on("hide", function () {    // remove the event listeners when the dialog is dismissed
                     $("#showOTP a.btn").off("click");
                 });
@@ -117,16 +127,39 @@
                 $("#showOTPModal").on("hidden", function () {  // remove the actual elements from the DOM when fully hidden
                     $("#showOTPModal").remove();
                 });
-                $("#showOTPBtn").click(function (event) {
-                    //login();
-                    var authentication = OTPAuthentication("This is your second factor pin number : ");
-                    if(authentication.hasOwnProperty("errorMsg")){
-                        //sessionStorage.removeItem('error');
-                        var errorMsg = authentication.errorMsg;
-                        $("#authError").html(errorMsg);
+                $("#showOTPBtn").click(function () {
+
+                    var credentials = createSMSOTP();
+                    console.log(credentials);
+                    if (credentials !== undefined) {
+                        if (credentials.hasOwnProperty("errorMsg")) {
+                            $("#authError").html(credentials.errorMsg);
+                        } 
+
                     }
-                    
+
+                    /*var authentication = OTPAuthentication("This is your second factor pin number : ");
+                     if(authentication.hasOwnProperty("errorMsg")){
+                     //sessionStorage.removeItem('error');
+                     var errorMsg = authentication.errorMsg;
+                     $("#authError").html(errorMsg);
+                     }*/
+
                 });
+               
+  
+                $("#login_button").click(function () {
+                    
+                    var otp = doSMSOTP();
+                    console.log(otp);
+                    if (otp !== undefined) {
+                        if (otp.hasOwnProperty("errorMsg")) {
+                            $("#authError").html(otp.errorMsg);
+                        } 
+
+                    }
+                });
+
             });
 
         </script>

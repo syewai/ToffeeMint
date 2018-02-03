@@ -1,4 +1,83 @@
 
+function createSMSOTP() {
+    var userId = document.getElementById("userID").value;
+    var PIN = document.getElementById("PIN").value;
+    var usertype = document.getElementById("usertype").value;
+
+    if (!(userId.length > 0)) {
+
+        return {errorMsg: "Username cannot be blank"};
+    }
+    if (!(/^\d+$/.test(PIN) && PIN.length >= 4)) {
+
+        return {errorMsg: "Password must be numeric and not blank"};
+    }
+    if (!(usertype.length > 0)) {
+
+        return {errorMsg: "Usertype cannot be blank"};
+    }
+    var isAdmin = checkAdmin(userId, PIN, usertype);
+    if (isAdmin.hasOwnProperty("roleError")) {
+        return {errorMsg: isAdmin.roleError};
+    }
+    var payload = '{LoginID:"' + userId + '",Pin:"' + PIN + '"}';
+    var data1 = {};
+    doIBS("ribGetOTP.action", payload, function (data) {
+        if (data.status === "ok" && data.esbStatus === "Authenticated") {
+            console.log("im correct");
+            var temp_credentials = new User(userId, PIN, getDefaultOTP(), usertype);
+            sessionStorage.setItem('temp_credentials', JSON.stringify(temp_credentials));
+            buildSMSOTP();
+                            var getTempItem = sessionStorage.getItem('temp_credentials');
+                    var temp = $.parseJSON(getTempItem);
+                    console.log(temp.usertype);
+            data1 = {userID: userId, PIN: PIN, usertype: usertype};
+        } else {
+            console.log(data.esbStatus);
+            data1 = {errorMsg: data.esbStatus};
+        }
+    });
+    console.log(data1);
+    return data1;
+
+}
+
+
+function doSMSOTP() {
+    var getTempItem = sessionStorage.getItem('temp_credentials');
+    var temp = $.parseJSON(getTempItem);
+    var userId = temp.userID;
+    var PIN = temp.PIN;
+    var usertype = temp.usertype;
+    var OTP = document.getElementById("OTP").value;
+    console.log(OTP);
+    if (!(/^\d+$/.test(OTP) && OTP.length === 6)) {
+        return {errorMsg: "OTP must be numeric and 6 digits long"};
+    }
+    if(OTP===getDefaultOTP()){
+        var user = new User(userId, PIN, OTP, usertype);
+            sessionStorage.setItem('user', JSON.stringify(user));
+            window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
+    }
+    var error = {};
+    var payload = '{SecondFactor:"' + OTP + '"}';
+    doIBS("ribOTPAuth.action", payload, function (data) {
+        if (data.status === "ok" && data.esbStatus === "Authenticated") {
+            console.log("im correct");
+            var user = new User(userId, PIN, OTP, usertype);
+            sessionStorage.setItem('user', JSON.stringify(user));
+            window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
+        } else {
+            error  = {errorMsg: data.esbStatus};
+        }
+    });
+    return error;
+}
+
+function buildSMSOTP() {
+    $('#showOTPModal').modal('show');
+}
+
 
 function loginAuthentication() {
 
@@ -67,6 +146,17 @@ function sendOTPSMS(messageInfo) {
         var usertype = loginCredentials["usertype"];
         var phoneNum = loginCredentials["phoneNumber"];
         //generate OTP??????
+        var populater = function (response, extras) {
+            if (response.status == "ok" && response.esbStatus == "Authenticated") {
+                login.disableAdvert();
+                login.buildSMSOTP();
+            } else {
+                document.getElementById("status").innerHTML = response.esbStatus;
+            }
+        };
+        var payload = '{LoginID:"' + userId + '",Pin:"' + PIN + '"}';
+        network.doIBS(populater, "ribGetOTP.action", payload, null, true);
+
 
         var errorMsg = "";
         var smsError = "";
@@ -112,7 +202,7 @@ function OTPAuthentication(otpInfo) {
             var OTP = document.getElementById("OTP").value;
             var globalErrorID = "";
             var errorMsg = "";
-            
+
             //pass in the new otp to authenticate user info
             getCustomerDeatils(userId, PIN, OTP, function (data) {
                 //get error id to check existance of the user
@@ -122,7 +212,7 @@ function OTPAuthentication(otpInfo) {
                     if (globalErrorID === "010041") {//OTP expiry error - request new otp 
 
                         //call notification to send sms
-                        
+
 
                     } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
 

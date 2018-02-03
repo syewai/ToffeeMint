@@ -2,7 +2,7 @@
 <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 <script src="../assets/js/Utility/logout.js"></script>
 <script type="text/javascript">
-    //protectUser();
+    protectUser();
 </script>
 <script>
     
@@ -10,7 +10,7 @@
         var viewName = $.parseJSON(temp);
         var div = "<span class='thumb-sm avatar pull-left'>";
         div += "<img src='../assets/images/avatar.jpg'>";
-        div += "</span>"+viewName.username+" <b class='caret'></b>";
+        div += "</span>"+viewName.userID+" <b class='caret'></b>";
         $('#user').html(div);
         //e.preventDefault();
 </script>
@@ -103,5 +103,5 @@
     <script>
     $("#logout").click(function(){
         logout();
-    })
+    });
     </script>
