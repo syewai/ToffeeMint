@@ -15,9 +15,6 @@ function User(userID, PIN, OTP, usertype) {
     this.usertype = usertype;
 }
 
-function updateOTP() {
-
-}
 
 function getCustomerDeatils(userId, PIN, OTP, callback) { //get address(state, country, city), get customer type(retail/corporate), get phone num, get bank id 
 
@@ -91,20 +88,17 @@ function protectUser() {
     if (globalErrorID === "") {
         var error = {errorMsg: "No such user"};
         sessionStorage.setItem('error', JSON.stringify(error));
-        window.location.replace("/SMUtBank_TradeFinance/login.html");
+        window.location.replace("/SMUtBank_TradeFinance/");
     } else {
         if (globalErrorID === "010041") {//OTP expiry error - request new otp 
 
-            //call notification to send sms
-            var error = {errorMsg: "OTP expired"};
-            sessionStorage.setItem('error', JSON.stringify(error));
-            window.location.replace("/SMUtBank_TradeFinance/login.html");
+           buildSMSOTP(); // 
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
 
             var error = {errorMsg: "No such user"};
             sessionStorage.setItem('error', JSON.stringify(error));
-            window.location.replace("/SMUtBank_TradeFinance/login.html");
+            window.location.replace("/SMUtBank_TradeFinance/");
         } 
     }
 }
@@ -117,7 +111,7 @@ function protectAdmin() {
         //redirect to login
         var error = {errorMsg: "No such user"};
         sessionStorage.setItem('error', JSON.stringify(error));
-        window.location.replace("/SMUtBank_TradeFinance/login.html");
+        window.location.replace("/SMUtBank_TradeFinance/");
     }
     var userId = user.userID;
     var PIN = user.PIN;
@@ -137,20 +131,20 @@ function protectAdmin() {
     if (globalErrorID === "") {
         var error = {errorMsg: "No such user"};
         sessionStorage.setItem('error', JSON.stringify(error));
-        window.location.replace("/SMUtBank_TradeFinance/login.html");
+        window.location.replace("/SMUtBank_TradeFinance/");
     } else {
         if (globalErrorID === "010041") {//OTP expiry error - request new otp 
 
             //call notification to send sms
             var error = {errorMsg: "OTP expired"};
             sessionStorage.setItem('error', JSON.stringify(error));
-            window.location.replace("/SMUtBank_TradeFinance/login.html");
+            window.location.replace("/SMUtBank_TradeFinance/");
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
 
             var error = {errorMsg: "No such user"};
             sessionStorage.setItem('error', JSON.stringify(error));
-            window.location.replace("/SMUtBank_TradeFinance/login.html");
+            window.location.replace("/SMUtBank_TradeFinance/");
 
 
         }

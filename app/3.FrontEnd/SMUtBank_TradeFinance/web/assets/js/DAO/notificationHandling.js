@@ -8,21 +8,28 @@ var apiUrlBC = getApiUrlBC();
 var defaultOTP = "999999";
 
 function getPhoneNumber(userId, PIN, OTP) {
-    var cellPhoneNumber ="";
-    getCustomerDeatils(userId, PIN, OTP, function(data){
+    var cellPhoneNumber = "";
+    getCustomerDeatils(userId, PIN, OTP, function (data) {
         var countryCode = data.Content.ServiceResponse.CDMCustomer.cellphone.countryCode;
         var phoneNumber = data.Content.ServiceResponse.CDMCustomer.cellphone.phoneNumber;
-        cellPhoneNumber = countryCode+phoneNumber;
+        cellPhoneNumber = countryCode + phoneNumber;
     });
     return cellPhoneNumber;
 }
 
-function getDefaultOTP(){
+function getDefaultOTP() {
     return defaultOTP;
 }
 
-function sendSMS(userId,PIN,OTP,messageInfo,callback){
-    
+
+function setOTP(x, callback) {
+    OTP = x;
+    setTimeout(callback(), 1000); // avoid race condition
+}
+
+
+function sendSMS(userId, PIN, OTP, messageInfo, callback) {
+
 
     var headerObj = {
         Header: {
@@ -46,7 +53,7 @@ function sendSMS(userId,PIN,OTP,messageInfo,callback){
     $.ajax({
         async: false,
         type: 'POST',
-        url: apiUrl +"?Header="+header+"&Content="+content,
+        url: apiUrl + "?Header=" + header + "&Content=" + content,
         dataType: 'json',
         success: callback  //fatal error!!
     });
@@ -54,8 +61,8 @@ function sendSMS(userId,PIN,OTP,messageInfo,callback){
 
 
 function sendSMSOTP() {
- 
-	//ribGetOTP.action to get otp
-        //ribOTPAuth.action to authenticate otp
+
+    //ribGetOTP.action to get otp
+    //ribOTPAuth.action to authenticate otp
 }
 

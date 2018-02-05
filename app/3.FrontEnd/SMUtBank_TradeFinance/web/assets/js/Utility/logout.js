@@ -6,5 +6,5 @@
 
 function logout() {
     sessionStorage.clear();
-    window.location.replace("/SMUtBank_TradeFinance/login.html");
+    window.location.replace("/SMUtBank_TradeFinance/");
 }
