@@ -1,24 +1,26 @@
 
 var getUserItem = sessionStorage.getItem('user');
 var user = $.parseJSON(getUserItem);
-var userId = "kinetic1";
-var PIN = "123456";
-var OTP = "999999";
+var userId = user.userID;
+var PIN = user.PIN;
+var OTP = user.OTP;
 var usertype = user.usertype;
 //this function handle the ui logic of apply lc page
 function applyLcOperation() {
+    
+    
     console.log("try variable usertype");
     console.log(usertype);
-    var importerAccount = "2365";
-    var exporterAccount = document.getElementById("exporterId").value;
+    var importerAccount = "2365"; //getCustomerAccounts
+    var exporterAccount = document.getElementById("exporterId").value; //?
     var expiryDate = document.getElementById("expiryDate").value;
-    var confirmed = "false";
+    var confirmed = "false"; 
     var revocable = "false";
     var availableBy = "TERM";
     var termDays = "90";
     var amount = document.getElementById("amount").value;
-    var currency = "SGD";
-    var applicableRules = "none";
+    var currency = "SGD"; //getCustomerAccounts
+    var applicableRules = "none"; 
     var partialShipments = "false";
     var shipDestination = document.getElementById("country").value;
     ;
@@ -29,6 +31,13 @@ function applyLcOperation() {
     var additionalConditions = document.getElementById("additonalConditions").value;
     var senderToReceiverInfo = "none";
     var mode = "BC";
+    
+    
+    getCustomerAccounts(userId, PIN, OTP, function(accounts){ //get currency and importer account
+        
+    });
+        
+    
     var lc = {
         importerAccount: importerAccount,
         exporterAccount: exporterAccount,
@@ -68,7 +77,7 @@ function applyLcOperation() {
         console.log(data);
     });
     //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
-    window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+    //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
 }
 
 //this function handles ui logic of homepage

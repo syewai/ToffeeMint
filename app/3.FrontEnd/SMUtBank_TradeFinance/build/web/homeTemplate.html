@@ -1,16 +1,5 @@
 <!DOCTYPE html>
-
-<script type="text/javascript">
-    protectUser();
-</script>
-<script type="text/javascript">
-    homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
-
-</script>
 <script>
-    //$('#modal').load("../game/gameModal.html");
-    // $('#welcomeDetails').load("../welcomeDetails.html");
-
     var getUserItem = sessionStorage.getItem('user');
     var user = $.parseJSON(getUserItem);
     $('#username').html("Welcome back, " + user.userID);
@@ -18,6 +7,11 @@
 
     //e.preventDefault();
 </script>
+<script type="text/javascript">
+    homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
+
+</script>
+
 
 
 <script>

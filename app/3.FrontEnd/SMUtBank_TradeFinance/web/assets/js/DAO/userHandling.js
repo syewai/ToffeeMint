@@ -92,34 +92,45 @@ function protectUser() {
     } else {
         if (globalErrorID === "010041") {//OTP expiry error - request new otp 
 
-           buildSMSOTP(); // 
+            buildSMSOTP(); // 
+            $("#login_button").click(function () {
+
+                var otp = authenticateSMSOTP();
+                console.log(otp);
+                if (otp !== undefined) {
+                    if (otp.hasOwnProperty("errorMsg")) {
+                        $("#authError").html(otp.errorMsg);
+                    }
+
+                }
+            });
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
 
             var error = {errorMsg: "No such user"};
             sessionStorage.setItem('error', JSON.stringify(error));
             window.location.replace("/SMUtBank_TradeFinance/");
-        } 
+        }
     }
 }
 
 function protectAdmin() {
-    var getAdminItem = sessionStorage.getItem('user');
-    var user = $.parseJSON(getAdminItem);
+    var getAdminItem = sessionStorage.getItem('admin');
+    var admin = $.parseJSON(getAdminItem);
     var errorMsg = "";
-    if (user === null) {
+    if (admin === null) {
         //redirect to login
         var error = {errorMsg: "No such user"};
         sessionStorage.setItem('error', JSON.stringify(error));
         window.location.replace("/SMUtBank_TradeFinance/");
     }
-    var userId = user.userID;
-    var PIN = user.PIN;
-    var OTP = user.OTP;
-    var usertype = user.usertype;
+    var userId = admin.userID;
+    var PIN = admin.PIN;
+    var OTP = admin.OTP;
+    var usertype = admin.usertype;
     var globalErrorID = "";
     var errorMsg = "";
-    
+
     //passing username, pin,otp to call login web service
     getCustomerDeatils(userId, PIN, OTP, function (data) {
         //get error id to check existance of the user
@@ -135,36 +146,42 @@ function protectAdmin() {
     } else {
         if (globalErrorID === "010041") {//OTP expiry error - request new otp 
 
-            //call notification to send sms
-            var error = {errorMsg: "OTP expired"};
-            sessionStorage.setItem('error', JSON.stringify(error));
-            window.location.replace("/SMUtBank_TradeFinance/");
+            buildSMSOTP(); // 
+            $("#login_button").click(function () {
+
+                var otp = authenticateSMSOTP();
+                console.log(otp);
+                if (otp !== undefined) {
+                    if (otp.hasOwnProperty("errorMsg")) {
+                        $("#authError").html(otp.errorMsg);
+                    }
+                }
+            });
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
 
             var error = {errorMsg: "No such user"};
             sessionStorage.setItem('error', JSON.stringify(error));
             window.location.replace("/SMUtBank_TradeFinance/");
-
-
         }
+
     }
 }
 
 
-function checkAdmin(userId,PIN,usertype){
+function checkAdmin(userId, PIN, usertype) {
 
-    if (userId === "toffeemintadmin" && PIN === "123456"){
-        if(usertype === "shipper"){
-            return {"admin" : true};
+    if (userId === "toffeemintadmin" && PIN === "123456") {
+        if (usertype === "shipper") {
+            return {"admin": true};
         } else {
-            return {"roleError" : "You are not an "+usertype};
+            return {"roleError": "You are not an " + usertype};
         }
     } else {
-        if(usertype === "shipper"){
-            return {"roleError" : "You are not a shipper"};
+        if (usertype === "shipper") {
+            return {"roleError": "You are not a shipper"};
         } else {
-            return {"admin" : false};
+            return {"admin": false};
         }
     }
 }

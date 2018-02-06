@@ -230,7 +230,7 @@ function getRefNumList(userId, PIN, OTP, callback) {
 
     var contentObj = {
         Content: {
-            importerID: "kinetic1"
+            importerID: userId
         }
 
     };
