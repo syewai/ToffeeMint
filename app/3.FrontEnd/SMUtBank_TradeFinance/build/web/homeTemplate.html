@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <script>
+    protectUser(); // calling from userHandling
     var getUserItem = sessionStorage.getItem('user');
     var user = $.parseJSON(getUserItem);
+    console.log(user.customerID);
     $('#username').html("Welcome back, " + user.userID);
     $('#usertype').html(user.usertype);
 

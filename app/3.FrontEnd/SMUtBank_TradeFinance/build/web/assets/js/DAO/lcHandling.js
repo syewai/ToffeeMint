@@ -228,17 +228,11 @@ function getRefNumList(userId, PIN, OTP, callback) {
     };
     var header = JSON.stringify(headerObj);
 
-    var contentObj = {
-        Content: {
-            importerID: userId
-        }
-
-    };
-    var content = JSON.stringify(contentObj);
+    
     $.ajax({
         async: false,
         type: 'GET',
-        url: apiUrl + '?Header=' + header + '&Content=' + content,
+        url: apiUrl + '?Header=' + header + '&ConsumerID=TF',
         dataType: 'json',
         success: callback
 

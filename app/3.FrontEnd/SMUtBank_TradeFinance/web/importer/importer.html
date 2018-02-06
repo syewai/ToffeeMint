@@ -26,7 +26,7 @@
 
     <body class="">
                 <!--Login-->
-        <div class="modal fade" id="showOTPModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
+        
         <section class="vbox">
             <!--Header-->
             <header class="bg-black dk header navbar navbar-fixed-top-xs" id="header">
@@ -57,7 +57,7 @@
         <script src="../assets/js/DAO/userHandling.js"></script>
         <script src="../assets/js/DAO/lcHandling.js"></script>
         <script src="../assets/js/DAO/statusHandling.js"></script>
-        <script src="../assets/js/Utility/pageLoad.js"></script>
+        <!--<script src="../assets/js/Utility/pageLoad.js"></script>-->
         <script src="../assets/js/Utility/lcOperations.js"></script>
         <script src="../assets/js/DAO/notificationHandling.js"></script>
         <script src="../assets/js/Utility/login.js"></script>
@@ -65,10 +65,10 @@
 
         <script>
             $(document).ready(function () {
-                $("#showOTPModal").load("../OTPModal.html");
+                
                 $("#header").load("../header.html");
                 $('#nav-bar').load("navBar.html");
-                protectUser(); // calling from userHandling
+                
             });
 
 

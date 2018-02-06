@@ -28,7 +28,7 @@ and open the template in the editor.
                 <div class="form-group">
                     <label class="col-sm-4 control-label"> </label>
                     <div class="col-sm-7">
-                        <button id="login_button" type="button" class="btn btn-primary" style="display: initial">
+                        <button id="login_button" type="button" class="btn btn-primary" style="display: initial" autofocus="autofocus">
                             Login
                         </button>
                     </div>
@@ -37,3 +37,25 @@ and open the template in the editor.
         </div>
     </div>
 </div>
+
+<script>
+    $('#OTP').on('keyup keypress', function (e) {
+                   var keyCode = e.keyCode || e.which;
+                   if (keyCode === 13) {
+                       e.preventDefault();
+                        return false;
+                    } //disables enter btn 
+               });
+    $("#login_button").click(function (event) {
+
+        var otp = authenticateSMSOTP();
+        console.log(otp);
+        if (otp !== undefined) {
+            if (otp.hasOwnProperty("errorMsg")) {
+                $("#authError").html(otp.errorMsg);
+            }
+
+        }
+    });
+    
+</script>

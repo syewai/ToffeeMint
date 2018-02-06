@@ -83,8 +83,7 @@ function authenticateSMSOTP() {
         //get error id to check existance of the user
         errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
         globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-    });   //parse in an empty OTP to activate sms otp
-    if (globalErrorID !== "") {
+        if (globalErrorID !== "") {
         if (globalErrorID === "010041") {//OTP expiry error - request new otp 
             buildSMSOTP();
             //call notification to send sms
@@ -99,7 +98,8 @@ function authenticateSMSOTP() {
         } else {
             //if user authentication successful, store userid,pin and otp in a session, load role selector 
             //console.log(username + password + usertype);
-            var user = new User(userId, PIN, OTP, usertype);
+            var customerID = data.Content.ServiceResponse.CDMCustomer.customer.customerID;
+            var user = new User(userId, PIN, OTP, usertype, customerID);
             sessionStorage.setItem('user', JSON.stringify(user));
             window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
 
@@ -107,6 +107,8 @@ function authenticateSMSOTP() {
             // return {userID: userId, PIN: PIN, usertype: usertype, phoneNumber: cellPhoneNumber};
         }
     } //update otp to the new otp, and authenticate otp by using authenticateCustomerDetails
+    });   //parse in an empty OTP to activate sms otp
+    
 
 }
 

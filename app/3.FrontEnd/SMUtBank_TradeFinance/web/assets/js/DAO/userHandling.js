@@ -15,7 +15,13 @@ function User(userID, PIN, OTP, usertype) {
     this.usertype = usertype;
 }
 
-
+function User(userID, PIN, OTP, usertype, customerID) {
+    this.userID = userID;
+    this.PIN = PIN;
+    this.OTP = OTP;
+    this.usertype = usertype;
+    this.customerID = customerID;
+}
 function getCustomerDeatils(userId, PIN, OTP, callback) { //get address(state, country, city), get customer type(retail/corporate), get phone num, get bank id 
 
     var headerObj = {

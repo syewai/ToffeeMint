@@ -7,20 +7,18 @@ var OTP = user.OTP;
 var usertype = user.usertype;
 //this function handle the ui logic of apply lc page
 function applyLcOperation() {
-    
-    
-    console.log("try variable usertype");
-    console.log(usertype);
-    var importerAccount = "2365"; //getCustomerAccounts
+    var errorMsg;
+    var globalErrorID;
+    var importerAccount = 0000002480;
     var exporterAccount = document.getElementById("exporterId").value; //?
     var expiryDate = document.getElementById("expiryDate").value;
-    var confirmed = "false"; 
+    var confirmed = "false";
     var revocable = "false";
     var availableBy = "TERM";
     var termDays = "90";
     var amount = document.getElementById("amount").value;
     var currency = "SGD"; //getCustomerAccounts
-    var applicableRules = "none"; 
+    var applicableRules = "none";
     var partialShipments = "false";
     var shipDestination = document.getElementById("country").value;
     ;
@@ -31,13 +29,15 @@ function applyLcOperation() {
     var additionalConditions = document.getElementById("additonalConditions").value;
     var senderToReceiverInfo = "none";
     var mode = "BC";
-    
-    
-    getCustomerAccounts(userId, PIN, OTP, function(accounts){ //get currency and importer account
-        
-    });
-        
-    
+
+    var account;
+    /*getCustomerAccounts(userId, PIN, OTP, function (accounts) { //get currency and importer account
+
+        account = accounts.Content.ServiceResponse.AccountList[0];
+
+    });*/
+
+
     var lc = {
         importerAccount: importerAccount,
         exporterAccount: exporterAccount,
@@ -68,7 +68,9 @@ function applyLcOperation() {
     var refNum;
     getRefNumList(//calling this method from assets/js/DAO/lcHandling.js
             userId, PIN, OTP, function (refNumList) {
+                if(refNumList.RefNumList !== null){
                 refNum = refNumList.RefNumList.RefNum[0];
+                }
             });
     console.log(refNum);
     var refNumber = parseInt(refNum);
@@ -82,12 +84,18 @@ function applyLcOperation() {
 
 //this function handles ui logic of homepage
 function homeOperation() {
-    var refNumberList;
+    
+    var refNumberList = [];
     getRefNumList(//calling this method from assets/js/DAO/lcHandling.js
-            userId, PIN, OTP, function (refNumList) {
-                refNumberList = refNumList.RefNumList.RefNum;
+            userId, PIN, OTP,function (refNumList) {
+                if(refNumList.RefNumList !== null){
+                    refNumberList = refNumList.RefNumList.RefNum;
+                }
+                
+            
             });
     console.log(refNumberList);
+    
     var numOfRows = 5;
     for (var i = 0; i < numOfRows; i++) {
 //call web service to get lc details for each ref number 
@@ -144,36 +152,36 @@ function homeOperation() {
 function shipperHomeOperation(lcToBePrinted) {
     if (lcToBePrinted.length > 0) {
         for (var i in lcToBePrinted) {
-            
+
             var url = lcToBePrinted[i]["url"];
             var operation = lcToBePrinted[i]["operation"];
             var refNum = lcToBePrinted[i]["refNum"];
-            var status=lcToBePrinted[i]["status"];
-            var country=lcToBePrinted[i]["country"];
-            var shipDate=lcToBePrinted[i]["shipDate"];
-            var exporterAcct=lcToBePrinted[i]["exporter"];
-            
+            var status = lcToBePrinted[i]["status"];
+            var country = lcToBePrinted[i]["country"];
+            var shipDate = lcToBePrinted[i]["shipDate"];
+            var exporterAcct = lcToBePrinted[i]["exporter"];
+
             var $row = $('<tr></tr>');
             var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
             var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
             $button.addClass(buttonAssigned(status)[0]);
-            
+
             var $refNumCell = $('<td></td>');
             $refNumCell.append(refNum);
             $row.append($refNumCell);
-            
+
             var $countryCell = $('<td>' + country + '</td>');
             $row.append($countryCell);
 
             var $exporterAcctCell = $('<td>' + exporterAcct + '</td>');
             $row.append($exporterAcctCell);
-            
+
             var $shipDateCell = $('<td>' + shipDate + '</td>');
             $row.append($shipDateCell);
-            
+
             var $statusCell = $('<td id="status" class="font-bold">' + status + '</td>');
             $statusCell.addClass(buttonAssigned(status)[1]);
-            
+
             $row.append($statusCell);
             var $buttonCell = $('<td></td>');
             $buttonCell.append($button);
@@ -190,7 +198,7 @@ function shipperHomeOperation(lcToBePrinted) {
 
 
 
-function emptyShipperHome(){
+function emptyShipperHome() {
     $('#latestLCs').empty();
 }
 
@@ -216,8 +224,8 @@ function getAllLcDetailsShipper() {
             status = data;
         });
         var availableStatus = ["shipped to carrier", "documents uploaded", "bg requested", "documents issued", "payment advised", "documents accepted", "bol verifed", "item colleccted"];
-        var statusIncluded = $.inArray(status,availableStatus);
-        
+        var statusIncluded = $.inArray(status, availableStatus);
+
         if (status !== "" && statusIncluded !== -1) {
 //get contract of the ref num
             var country = "";

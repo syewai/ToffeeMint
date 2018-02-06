@@ -63,9 +63,9 @@ and open the template in the editor.
                 var headerObj = {
                     Header: {
                         serviceName: "getCustomerDetails",
-                        userID: "toffeemint2",
+                        userID: "kinetic1",
                         PIN: "123456",
-                        OTP: "292545"
+                        OTP: "999999"
                     }
                 };
                 var header = JSON.stringify(headerObj);
@@ -102,7 +102,7 @@ and open the template in the editor.
                 var headerObj = {
                     Header: {
                         serviceName: "getCustomerAccounts",
-                        userID: "toffeemintadmin",
+                        userID: "kinetic1",
                         PIN: "123456",
                         OTP: "999999"
                     }
@@ -164,16 +164,17 @@ and open the template in the editor.
              
              //console.log(getRefNumList("kinetic1", refNumList));
              
-            var userId = "kinetic1";
+            var userId = "toffeemint2";
             var PIN = "123456";
             var OTP = "999999";
              
              
             var refNum;
-            getRefNumList(
-               userId,PIN,OTP ,function(refNumList) {
-                    refNum = refNumList.RefNumList.RefNum[0];
-               });
+             getRefNumList(userId, PIN, OTP,function(refNumList){
+                 refNum = refNumList.RefNumList.RefNum[0];
+                 
+             });
+            
              console.log(refNum);
          } );
 

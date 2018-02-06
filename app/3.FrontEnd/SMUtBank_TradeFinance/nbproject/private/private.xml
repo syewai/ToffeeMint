@@ -3,12 +3,36 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/index.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/Utility/pageLoad.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/homeTemplate.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/lcDetailsTemplate.html</file>
             <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/notificationHandling.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/gameHandling.js</file>
             <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/Utility/login.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/userHandling.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/test.html</file>
             <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/Utility/logout.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/Utility/formValidation.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/tryNav.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/test.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/Utility/lcOperations.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/index.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/Utility/taskButtonAllocation.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/importer/applyLc.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/productHandling.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/shipper/home.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/OTPModal.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/statusHandling.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/welcomeDetails.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/lcHandling.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/docsHandling.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/viewLcLogTemplate.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/shipper/viewShipmentLog.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/importer/importer.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/accountHandling.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/apiUrl.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/importer/navBar.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/shipper/shipperViewLog.html</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/userHandling.js</file>
+            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/Utility/globalFunctions.js</file>
         </group>
     </open-files>
 </project-private>
