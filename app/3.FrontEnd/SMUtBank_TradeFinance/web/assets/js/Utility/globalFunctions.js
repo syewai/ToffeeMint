@@ -32,3 +32,18 @@ function rearrangePosition(e) {
 function capitalizeFirstLetter(word) {
     return word.charAt(0).toUpperCase() + word.slice(1)
 }
+
+function seperateWords(word) {
+   var count=0,len=word.length;
+   for(var i=0;i<len;i++) {
+    if(/[A-Z]/.test(word.charAt(i))) word.charAt(i-1);
+  } 
+}
+
+function countUpperCaseChars(str) {
+  var count=0,len=str.length;
+  for(var i=0;i<len;i++) {
+    if(/[A-Z]/.test(str.charAt(i))) count++;
+  }
+  return count;
+}

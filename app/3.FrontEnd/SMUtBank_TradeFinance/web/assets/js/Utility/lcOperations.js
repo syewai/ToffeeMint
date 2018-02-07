@@ -10,20 +10,20 @@ function applyLcOperation() {
     var account;
     getCustomerAccounts(userId, PIN, OTP, function (accounts) { //get currency and importer account
 
-        account = accounts.Content.ServiceResponse.AccountList[0];
+        account = accounts.Content.ServiceResponse.AccountList;
 
     });
     var errorMsg;
     var globalErrorID;
-    var importerAccount = 0000002480;
-    var exporterAccount = document.getElementById("exporterId").value; //?
+    var importerAccount = account.account.accountID;
+    var exporterAccount = document.getElementById("exporterId").value;
     var expiryDate = document.getElementById("expiryDate").value;
     var confirmed = "false";
     var revocable = "false";
     var availableBy = "TERM";
     var termDays = "90";
     var amount = document.getElementById("amount").value;
-    var currency = "SGD"; //getCustomerAccounts
+    var currency = account.account.currency; //getCustomerAccounts
     var applicableRules = "none";
     var partialShipments = "false";
     var shipDestination = document.getElementById("country").value;
@@ -82,17 +82,17 @@ function homeOperation() {
     var refNumberList = [];
     var refNumberListValidation = validateGetRefNumList(userId, PIN, OTP);
     console.log(refNumberList);
-    if (refNumberListValidation!== undefined) {
-            if (refNumberListValidation.hasOwnProperty("errorMsg")) {
-                var errorMsg = refNumberListValidation.errorMsg;
-                console.log("error");
-                console.log(errorMsg);
-                $("#authError").html(errorMsg);
-            } else if (refNumberListValidation.hasOwnProperty("success")) {
-                refNumberList = refNumberListValidation.success;
-                console.log(refNumberList);
-            }
+    if (refNumberListValidation !== undefined) {
+        if (refNumberListValidation.hasOwnProperty("errorMsg")) {
+            var errorMsg = refNumberListValidation.errorMsg;
+            console.log("error");
+            console.log(errorMsg);
+            $("#authError").html(errorMsg);
+        } else if (refNumberListValidation.hasOwnProperty("success")) {
+            refNumberList = refNumberListValidation.success;
+            console.log(refNumberList);
         }
+    }
     var numOfRows = 5;
     for (var i = 0; i < numOfRows; i++) {
 //call web service to get lc details for each ref number 
@@ -105,6 +105,7 @@ function homeOperation() {
         getStatus(userId, PIN, OTP, refNumInt, function (data) {
             status = data;
         });
+        var lc = {};
         if (status !== "") {
 //get contract of the ref num
             var exporterAcct = "";
@@ -113,9 +114,12 @@ function homeOperation() {
                 if (contract !== "") {
                     exporterAcct = contract.Content.exporterAccount;
                     expiryDate = contract.Content.expiryDate;
+                    lc = contract.Content;
                 }
 
             });
+            lc = JSON.stringify(lc);
+            console.log(lc);
             //get operation of the status
             var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
 
@@ -123,7 +127,8 @@ function homeOperation() {
             var url = operations[1];
             var $row = $('<tr></tr>');
             var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNumInt;
-            var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
+            //var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
+            var $button = $("<button type='button'  class='btn btn-primary lcDetails' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"+lc+"'  data-status='" + status + "' data-refnum='" + refNumInt + "'>" + operation + "</button>");
             $button.addClass(buttonAssigned(status)[0]);
             var $refNumCell = $('<td></td>');
             $refNumCell.append(refNumInt);
@@ -140,9 +145,54 @@ function homeOperation() {
             $row.append($buttonCell);
             $('#latestLCs').append($row);
         }
-
-
+        
     }
+
+}
+
+function getAllLcDetails() {
+    var refNumberList = [];
+    var refNumberListValidation = validateGetRefNumList(userId, PIN, OTP);
+    console.log(refNumberList);
+    if (refNumberListValidation !== undefined) {
+        if (refNumberListValidation.hasOwnProperty("success")) {
+            refNumberList = refNumberListValidation.success;
+            console.log(refNumberList);
+        }
+    }
+    var numOfRows = refNumberList.length;
+    var allLcDetails = [];
+    for (var i = 0; i < numOfRows; i++) {
+//call web service to get lc details for each ref number 
+        var refNum = refNumberList[i];
+        var refNumInt = parseInt(refNum);
+        //get status of the ref num
+        //getStatus(userId, PIN, OTP, refNum, callback)
+        var status = "";
+        getStatus(userId, PIN, OTP, refNumInt, function (data) {
+            status = data;
+        });
+
+//get contract of the ref num
+        var country = "";
+        var exporterAcct = "";
+        var shipDate = "";
+        var lcDetails = {};
+        getLcDetails(userId, PIN, OTP, refNumInt, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+            if (contract !== "") {
+                lcDetails = contract.Content;
+            }
+
+        });
+
+        var lcObject = {
+            refNum: refNumInt,
+            lcDetails: lcDetails,
+            status: status
+        };
+        allLcDetails[i] = lcObject;
+    }
+    return allLcDetails;
 }
 
 //this function handles ui logic of homepage
@@ -498,7 +548,49 @@ function operationMatch(status, usertype) {
 }
 
 
+function showLcDetailsModal() {
+    //if user clicks the button -
 
+    $('#lcDetailsModal').modal('show');
+}
+
+function loadLcDetailsModal() {
+   //$(document).ready(function () {
+        $('#lcDetailsModal').on('show.bs.modal', function (event) { // id of the modal with event
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var refNum = button.data('refnum') // Extract info from data-* attributes
+            var status = button.data('status')
+            //var productname = button.data('productname')
+            var fields = button.data('lc') //convert string to json string
+            var fieldsFromUser = ["exporterAccount","expiryDate","amount","goodsDescription","additionalConditions"];
+            var allLcHTML = ""
+            for (var i in fields) {
+                var lcDetailsHTML = "";
+                lcDetailsHTML = "<label class='col-lg-3 control-label lc-label' id=''>" + i + "</label>"
+                lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i]+"</div>"
+                //lcDetailsHTML += "<label class='col-lg-3 control-label lc-label'>" + i + "</label>"
+                //lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i]+"</div>"
+                
+                
+                //lcDetailsHTML += "</div><input style='display:none' id='input' type='text' name =" + i + " data-required='true' placeholder='" + fields[i] + "'>"
+                //$("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
+                //$("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");
+                allLcHTML += "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>"
+                allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
+            }
+            
+            // Update the modal's content.
+            var modal = $(this)
+            modal.find('.modal-body section header div div div p#refNum').text(refNum);
+            modal.find('.modal-body #status').text(status);
+            modal.find('.modal-body #lcDetails').html(allLcHTML)
+
+            // And if you wish to pass the productid to modal's 'Yes' button for further processing
+            //modal.find('button.btn-danger').val(productid)
+        });
+    //});
+  
+}
 
 
 

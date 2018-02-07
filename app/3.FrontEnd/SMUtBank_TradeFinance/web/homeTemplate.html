@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <script>
+
     protectUser(); // calling from userHandling
     var getUserItem = sessionStorage.getItem('user');
     var user = $.parseJSON(getUserItem);
     console.log(user.customerID);
     $('#username').html("Welcome back, " + user.userID);
     $('#usertype').html(user.usertype);
-
+    $("#lcDetailsModal").load("../lcDetailsModal.html");
     //e.preventDefault();
 </script>
 <script type="text/javascript">
@@ -73,3 +74,14 @@
 <aside class="bg-light lter b-l aside-md hide" id="notes">
     <div class="wrapper">Notification</div>
 </aside>
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="lcDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+</div>
+<script>
+    loadLcDetailsModal(); //this method is called from lcOperation.js
+
+</script>
