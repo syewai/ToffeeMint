@@ -14,6 +14,8 @@ contract LetterOfCredit {
 	mapping (string => string) status; 
 	mapping (string => Docs) documents;
 	mapping (string => string) amendments; 
+	mapping (string => string) insurance;
+	mapping (string => bool) trustReceipt;
 
 
 
@@ -94,4 +96,26 @@ contract LetterOfCredit {
 		DocumentsModified(refNum, BOLHash);
 		return true;
 	}
+
+	//get insurance
+	function getInsurance(string refNum) returns(string) {
+		return insurance[refNum];
+	}
+
+	//set insurance
+	function setInsurance(string refNum, string insuranceString) returns(bool set) {
+		insurance[refNum] = insuranceString;
+		return true;
+	}
+
+	//get trust receipt
+	function getTrustReceipt(string refNum) returns(bool) {
+		return trustReceipt[refNum];
+	}
+
+	function setTrustReceipt(string refNum, bool hasReceipt) returns(bool set) {
+		trustReceipt[refNum] = hasReceipt;
+		return true;
+	}
+
 }

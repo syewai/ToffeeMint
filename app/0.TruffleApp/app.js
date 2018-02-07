@@ -143,6 +143,44 @@ app.get('/lc/getAmendments', function(req, res) {
     });
 })
 
+app.get('/lc/getInsurance', function(req, res) {
+    const lcID = req.param("refNum");
+
+    getInsurance(lcID).then(function(result) {
+        res.status(200).send(result);
+        console.log(result);
+    });
+})
+
+app.get('/lc/setInsurance', function(req, res) {
+    const lcID = req.param("refNum");
+    const insuranceString = req.param("insurance");
+
+    setInsurance(lcID, insuranceString).then(function(result) {
+        res.status(200).send(result);
+        console.log(result);
+    });
+})
+
+app.get('/lc/getTrustReceipt', function(req, res) {
+    const lcID = req.param("refNum");
+
+    getTrustReceipt(lcID).then(function(result) {
+        res.status(200).send(result);
+        console.log(result);
+    });
+})
+
+app.get('/lc/setTrustReceipt', function(req, res) {
+    const lcID = req.param("refNum");
+    const hasReceipt = req.param("hasReceipt");
+
+    setTrustReceipt(lcID, hasReceipt).then(function(result) {
+        res.status(200).send(result);
+        console.log(result);
+    });
+})
+
 
 //LC getter setters
 
@@ -301,6 +339,63 @@ function getAmendments(refNum) {
     })
 }
 
+//Insurance getter/setter
+
+function getInsurance(refNum) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.getInsurance.call(refNum)
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
+
+
+function setInsurance(refNum, insuranceString) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.setInsurance(refNum, insuranceString, { from: account, gas: gasLimit })
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
+
+//Trust Receipt getter/setter
+
+function getTrustReceipt(refNum) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.getTrustReceipt.call(refNum)
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
+
+
+function setTrustReceipt(refNum, hasReceipt) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            return instance.setTrustReceipt(refNum, hasReceipt, { from: account, gas: gasLimit })
+        }).then(function(result) {
+            resolve(result);
+        }).catch(function(error) {
+            console.log("Error: " + error);
+            reject(error);
+        });
+    })
+}
 
 //////////////EVENTS//////////////
 
