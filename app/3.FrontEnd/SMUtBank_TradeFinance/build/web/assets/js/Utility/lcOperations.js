@@ -7,6 +7,12 @@ var OTP = user.OTP;
 var usertype = user.usertype;
 //this function handle the ui logic of apply lc page
 function applyLcOperation() {
+    var account;
+    getCustomerAccounts(userId, PIN, OTP, function (accounts) { //get currency and importer account
+
+        account = accounts.Content.ServiceResponse.AccountList[0];
+
+    });
     var errorMsg;
     var globalErrorID;
     var importerAccount = 0000002480;
@@ -30,14 +36,6 @@ function applyLcOperation() {
     var senderToReceiverInfo = "none";
     var mode = "BC";
 
-    var account;
-    /*getCustomerAccounts(userId, PIN, OTP, function (accounts) { //get currency and importer account
-
-        account = accounts.Content.ServiceResponse.AccountList[0];
-
-    });*/
-
-
     var lc = {
         importerAccount: importerAccount,
         exporterAccount: exporterAccount,
@@ -59,43 +57,42 @@ function applyLcOperation() {
         senderToReceiverInfo: senderToReceiverInfo,
         mode: mode
     };
-    //Apply lc by using Alan's API(without refNum)
-    applyLcApi(userId, PIN, OTP, lc, function (data) { //calling this method from assets/js/DAO/lcHandling.js
-        console.log(data);
-    });
-    //Apply Lc by using blockchain
-    //1. Get the first refNum in the ref num list -  only used for block chain
-    var refNum;
-    getRefNumList(//calling this method from assets/js/DAO/lcHandling.js
-            userId, PIN, OTP, function (refNumList) {
-                if(refNumList.RefNumList !== null){
-                refNum = refNumList.RefNumList.RefNum[0];
-                }
-            });
-    console.log(refNum);
-    var refNumber = parseInt(refNum);
-    //2. Call applyLc method to apply lc
-    applyLc(userId, PIN, OTP, refNumber, lc, function (data) { //calling this method from assets/js/DAO/lcHandling.js
-        console.log(data);
-    });
-    //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
-    //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+
+    var validateLcApplication = lcApplicationForm(userId, PIN, OTP, lc);
+    console.log(validateLcApplication);
+    if (validateLcApplication !== undefined) {
+        if (validateLcApplication.hasOwnProperty("errorMsg")) {
+            var errorMsg = validateLcApplication.errorMsg;
+            console.log("error");
+            console.log(errorMsg);
+            $("#authError").html(errorMsg);
+        } else if (validateLcApplication.hasOwnProperty("success")) {
+            $("#authError").html("lc application submitted");
+            console.log("success");
+            console.log(validateLcApplication);
+            //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
+            window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+        }
+    }
 }
 
 //this function handles ui logic of homepage
 function homeOperation() {
-    
+
     var refNumberList = [];
-    getRefNumList(//calling this method from assets/js/DAO/lcHandling.js
-            userId, PIN, OTP,function (refNumList) {
-                if(refNumList.RefNumList !== null){
-                    refNumberList = refNumList.RefNumList.RefNum;
-                }
-                
-            
-            });
+    var refNumberListValidation = validateGetRefNumList(userId, PIN, OTP);
     console.log(refNumberList);
-    
+    if (refNumberListValidation!== undefined) {
+            if (refNumberListValidation.hasOwnProperty("errorMsg")) {
+                var errorMsg = refNumberListValidation.errorMsg;
+                console.log("error");
+                console.log(errorMsg);
+                $("#authError").html(errorMsg);
+            } else if (refNumberListValidation.hasOwnProperty("success")) {
+                refNumberList = refNumberListValidation.success;
+                console.log(refNumberList);
+            }
+        }
     var numOfRows = 5;
     for (var i = 0; i < numOfRows; i++) {
 //call web service to get lc details for each ref number 

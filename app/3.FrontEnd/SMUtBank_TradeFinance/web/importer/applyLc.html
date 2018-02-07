@@ -111,6 +111,7 @@
                                 <label>Upload Bill of Exchange</label>
                                 <input type="file" class="filestyle" data-icon="false" data-classButton="btn btn-default" data-classInput="form-control inline input-s">
                             </div>
+                            <div id="authError"></div>
                             <footer class="text-center bg-light lter">
                                 <button id="create_button_api" type="button" class="btn btn-success btn-s-xs">Submit</button>
                                 <!--<button id="create_button_bc" type="button" class="btn btn-success btn-s-xs">Submit TO Block chain</button>-->
@@ -167,7 +168,9 @@
 <script src="../assets/js/DAO/apiUrl.js"></script>
 <script src="../assets/js/DAO/lcHandling.js"></script>
 <script src="../assets/js/DAO/statusHandling.js"></script>
+<script src="../assets/js/Utility/formValidation.js"></script>
 <script src="../assets/js/Utility/lcOperations.js"></script>
+
 <script type="text/javascript">
             $('.form_date').datetimepicker({
                 weekStart: 1,
