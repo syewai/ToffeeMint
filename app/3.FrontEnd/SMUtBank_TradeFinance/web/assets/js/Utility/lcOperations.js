@@ -10,12 +10,13 @@ function applyLcOperation() {
     var account;
     getCustomerAccounts(userId, PIN, OTP, function (accounts) { //get currency and importer account
 
-        account = accounts.Content.ServiceResponse.AccountList;
+        account = accounts.Content.ServiceResponse.AccountList.account[0];
 
     });
     var errorMsg;
     var globalErrorID;
-    var importerAccount = account.account.accountID;
+    var importerAccount = account.accountID;
+    console.log(importerAccount);
     var exporterAccount = document.getElementById("exporterId").value;
     var expiryDate = document.getElementById("expiryDate").value;
     var confirmed = "false";
@@ -23,7 +24,7 @@ function applyLcOperation() {
     var availableBy = "TERM";
     var termDays = "90";
     var amount = document.getElementById("amount").value;
-    var currency = account.account.currency; //getCustomerAccounts
+    var currency = account.currency; //getCustomerAccounts
     var applicableRules = "none";
     var partialShipments = "false";
     var shipDestination = document.getElementById("country").value;
