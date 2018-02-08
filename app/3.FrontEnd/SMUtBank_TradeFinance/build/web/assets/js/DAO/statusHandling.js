@@ -34,6 +34,7 @@ function getStatus(userId, PIN, OTP, refNum, callback) {
  
 }
 
+
 function setStatus(userId, PIN, OTP, refNum, status, callback) {
 
     var headerObj = {
@@ -62,3 +63,34 @@ function setStatus(userId, PIN, OTP, refNum, status, callback) {
     });
 }
 
+function updateStatus(userId, PIN, OTP, refNum, status, statusDetails, callback) {
+
+    var headerObj = {
+        Header: {
+            serviceName: "updateLetterOfCreditStatus",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
+        }
+    };
+    var header = JSON.stringify(headerObj);
+    var contentObj = {
+        Content: {
+            referenceNumber : refNum,
+            status: status, // to change to variable refNum
+            statusDetails: statusDetails,
+            mode: "BC"
+        }
+    };
+    var content = JSON.stringify(contentObj);
+    //update new status to bc
+    $.ajax({
+       // type: 'GET',
+        //url: apiUrlBC + 'setStatus?refNum=' + refNum + '&status=' + status,
+        type: "POST",
+        url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
+        dataType: 'json',
+        success: callback
+
+    });
+}

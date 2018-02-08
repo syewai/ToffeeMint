@@ -57,90 +57,33 @@ and open the template in the editor.
 <script src="assets/js/DAO/apiUrl.js"></script>
 
 <script src="assets/js/DAO/lcHandling.js"></script>
+<script src="assets/js/DAO/userHandling.js"></script>
 <script src="assets/js/DAO/gameHandling.js"></script>
 <script>
     $("#button1").click(function(){
-                var headerObj = {
-                    Header: {
-                        serviceName: "getCustomerDetails",
-                        userID: "toffeemint2",
-                        PIN: "123456",
-                        OTP: "999999"
-                    }
-                };
-                var header = JSON.stringify(headerObj);
-                          
+        var account 
+        getCustomerAccounts("toffeemint2", "123456", "999999", function (accounts) { //get currency and importer account
+        
+        account = accounts.Content.ServiceResponse.AccountList.account[0];
+        if (account == null){
+           account = accounts.Content.ServiceResponse.AccountList.account; 
+        }
+        console.log(account);
 
-                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
-
-                var xmlHttp = new XMLHttpRequest();              //setup new http req
-                if (xmlHttp === null){
-                    alert("Browser does not support HTTP request."); //check for browser thingy
-                }
-
-                xmlHttp.open("POST", apiURL+"?Header="+header, true);
-                xmlHttp.timeout = 5000;
-
-                // setup http event handlers
-                xmlHttp.onreadystatechange = function() {
-                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                        
-                        responseObj = JSON.parse(xmlHttp.responseText);
-                        //var cdmCustomer = responseObj.Content.ServiceResponse["CDMCustomer"].address;
-                        //$("#content").html(cdmCustomer);
-                        console.log(responseObj);
-                    }
-                };
-                xmlHttp.ontimeout = function (e) {
-                    alert ("Timeout retrieving document type list.");
-                    callback();
-                };      
-
-                xmlHttp.send();
-           });
-        $("#button2").click(function(){
-                var headerObj = {
-                    Header: {
-                        serviceName: "getCustomerAccounts",
-                        userID: "toffeemint1",
-                        PIN: "929780",
-                        OTP: "999999"
-                    }
-                };
-                var header = JSON.stringify(headerObj);
-                          
-
-                var apiURL = 'http://smu.tbankonline.com/SMUtBank_API/Gateway' ;
-
-                var xmlHttp = new XMLHttpRequest();              //setup new http req
-                if (xmlHttp === null){
-                    alert("Browser does not support HTTP request."); //check for browser thingy
-                }
-
-                xmlHttp.open("POST", apiURL+"?Header="+header, true);
-                xmlHttp.timeout = 5000;
-
-                // setup http event handlers
-                xmlHttp.onreadystatechange = function() {
-                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                        
-                        responseObj = JSON.parse(xmlHttp.responseText);
-                        $("#content").html("<pre id='json'>"+responseObj.Content.ServiceResponse+"</pre>");
-                        console.log(responseObj.Content);
-                    }
-                };
-                xmlHttp.ontimeout = function (e) {
-                    alert ("Timeout retrieving document type list.");
-                    callback();
-                };      
-
-                xmlHttp.send();
+    });
+            
            });
            
-           
-           $("#button3").click(function(){
-             console.log(loadRefNumList());
-         } );
+               $("#button2").click(function(){
+        var account;
+        getCustomerDeatils("toffeemint1", "929780", "999999", function (accounts) { //get currency and importer account
+        
+        
+        console.log(account);
+
+    });
+            
+           });
          
           $("#button4").click(function(){//
               
@@ -164,19 +107,18 @@ and open the template in the editor.
              
              //console.log(getRefNumList("kinetic1", refNumList));
              
-            var userId = "toffeemint2";
-            var PIN = "123456";
+            var userId = "toffeemint1";
+            var PIN = "929780";
             var OTP = "999999";
              
              
             var refNum;
-             getRefNumList(userId, PIN, OTP,function(refNumList){
-                 //refNum = refNumList.RefNumList.RefNum[0];
-                 console.log(refNumList);
-                 
-             });
+            getCustomerDeatils(userId, PIN, OTP, function(data){
+                console.log(data);
+            });
+             
             
-             console.log(refNum);
+             
          } );
 
         //game test
@@ -205,8 +147,22 @@ and open the template in the editor.
          });
          
          $("#button10").click(function() {
-             getGameLeaders("kinetic1", "123456", "999999", 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", true, function(callback)   {
-                 console.log(callback);
+             getLcDetails("toffeemint2", "123456", "999999", "0000001099", function (contract){
+                 console.log(contract);
+                
+                var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+                console.log(globalErrorId);
+                if(globalErrorId === "010000"){
+                    exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
+                    console.log(exporterAcct);
+                    expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
+                    console.log(expiryDate);
+                    status = contract.Content.ServiceResponse.LC_Details.LC_record.status;
+                    console.log(status);
+                    lc = contract.Content.ServiceResponse.LC_Details.LC_record;
+                    console.log(lc);
+                    
+                }
              });
          });
          

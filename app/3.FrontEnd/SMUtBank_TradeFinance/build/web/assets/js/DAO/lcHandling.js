@@ -113,16 +113,19 @@ function amendLc(userId, PIN, OTP, refNum, amendments, callback) { //exporter
         }
     };
     var header = JSON.stringify(headerObj);
-
+    var amendedLc = amendments;
+    amendedLc.referenceNumber = refNum;
     var contentObj = {
-        Content: amendments
+        Content: amendedLc
     };
     var content = JSON.stringify(contentObj);
 
     $.ajax({
         async: false,
-        type: 'GET',
-        url: apiUrlBC + "amendLC?Header=" + header + "&refNum=" + refNum + "&amendments=" + content,
+        type: 'POST',
+        url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
+        //type: 'GET',
+        //url: apiUrlBC + "amendLC?Header=" + header + "&refNum=" + refNum + "&amendments=" + content,
         dataType: 'json',
         success: callback
 
@@ -134,7 +137,8 @@ function getLcAmendments(userId, PIN, OTP, refNum, callback) { //exporter
 
     var headerObj = {
         Header: {
-            serviceName: "getAmendments",
+            //serviceName: "getAmendments",
+            serviceName:"getLetterOfCreditAmendment",
             userID: userId,
             PIN: PIN,
             OTP: OTP
@@ -143,14 +147,17 @@ function getLcAmendments(userId, PIN, OTP, refNum, callback) { //exporter
     var header = JSON.stringify(headerObj);
 
     var contentObj = {
-        ReferenceNumber: refNum
+        ReferenceNumber: refNum,
+        mode : "BC"
     };
     var content = JSON.stringify(contentObj);
 
     $.ajax({
         async: false,
-        type: 'GET',
-        url: apiUrlBC + "getAmendments?Header=" + header + "&refNum=" + refNum,
+        type: 'POST',
+        url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
+        //type: 'GET',
+        //url: apiUrlBC + "getAmendments?Header=" + header + "&refNum=" + refNum,
         dataType: 'json',
         success: callback
 
@@ -162,7 +169,8 @@ function modifyLc(userId, PIN, OTP, refNum, contract, callback) {//importer
 
     var headerObj = {
         Header: {
-            serviceName: "modifyLetterOfCredit",
+            //serviceName: "modifyLetterOfCredit",
+            serviceName: "updateLetterOfCredit",
             userID: userId,
             PIN: PIN,
             OTP: OTP
@@ -177,8 +185,10 @@ function modifyLc(userId, PIN, OTP, refNum, contract, callback) {//importer
     
     $.ajax({
         async: false,
-        type: 'GET',
-        url: apiUrlBC + "modifyContract?Header="+header+"&refNum=" + refNum + "&contract=" + content,
+        type: 'POST',
+        url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
+        //type: 'GET',
+        //url: apiUrlBC + "modifyContract?Header="+header+"&refNum=" + refNum + "&contract=" + content,
         dataType: 'json',
         success: callback
 
@@ -207,8 +217,11 @@ function getLcDetails(userId, PIN, OTP, refNum, callback) {
     
     $.ajax({
         async: false,
-        type: 'GET',
-        url: apiUrlBC + "getContract?Header="+header+"&refNum=" + refNum,
+        type: 'POST',
+        url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
+        //url: apiUrlBC + "getContract?Header="+header+"&refNum=" + refNum,
+        //type: 'GET',
+        //url: apiUrlBC + "getContract?Header="+header+"&refNum=" + refNum,
         dataType: 'json',
         success: callback
 

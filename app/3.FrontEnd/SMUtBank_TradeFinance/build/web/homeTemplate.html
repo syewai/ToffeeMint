@@ -6,7 +6,13 @@
     var user = $.parseJSON(getUserItem);
     console.log(user.customerID);
     $('#username').html("Welcome back, " + user.userID);
-    $('#usertype').html(user.usertype);
+    var usertype = user.usertype;
+    $('#usertype').html(usertype+" (Customer ID - "+user.customerID+")");
+    var colHeader = "importer";
+    if(usertype === "importer"){
+        colHeader = "exporter";
+    }
+    $('#roleTh').html(colHeader+" account");
     $("#lcDetailsModal").load("../lcDetailsModal.html");
     //e.preventDefault();
 </script>
@@ -40,7 +46,7 @@
                     <thead>
                         <tr>
                             <th>Reference Number</th>
-                            <th>Exporter</th>
+                            <th id="roleTh"></th>
                             <th>Expiry Date</th>
                             <th>Status</th>
                             <th></th>

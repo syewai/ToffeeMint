@@ -5,12 +5,23 @@ var userId = user.userID;
 var PIN = user.PIN;
 var OTP = user.OTP;
 var usertype = user.usertype;
+
 //this function handle the ui logic of apply lc page
 function applyLcOperation() {
+    var exporterDetails = getExporterDetails();
+    if (exporterDetails.length > 0) {
+        for (var i in exporterDetails) {
+            option = "<option value='" + exporterDetails.customerId + "'>" + exporterDetails.userId + "</option>"
+        }
+    }
     var account;
     getCustomerAccounts(userId, PIN, OTP, function (accounts) { //get currency and importer account
 
         account = accounts.Content.ServiceResponse.AccountList.account[0];
+        if (account == null) {
+            account = accounts.Content.ServiceResponse.AccountList.account;
+        }
+        console.log(account);
 
     });
     var errorMsg;
@@ -99,54 +110,65 @@ function homeOperation() {
 //call web service to get lc details for each ref number 
 
         var refNum = refNumberList[i];
-        var refNumInt = parseInt(refNum);
+        //var refNumInt = parseInt(refNum);
         //get status of the ref num
         //getStatus(userId, PIN, OTP, refNum, callback)
-        var status = "";
-        getStatus(userId, PIN, OTP, refNumInt, function (data) {
-            status = data;
-        });
+
+
         var lc = {};
-        if (status !== "") {
+        //if (status !== "") {
 //get contract of the ref num
-            var exporterAcct = "";
-            var expiryDate = "";
-            getLcDetails(userId, PIN, OTP, refNumInt, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
-                if (contract !== "") {
-                    exporterAcct = contract.Content.exporterAccount;
-                    expiryDate = contract.Content.expiryDate;
-                    lc = contract.Content;
-                }
+        var exporterAcct = "";
+        var importerAcct = "";
+        var expiryDate = "";
+        var status = "";
+        var globalErrorId = "";
+        getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+            globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+            console.log(globalErrorId);
+            if (globalErrorId === "010000") {
+                importerAcct = contract.Content.ServiceResponse.LC_Details.LC_record.importer_account_num;
+                exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
+                expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
+                status = contract.Content.ServiceResponse.LC_Details.LC_record.status;
+                lc = contract.Content.ServiceResponse.LC_Details.LC_record;
+            }
 
-            });
-            lc = JSON.stringify(lc);
-            console.log(lc);
-            //get operation of the status
-            var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
+        });
+        lc = JSON.stringify(lc);
+        console.log(lc);
+        //get operation of the status
+        var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
 
-            var operation = operations[0];
-            var url = operations[1];
-            var $row = $('<tr></tr>');
-            var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNumInt;
-            //var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
-            var $button = $("<button type='button'  class='btn btn-primary lcDetails' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"+lc+"'  data-status='" + status + "' data-refnum='" + refNumInt + "'>" + operation + "</button>");
-            $button.addClass(buttonAssigned(status)[0]);
-            var $refNumCell = $('<td></td>');
-            $refNumCell.append(refNumInt);
-            $row.append($refNumCell);
+        var operation = operations[0];
+        var url = operations[1];
+        var $row = $('<tr></tr>');
+        var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
+        //var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
+        var $button = $("<button type='button'  class='btn btn-primary lcDetails' data-toggle='modal' data-target='#lcDetailsModal' data-lc='" + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>" + operation + "</button>");
+        $button.addClass(buttonAssigned(status)[0]);
+        var $refNumCell = $('<td></td>');
+        $refNumCell.append(refNum);
+        $row.append($refNumCell);
+
+        if (usertype === "importer") {
             var $exporterAcctCell = $('<td>' + exporterAcct + '</td>');
             $row.append($exporterAcctCell);
-            var $expiryDateCell = $('<td>' + expiryDate + '</td>');
-            $row.append($expiryDateCell);
-            var $statusCell = $('<td id="status" class="font-bold">' + status + '</td>');
-            $statusCell.addClass(buttonAssigned(status)[1]);
-            $row.append($statusCell);
-            var $buttonCell = $('<td></td>');
-            $buttonCell.append($button);
-            $row.append($buttonCell);
-            $('#latestLCs').append($row);
+        } else {
+            var $importerAcctCell = $('<td>' + importerAcct + '</td>');
+            $row.append($importerAcctCell);
         }
-        
+        var $expiryDateCell = $('<td>' + expiryDate + '</td>');
+        $row.append($expiryDateCell);
+        var $statusCell = $('<td id="status" class="font-bold">' + status + '</td>');
+        $statusCell.addClass(buttonAssigned(status)[1]);
+        $row.append($statusCell);
+        var $buttonCell = $('<td></td>');
+        $buttonCell.append($button);
+        $row.append($buttonCell);
+        $('#latestLCs').append($row);
+        //}
+
     }
 
 }
@@ -166,11 +188,11 @@ function getAllLcDetails() {
     for (var i = 0; i < numOfRows; i++) {
 //call web service to get lc details for each ref number 
         var refNum = refNumberList[i];
-        var refNumInt = parseInt(refNum);
+        //var refNumInt = parseInt(refNum);
         //get status of the ref num
         //getStatus(userId, PIN, OTP, refNum, callback)
         var status = "";
-        getStatus(userId, PIN, OTP, refNumInt, function (data) {
+        getStatus(userId, PIN, OTP, refNum, function (data) {
             status = data;
         });
 
@@ -179,7 +201,7 @@ function getAllLcDetails() {
         var exporterAcct = "";
         var shipDate = "";
         var lcDetails = {};
-        getLcDetails(userId, PIN, OTP, refNumInt, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+        getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
             if (contract !== "") {
                 lcDetails = contract.Content;
             }
@@ -187,7 +209,7 @@ function getAllLcDetails() {
         });
 
         var lcObject = {
-            refNum: refNumInt,
+            refNum: refNum,
             lcDetails: lcDetails,
             status: status
         };
@@ -264,11 +286,11 @@ function getAllLcDetailsShipper() {
 //call web service to get lc details for each ref number 
 
         var refNum = refNumberList[i];
-        var refNumInt = parseInt(refNum);
+
         //get status of the ref num
         //getStatus(userId, PIN, OTP, refNum, callback)
         var status = "";
-        getStatus(userId, PIN, OTP, refNumInt, function (data) {
+        getStatus(userId, PIN, OTP, refNum, function (data) {
             status = data;
         });
         var availableStatus = ["shipped to carrier", "documents uploaded", "bg requested", "documents issued", "payment advised", "documents accepted", "bol verifed", "item colleccted"];
@@ -279,7 +301,7 @@ function getAllLcDetailsShipper() {
             var country = "";
             var exporterAcct = "";
             var shipDate = "";
-            getLcDetails(userId, PIN, OTP, refNumInt, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+            getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
                 if (contract !== "") {
                     exporterAcct = contract.Content.exporterAccount;
                     shipDate = contract.Content.shipDate;
@@ -293,7 +315,7 @@ function getAllLcDetailsShipper() {
             var operation = operations[0];
             var url = operations[1];
             var lcObject = {
-                refNum: refNumInt,
+                refNum: refNum,
                 country: country,
                 exporter: exporterAcct,
                 shipDate: shipDate,
@@ -311,8 +333,8 @@ function getAllLcDetailsShipper() {
 function lcDetailsOperation() {
 
     var refNum = getQueryVariable("refNum");
-    var refNumInt = parseInt(refNum);
-    getLcDetails(userId, PIN, OTP, refNumInt, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+
+    getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
         var fields = contract.Content;
         /*var headerVariables = ["ref_num","status","creation_datetime"];
          var refNum = fields[headerVariables[0]];
@@ -352,7 +374,7 @@ function lcDetailsOperation() {
             });
             $("#amendButton").click(function () {
 
-                window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNumInt);
+                window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
             });
         } else {
             viewLcButton(usertype);
@@ -366,8 +388,8 @@ function lcDetailsOperation() {
 function amendLcOperation() {
 
     var refNum = getQueryVariable("refNum");
-    var refNumInt = parseInt(refNum);
-    getLcDetails(userId, PIN, OTP, refNumInt, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+    //var refNumInt = parseInt(refNum);
+    getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
         var fields = contract.Content;
         /*var headerVariables = ["ref_num","status","creation_datetime"];
          var refNum = fields[headerVariables[0]];
@@ -409,11 +431,11 @@ function amendLcOperation() {
             }
             amendments[this.name] = this.value;
         });
-        amendLc(userId, PIN, OTP, refNumInt, amendments, function (amendments) {
+        amendLc(userId, PIN, OTP, refNum, amendments, function (amendments) {
             console.log(amendments);
         });
         var status = "requested to amend";
-        setStatus(userId, PIN, OTP, refNumInt, status, function (data) {
+        setStatus(userId, PIN, OTP, refNum, status, function (data) {
             console.log(data);
             window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
         });
@@ -423,7 +445,7 @@ function amendLcOperation() {
 function modifyLcOperation() {
 
     var refNum = getQueryVariable("refNum");
-    var refNumInt = parseInt(refNum);
+    //var refNumInt = parseInt(refNum);
     if (refNum !== "") {
 
         var amendments = null;
@@ -484,7 +506,8 @@ function modifyLcOperation() {
                     console.log(data);
                 });
                 var status = "pending";
-                setStatus(userId, PIN, OTP, refNumInt, status, function (data) {
+                var statusDetails = "";
+                updateStatus(userId, PIN, OTP, refNum, statusDetails, function (data) {
                     console.log(data);
                     window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
                 });
@@ -519,25 +542,26 @@ function buttonAssigned(status) { // this method is to assign button color (by a
 }
 
 function operationMatch(status, usertype) {
+    //var lowerStatus = status.toLowerCase();
     var operation = "view lc";
     var url = "lcDetails";
     if (usertype === "importer") {
 
-        if (status === "rejected" || status === "requested to amend") {
+        if (status.toLowerCase() === "rejected" || status.toLowerCase() === "requested to amend") {
             url = "modifyLcDetails";
             operation = "modify lc";
         }
 
     } else if (usertype === "exporter") {
-        if (status === "advised") {
+        if (status.toLowerCase() === "advised") {
             url = "approveLc";
             operation = "approve lc";
-        } else if (status === "acknowledged") {
+        } else if (status.toLowerCase() === "acknowledged") {
             url = "shipGoods";
             operation = "ship goods";
         }
     } else if (usertype === "shipper") {
-        if (status === "shipped to carrier") {
+        if (status.toLowerCase() === "shipped to carrier") {
             url = "submitBol";
             operation = "submit bol"
         } else {
@@ -556,41 +580,67 @@ function showLcDetailsModal() {
 }
 
 function loadLcDetailsModal() {
-   //$(document).ready(function () {
-        $('#lcDetailsModal').on('show.bs.modal', function (event) { // id of the modal with event
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var refNum = button.data('refnum') // Extract info from data-* attributes
-            var status = button.data('status')
-            //var productname = button.data('productname')
-            var fields = button.data('lc') //convert string to json string
-            var fieldsFromUser = ["exporterAccount","expiryDate","amount","goodsDescription","additionalConditions"];
-            var allLcHTML = ""
-            for (var i in fields) {
-                var lcDetailsHTML = "";
-                lcDetailsHTML = "<label class='col-lg-3 control-label lc-label' id=''>" + i + "</label>"
-                lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i]+"</div>"
-                //lcDetailsHTML += "<label class='col-lg-3 control-label lc-label'>" + i + "</label>"
-                //lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i]+"</div>"
-                
-                
-                //lcDetailsHTML += "</div><input style='display:none' id='input' type='text' name =" + i + " data-required='true' placeholder='" + fields[i] + "'>"
-                //$("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
-                //$("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");
-                allLcHTML += "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>"
-                allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
-            }
-            
-            // Update the modal's content.
-            var modal = $(this)
-            modal.find('.modal-body section header div div div p#refNum').text(refNum);
-            modal.find('.modal-body #status').text(status);
-            modal.find('.modal-body #lcDetails').html(allLcHTML)
+    //$(document).ready(function () {
+    $('#lcDetailsModal').on('show.bs.modal', function (event) { // id of the modal with event
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var refNum = button.data('refnum') // Extract info from data-* attributes
+        var status = button.data('status')
+        //var productname = button.data('productname')
+        var fields = button.data('lc') //convert string to json string
+        var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
+        var allLcHTML = ""
+        for (var i in fields) {
+            var lcDetailsHTML = "";
+            lcDetailsHTML = "<label class='col-lg-3 control-label lc-label' id=''>" + i + "</label>"
+            lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i] + "</div>"
+            //lcDetailsHTML += "<label class='col-lg-3 control-label lc-label'>" + i + "</label>"
+            //lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i]+"</div>"
 
-            // And if you wish to pass the productid to modal's 'Yes' button for further processing
-            //modal.find('button.btn-danger').val(productid)
-        });
+
+            //lcDetailsHTML += "</div><input style='display:none' id='input' type='text' name =" + i + " data-required='true' placeholder='" + fields[i] + "'>"
+            //$("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
+            //$("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");
+            allLcHTML += "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>"
+            allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
+        }
+
+        // Update the modal's content.
+        var modal = $(this)
+        modal.find('.modal-body section header div div div p#refNum').text(refNum);
+        modal.find('.modal-body #status').text(status);
+        modal.find('.modal-body #lcDetails').html(allLcHTML)
+
+        // And if you wish to pass the productid to modal's 'Yes' button for further processing
+        //modal.find('button.btn-danger').val(productid)
+    });
     //});
-  
+
+}
+
+function getExporterDetails() {
+    // get all exporter details of current importer
+    //var exporterList = ["0000000915","0000000914"];
+    var expoterList = ["toffeemint1", "toffeemint2"]; //user ids
+
+    var allUserCredentials = [
+        {userId: "toffeemint1", customerId: "0000000914", bankId: "1", accountId: "0000002473"},
+        {userId: "toffeemint2", customerId: "0000000915", bankId: "1", accountId: "0000002480"}
+        /* {userId: "toffeemint3", customerId: "0000000915", bankId: "", accountId: ""},
+         {userId: "toffeemint4", customerId: "0000000915", bankId: "", accountId: ""}*/
+    ];
+    console.log(allUserCredentials);
+    var exporterCredentials = [];
+    for (var i = 0; i < allUserCredentials.length; i++) {
+        var oneCredential = allUserCredentials[i];
+        console.log(oneCredential["userId"]);
+        if (oneCredential["userId"] !== userId) {
+            exporterCredentials.push(oneCredential);
+        }
+    }
+    console.log(exporterCredentials);
+
+    return exporterCredentials;
+
 }
 
 

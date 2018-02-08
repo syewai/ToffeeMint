@@ -9,7 +9,6 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 </head>
 
-
 <section class="vbox">
     <section class="scrollable">
 
@@ -34,9 +33,10 @@
                                     <!--get exporter id, account no and name from alan's database-->
                                     <select id="exporterId" name="exporterId" class="form-control m-b ">
                                         <option value="">--Please select an exporter--</option>
-                                        <option value="1001">ToffeeMint1</option>
+                                        <!--<option value="1001">ToffeeMint1</option> 
                                         <option value="1002">ToffeeMint2</option>
                                         <option value="1003">ToffeeMint3</option>
+                                        <option value="1004">ToffeeMint4</option>-->
                                     </select>
                                 </div>
                             </div>
@@ -59,11 +59,11 @@
                             </div>
                             <div class="form-group">
                                 <h4>Bank</h4>
-                                <p>UOB</p>
+                                <p id="bankId"></p> <!--get bank id from customerDetails-->
                             </div>
                             <div class="form-group">
                                 <h4>Account Number</h4>
-                                <p>456789</p>
+                                <p id="accountId"></p>   <!--getAccountNumber-->
                             </div>
                         </div>
                     </section>
@@ -123,24 +123,45 @@
 
         </form>
         <script type="text/javascript">
+
+            var allExporterDetails = getExporterDetails();
+            console.log(allExporterDetails);
+            var optionHTML = "";
+            for (var i = 0; i < allExporterDetails.length; i++) {
+                var userCredential = allExporterDetails[i];
+                console.log(userCredential["userId"]);
+                optionHTML += "<option value='" + userCredential['customerId'] + "'>" + userCredential['userId'] + "</option>";
+            }
+            $("#exporterId").append(optionHTML);
             var elem = document.getElementById("exporterId");
             elem.onchange = function () {
-                document.getElementById("printExpId").innerHTML = $('#exporterId option:selected').text();
+
+                document.getElementById("printExpId").innerHTML = $('#exporterId option:selected').val();
                 var elements = document.getElementsByClassName("formHidden");
                 for (var i = 0, length = elements.length; i < length; i++) {
                     elements[i].style.display = (elem.value == "") ? "none" : "block";
                 }
                 var exporterId = $('#exporterId option:selected').val();
-               
-                var country = "Norway";
-                if (exporterId === "1002") {
-                    country = "China";
-                } else if (exporterId === "1003") {
-                    country = "UK";
+                var bankId = "";
+                var accountId = "";
+
+                for (var i = 0; i < allExporterDetails.length; i++) {
+                    var userCredential = allExporterDetails[i];
+                    if (userCredential["customerId"] === exporterId) {
+                        bankId = userCredential["bankId"];
+
+                        accountId = userCredential["accountId"];
+
+                    }
                 }
-                var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + country + "' >";
+                $("#accountId").append(accountId);
+                $("#bankId").append(bankId);
+                var countries = ["Norway","UK","China","Japan"];
+                var randomCountry = countries[Math.floor(Math.random()*countries.length)];
+                console.log(randomCountry);
+                var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + randomCountry + "' >";
                 $("#loginForm").append(countryInput);
-                
+
             };
 
 

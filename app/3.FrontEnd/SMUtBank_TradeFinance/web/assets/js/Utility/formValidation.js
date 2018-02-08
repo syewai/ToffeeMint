@@ -32,12 +32,12 @@ function lcApplicationForm(userId, PIN, OTP, lc) {
 
             //1. Get the first refNum in the ref num list -  only used for block chain
 
-            var refNum = lcDetails.ref_num;
-            var refNumber = parseInt(refNum);
+           // var refNum = lcDetails.ref_num;
+           // var refNumber = parseInt(refNum);
             //2. Call applyLc method to apply lc
-            applyLc(userId, PIN, OTP, refNumber, lc, function (data) { //calling this method from assets/js/DAO/lcHandling.js
-                console.log(data);
-            });
+           // applyLc(userId, PIN, OTP, refNumber, lc, function (data) { //calling this method from assets/js/DAO/lcHandling.js
+             //   console.log(data);
+            //});
             /*End of lc submission on bc*/
             return  {success: lcDetails};
         }

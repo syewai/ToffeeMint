@@ -75,7 +75,7 @@ function protectUser() {
         //redirect to login
         var error = {errorMsg: "No such user"};
         sessionStorage.setItem('error', JSON.stringify(error));
-        window.location.replace("/SMUtBank_TradeFinance/login.html");
+        window.location.replace("/SMUtBank_TradeFinance/");
     }
     var userId = user.userID;
     var PIN = user.PIN;
