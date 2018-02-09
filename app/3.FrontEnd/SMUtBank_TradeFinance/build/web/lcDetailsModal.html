@@ -65,7 +65,6 @@
 
         $("#amendButton").click(function () {
             
-            
             var page = $(this).attr('id');
             var pageToLoad = {page: page}; // append refnum into pagetToLoad and set a session 
             sessionStorage.setItem('page', JSON.stringify(pageToLoad));
