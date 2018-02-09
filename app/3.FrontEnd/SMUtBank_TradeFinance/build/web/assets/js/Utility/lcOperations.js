@@ -132,13 +132,16 @@ function homeOperation() {
                 importerAcct = contract.Content.ServiceResponse.LC_Details.LC_record.importer_account_num;
                 exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
                 expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
-                status = contract.Content.ServiceResponse.LC_Details.LC_record.status;
+                status = contract.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
                 lc = contract.Content.ServiceResponse.LC_Details.LC_record;
+
             }
 
         });
         lc = JSON.stringify(lc);
-        console.log(lc);
+//        console.log(lc);
+        console.log("test");
+        console.log(status);
         //get operation of the status
         var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
 
@@ -147,7 +150,20 @@ function homeOperation() {
         var $row = $('<tr></tr>');
         var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
         //var $x = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
-        var $button = $("<button type='button'  class='btn btn-primary lcDetails' data-action= '" + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='" + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>" + operation + "</button>");
+        var button = "";
+
+        if (status === "pending") {
+            button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
+                    + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"
+                    + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>"
+                    + operation + "</button>";
+        }
+        if (status === "amendments requested") {
+            button = "<button type='button'  data-refnum=" + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
+                    + operation + "</button>";
+        }
+        var $button = $(button);
+
         $button.addClass(buttonAssigned(status)[0]);
         var $refNumCell = $('<td></td>');
         $refNumCell.append(refNum);
@@ -292,9 +308,7 @@ function getAllLcDetailsShipper() {
         //get status of the ref num
         //getStatus(userId, PIN, OTP, refNum, callback)
         var status = "";
-        getStatus(userId, PIN, OTP, refNum, function (data) {
-            status = data;
-        });
+
         var availableStatus = ["shipped to carrier", "documents uploaded", "bg requested", "documents issued", "payment advised", "documents accepted", "bol verifed", "item colleccted"];
         var statusIncluded = $.inArray(status, availableStatus);
 
@@ -386,41 +400,417 @@ function lcDetailsOperation() {
 }
 
 
+function modifyLcOps() {
+    var refNum = getQueryVariable("refNum");
+    var importerAccount = ""; //no change
+    var exporterAccount = ""; //no change
+    var expiryDate = "";
+    var expiryPlace = "";
+    var confirmed = "";
+    var revocable = "";
+    var availableBy = "";
+    var termDays = "";
+    var amount = "";
+    var currency = ""; //no change
+    var applicableRules = "";
+    var partialShipments = "";
+    var shipDestination = "";
+    var shipDate = "";
+    var shipPeriod = "";
+    var goodsDescription = "";
+    var docsRequired = "";
+    var additionalConditions = "";
+    var senderToReceiverInfo = "";
+    var mode = "BC"; //no change
+
+    var errorMsg;
+    var globalErrorID;
+    var allNecessaryFields = ["expiry_date", "amount",
+        "ship_date", "goods_description",
+        "additional_conditions", "importer_account_num",
+        "exporter_account_num", "expiry_place", "confirmed",
+        "revocable", "available_by", "term_days", "currency"
+                , "applicable_rules", "partial_shipments", "ship_destination",
+        "ship_period", "sender_to_receiver_info",
+        "docs_required"];
+    var allNecessaryFieldsName = ["expiryDate", "amount",
+        "shipDate", "goodsDescription", "additionalConditions",
+        "importerAccountNum", "exporterAccountNum", "expiryPlace",
+        "confirmed", "revocable", "availableBy",
+        "termDays", "currency", "applicableRules",
+        "partialShipments", "shipDestination",
+        "shipPeriod", "senderToReceiverInfo",
+        "docsRequired"];
+
+    var amendmentDetails = null;
+    var originalLc = null;
+
+    //get original contract, store in amendments variable
+    getLcAmendments(userId, PIN, OTP, refNum, function (amendments) {//calling this method from  assets/js/DAO/lcHandling.js
+        var globalErrorId = amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+        console.log(globalErrorId);
+        var fields = {};
+        if (globalErrorId === "010000") {
+            fields = amendments.Content.ServiceResponse.LC_Amend.LC_Amend;
+            amendmentDetails = fields;
+            importerAccount = fields.importer_account_num; //no change
+            console.log(importerAccount);
+            exporterAccount = fields.exporter_account_num; //no change
+            expiryDate = fields.expiry_date; //no change
+            expiryPlace = fields.expiry_place;
+            confirmed = fields.confirmed;
+            revocable = fields.revocable;
+            availableBy = fields.available_by;
+            termDays = fields.term_days;
+            amount = fields.amount;
+            currency = fields.currency; //no change
+            applicableRules = fields.applicable_rules;
+            partialShipments = fields.partial_shipments;
+            shipDestination = fields.ship_destination;
+            shipDate = fields.ship_date;
+            shipPeriod = fields.ship_period;
+            goodsDescription = fields.goods_description;
+            docsRequired = fields.docs_required;
+            additionalConditions = fields.additional_conditions;
+            senderToReceiverInfo = fields.sender_to_receiver_info;
+
+        }
+    });
+
+    var originalAmount = "";
+    var originalDesc = "";
+    var originalExpiryDate = "";
+    getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+        var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+        console.log(globalErrorId);
+        var fields = {};
+        if (globalErrorId === "010000") {
+
+            fields = contract.Content.ServiceResponse.LC_Details.LC_record;
+            originalLc = fields;
+            //importerAccount = fields.importer_account_num; //no change
+            //exporterAccount = fields.exporter_account_num; //no change
+            originalExpiryDate = fields.expiry_date; //no change
+            //expiryPlace = fields.expiry_place;
+            //confirmed = fields.confirmed;
+            //revocable = fields.revocable;
+            //availableBy = fields.available_by;
+            //termDays = fields.term_days;
+            originalAmount = fields.amount;
+            //currency = fields.currency; //no change
+            //applicableRules = fields.applicable_rules;
+            //partialShipments = fields.partial_shipments;
+            //shipDestination = fields.ship_destination;
+            // shipDate = fields.ship_date;
+            //shipPeriod = fields.ship_period;
+            originalDesc = fields.goods_description;
+            //docsRequired = fields.docs_required;
+            //additionalConditions = fields.additional_conditions;
+            //senderToReceiverInfo = fields.sender_to_receiver_info;
+            $("#goodsDescription").attr("placeholder", goodsDescription);
+            $("#amount").attr("placeholder", amount);
+            $("#expiryDate").attr("placeholder", expiryDate);
+        }
+    });
+
+    if (amendmentDetails !== null && originalLc !== null) {
+        for (var field in amendmentDetails) {
+            var fieldCamel = attributeMapping(field);
+            var originalValue = originalLc[field];
+            var amendedValue = amendmentDetails[field];
+            $("#" + fieldCamel).attr("placeholder", originalValue);
+            console.log(fieldCamel);
+            var suggestion = "";
+            if (originalValue !== amendedValue) {
+                if (amendedValue !== null) {
+                    var p = "<p class='btn-danger'> Exporter has suggested to amend : " + amendedValue + "</p>";
+                    $("#" + fieldCamel + "-p").append(p);
+                }
+
+            }
+
+        }
+    }
+
+    modifyLcButton();
+    $("#modifyButton").click(function () {
+        expiryDate = document.getElementById("expiryDate").value;
+        if (expiryDate === "") {
+            expiryDate = document.getElementById("expiryDate").placeholder;
+        }
+        amount = document.getElementById("amount").value;
+        if (amount === "") {
+            amount = document.getElementById("amount").placeholder;
+        }
+        goodsDescription = document.getElementById("goodsDescription").value;
+        if (goodsDescription === "") {
+            goodsDescription = document.getElementById("goodsDescription").placeholder;
+        }
+        var lc = {
+            referenceNumber: refNum,
+            importerAccount: importerAccount,
+            exporterAccount: exporterAccount,
+            expiryDate: expiryDate,
+            expiryplace: expiryPlace,
+            confirmed: confirmed,
+            revocable: revocable,
+            availableBy: availableBy,
+            termDays: termDays,
+            amount: amount,
+            currency: currency,
+            applicableRules: applicableRules,
+            partialShipments: partialShipments,
+            shipDestination: shipDestination,
+            shipDate: shipDate,
+            shipPeriod: shipPeriod,
+            goodsDescription: goodsDescription,
+            docsRequired: docsRequired,
+            additionalConditions: additionalConditions,
+            senderToReceiverInfo: senderToReceiverInfo,
+            mode: mode
+        };
+        console.log(lc);
+        //amend lc
+       // var validateLcApplication = lcModificationForm(userId, PIN, OTP, lc);
+        //console.log(validateLcApplication);
+        /*if (validateLcApplication !== undefined) {
+            if (validateLcApplication.hasOwnProperty("errorMsg")) {
+                var errorMsg = validateLcApplication.errorMsg;
+                console.log("error");
+                console.log(errorMsg);
+                $("#authError").html(errorMsg);
+            } else if (validateLcApplication.hasOwnProperty("success")) {
+                $("#authError").html("submitted");
+                console.log("success");
+                console.log(validateLcApplication);
+                //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
+                //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+            }
+        }*/
+
+    });
+    $("#cancelButton").click(function () {
+        window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+    });
+}
+
+
+
+
+function amendLcOps() {
+    var refNum = getQueryVariable("refNum");
+    var importerAccount = ""; //no change
+    var exporterAccount = ""; //no change
+    var expiryDate = "";
+    var expiryPlace = "";
+    var confirmed = "";
+    var revocable = "";
+    var availableBy = "";
+    var termDays = "";
+    var amount = "";
+    var currency = ""; //no change
+    var applicableRules = "";
+    var partialShipments = "";
+    var shipDestination = "";
+    var shipDate = "";
+    var shipPeriod = "";
+    var goodsDescription = "";
+    var docsRequired = "";
+    var additionalConditions = "";
+    var senderToReceiverInfo = "";
+    var mode = "BC"; //no change
+
+    var errorMsg;
+    var globalErrorID;
+    getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+        var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+        console.log(globalErrorId);
+        var fields = {};
+        if (globalErrorId === "010000") {
+            fields = contract.Content.ServiceResponse.LC_Details.LC_record;
+            importerAccount = fields.importer_account_num; //no change
+            console.log(importerAccount);
+            exporterAccount = fields.exporter_account_num; //no change
+            expiryDate = fields.expiry_date; //no change
+            expiryPlace = fields.expiry_place;
+            confirmed = fields.confirmed;
+            revocable = fields.revocable;
+            availableBy = fields.available_by;
+            termDays = fields.term_days;
+            amount = fields.amount;
+            currency = fields.currency; //no change
+            applicableRules = fields.applicable_rules;
+            partialShipments = fields.partial_shipments;
+            shipDestination = fields.ship_destination;
+            shipDate = fields.ship_date;
+            shipPeriod = fields.ship_period;
+            goodsDescription = fields.goods_description;
+            docsRequired = fields.docs_required;
+            additionalConditions = fields.additional_conditions;
+            senderToReceiverInfo = fields.sender_to_receiver_info;
+            $("#goodsDescription").attr("placeholder", goodsDescription);
+            $("#amount").attr("placeholder", amount);
+            $("#expiryDate").attr("placeholder", expiryDate);
+        }
+    });
+    $("#amendLcButton").click(function () {
+
+
+        expiryDate = document.getElementById("expiryDate").value;
+        if (expiryDate === "") {
+            expiryDate = document.getElementById("expiryDate").placeholder;
+        }
+        amount = document.getElementById("amount").value;
+        if (amount === "") {
+            amount = document.getElementById("amount").placeholder;
+        }
+        goodsDescription = document.getElementById("goodsDescription").value;
+        if (goodsDescription === "") {
+            goodsDescription = document.getElementById("goodsDescription").placeholder;
+        }
+
+        var lc = {
+            referenceNumber: refNum,
+            importerAccount: importerAccount,
+            exporterAccount: exporterAccount,
+            expiryDate: expiryDate,
+            expiryplace: expiryPlace,
+            confirmed: confirmed,
+            revocable: revocable,
+            availableBy: availableBy,
+            termDays: termDays,
+            amount: amount,
+            currency: currency,
+            applicableRules: applicableRules,
+            partialShipments: partialShipments,
+            shipDestination: shipDestination,
+            shipDate: shipDate,
+            shipPeriod: shipPeriod,
+            goodsDescription: goodsDescription,
+            docsRequired: docsRequired,
+            additionalConditions: additionalConditions,
+            senderToReceiverInfo: senderToReceiverInfo,
+            mode: mode
+        };
+        //amend lc
+        var validateLcApplication = lcAmendmentForm(userId, PIN, OTP, lc);
+        console.log(validateLcApplication);
+        if (validateLcApplication !== undefined) {
+            if (validateLcApplication.hasOwnProperty("errorMsg")) {
+                var errorMsg = validateLcApplication.errorMsg;
+                console.log("error");
+                console.log(errorMsg);
+                $("#authError").html(errorMsg);
+            } else if (validateLcApplication.hasOwnProperty("success")) {
+                $("#authError").html("submitted");
+                console.log("success");
+                console.log(validateLcApplication);
+                //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
+                window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+            }
+        }
+
+    });
+
+
+}
+
 //this function handles ui logic of view lc details
 function amendLcOperation() {
 
+
     var refNum = getQueryVariable("refNum");
-    //var refNumInt = parseInt(refNum);
+    var importerAccount = ""; //no change
+    var exporterAccount = ""; //no change
+    var expiryDate = "";
+    var expiryPlace = "";
+    var confirmed = "";
+    var revocable = "";
+    var availableBy = "";
+    var termDays = "";
+    var amount = "";
+    var currency = ""; //no change
+    var applicableRules = "";
+    var partialShipments = "";
+    var shipDestination = "";
+    var shipDate = "";
+    var shipPeriod = "";
+    var goodsDescription = "";
+    var docsRequired = "";
+    var additionalConditions = "";
+    var senderToReceiverInfo = "";
+    var mode = "BC"; //no change
+
     getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
-        var fields = contract.Content;
-        /*var headerVariables = ["ref_num","status","creation_datetime"];
-         var refNum = fields[headerVariables[0]];
-         var status = fields[headerVariables[1]];
-         var dateSubmitted = fields[headerVariables[2]];
-         $('#refNum').html(refNum);
-         $('#status').html(status);
-         $('#dateSubmitted').html(dateSubmitted);*/
-        for (var i in fields) {
-
-            var isCounted = false;
-            /*for (var j in headerVariables){
-             
-             if (i === headerVariables[j]){
-             isCounted = true;
-             }
-             }*/
-            if (!isCounted) {
-
-                var lcDetailsHTML = "<label class='col-lg-2 control-label lc-label'>" + i + "</label>";
+        var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+        console.log(globalErrorId);
+        var fields = {};
+        if (globalErrorId === "010000") {
+            fields = contract.Content.ServiceResponse.LC_Details.LC_record;
+            importerAccount = fields.importer_account_num; //no change
+            exporterAccount = fields.exporter_account_num; //no change
+            expiryDate = fields.expiry_date; //no change
+            expiryPlace = fields.expiry_place;
+            confirmed = fields.confirmed;
+            revocable = fields.revocable;
+            availableBy = fields.available_by;
+            termDays = fields.term_days;
+            amount = fields.amount;
+            currency = fields.currency; //no change
+            applicableRules = fields.applicable_rules;
+            partialShipments = fields.partial_shipments;
+            shipDestination = fields.ship_destination;
+            shipDate = fields.ship_date;
+            shipPeriod = fields.ship_period;
+            goodsDescription = fields.goods_description;
+            docsRequired = fields.docs_required;
+            additionalConditions = fields.additional_conditions;
+            senderToReceiverInfo = fields.sender_to_receiver_info;
+            var allNecessaryFields = ["expiry_date", "amount",
+                "ship_date", "goods_description",
+                "additional_conditions", "importer_account_num",
+                "exporter_account_num", "expiry_place", "confirmed",
+                "revocable", "available_by", "term_days", "currency"
+                        , "applicable_rules", "partial_shipments", "ship_destination",
+                "ship_period", "sender_to_receiver_info",
+                "docs_required"];
+            var allNecessaryFieldsName = ["expiryDate", "amount",
+                "shipDate", "goodsDescription", "additionalConditions",
+                "importerAccountNum", "exporterAccountNum", "expiryPlace",
+                "confirmed", "revocable", "availableBy",
+                "termDays", "currency", "applicableRules",
+                "partialShipments", "shipDestination",
+                "shipPeriod", "senderToReceiverInfo",
+                "docsRequired"];
+            var fieldsToBeDisplayed = ["expiry_date", "amount", "ship_date", "goods_description", "additional_conditions"];
+            $('#refNum').html(refNum);
+            for (var i in allNecessaryFields) {
+                var fieldName = allNecessaryFields[i];
+                var fieldValue = fields[fieldName];
+                var type = "hidden";
+                var visibility = "none";
+                for (var j in fieldsToBeDisplayed) {
+                    if (fieldName === fieldsToBeDisplayed[j]) {
+                        type = "text";
+                        visibility = "block";
+                    }
+                }
+                var lcDetailsHTML = "<label class='col-lg-2 control-label lc-label' style='display:" + visibility
+                        + "'>" + fieldName
+                        + "</label>";
                 lcDetailsHTML += "<div class='col-lg-10 font-bold' id='lcValue'></div>";
-                var input = "<input id='" + i + "' type='text' name =" + i + " data-required='true' placeholder='" + fields[i] + "'>";
+                var input = "<input id='" + fieldName
+                        + "' type='" + type
+                        + "' name =" + allNecessaryFieldsName[i]
+                        + " data-required='true' placeholder='"
+                        + fieldValue + "'>";
                 lcDetailsHTML += input;
                 $("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
                 $("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");
             }
+            amendLcButton();
         }
     });
-    amendLcButton();
     $("#amendButton").click(function () {
 //amendLc("amendLC","amendments");
 //setStatus("requested to amend");
@@ -433,99 +823,18 @@ function amendLcOperation() {
             }
             amendments[this.name] = this.value;
         });
-        amendLc(userId, PIN, OTP, refNum, amendments, function (amendments) {
+        amendLc(userId, PIN, OTP, amendments, function (amendments) {
             console.log(amendments);
-        });
-        var status = "requested to amend";
-        setStatus(userId, PIN, OTP, refNum, status, function (data) {
-            console.log(data);
-            window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+            var globalErrorId = amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+            console.log(globalErrorId);
+            if (globalErrorId === "010000") {
+                window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+            }
         });
     });
 }
 
-function modifyLcOperation() {
 
-    var refNum = getQueryVariable("refNum");
-    //var refNumInt = parseInt(refNum);
-    if (refNum !== "") {
-
-        var amendments = null;
-        var originalLc = null;
-        //get original contract, store in amendments variable
-        getLcDetails(userId, PIN, OTP, refNum, function (data) {
-            originalLc = data.Content;
-        });
-        //get amended lc
-        getLcAmendments(userId, PIN, OTP, refNum, function (data) {
-            amendments = data.Content;
-        });
-        console.log(amendments);
-        console.log(originalLc);
-        if (amendments !== null && originalLc !== null) {
-            for (var field in amendments) {
-                var originalValue = originalLc[field];
-                var amendedValue = amendments[field];
-                var isCounted = false;
-                /*for (var j in headerVariables){
-                 
-                 if (i === headerVariables[j]){
-                 isCounted = true;
-                 }
-                 }*/
-                if (!isCounted) {
-                    var inputId = "#" + field;
-                    var lcDetailsHTML = "<label class='col-lg-2 control-label lc-label'>" + field + "</label>";
-                    lcDetailsHTML += "<div class='col-lg-10 font-bold' id='lcValue'></div>";
-                    var input = "<input id='" + field + "' type='text' name =" + field + " data-required='true' placeholder='" + amendedValue + "'>";
-                    lcDetailsHTML += input;
-                    $("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
-                    $("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");
-                    if (originalValue !== amendedValue) {
-                        console.log(field);
-                        console.log(originalValue !== amendedValue);
-                        //highlight fields
-                        $(inputId).addClass("btn-danger");
-                    } else {
-                        $(inputId).attr('disabled', true);
-                    }
-
-                }
-            }
-            modifyLcButton();
-            $("#modifyButton").click(function () {
-//amendLc("modifyContract","contract");
-
-                var modification = {};
-                $("input").each(function () {
-
-                    if (this.value === "") {
-                        this.value = this.placeholder;
-                    }
-                    modification[this.name] = this.value;
-                });
-                modifyLc(userId, PIN, OTP, refNum, modification, function (data) {
-                    console.log(data);
-                });
-                var status = "pending";
-                var statusDetails = "";
-                updateStatus(userId, PIN, OTP, refNum, statusDetails, function (data) {
-                    console.log(data);
-                    window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
-                });
-            });
-            $("#cancelButton").click(function () {
-                window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
-            });
-        }
-
-
-    }
-
-
-
-
-}
 
 
 function totalLcs() {
@@ -544,13 +853,13 @@ function buttonAssigned(status) { // this method is to assign button color (by a
 }
 
 function operationMatch(status, usertype) {
-    //var lowerStatus = status.toLowerCase();
+//var lowerStatus = status.toLowerCase();
     var operation = "view lc";
     var url = "lcDetails";
     if (usertype === "importer") {
 
-        if (status.toLowerCase() === "requested to amend") {
-            url = "modifyLcDetails";
+        if (status.toLowerCase() === "amendments requested") {
+            url = "modifyLc";
             operation = "modify lc";
         }
 
@@ -576,66 +885,63 @@ function operationMatch(status, usertype) {
 
 
 function showLcDetailsModal() {
-    //if user clicks the button -
+//if user clicks the button -
 
     $('#lcDetailsModal').modal('show');
 }
 
 function loadLcDetailsModal() {
-    //$(document).ready(function () {
-    $('#lcDetailsModal').on('show.bs.modal', function (event) { // id of the modal with event
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var refNum = button.data('refnum') // Extract info from data-* attributes
-        var status = button.data('status')
-        var action = button.data('action')
-        //var productname = button.data('productname')
-        var fields = button.data('lc') //convert string to json string
-        var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
-        var allLcHTML = ""
-        for (var i in fields) {
-            var lcDetailsHTML = "";
-            lcDetailsHTML = "<label class='col-lg-4 control-label lc-label' id=''>" + i + "</label>"
-            lcDetailsHTML += "<div class='col-lg-4 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i] + "</div>"
-            //lcDetailsHTML += "<label class='col-lg-3 control-label lc-label'>" + i + "</label>"
-            //lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i]+"</div>"
+    $(document).ready(function () {
+        $('#lcDetailsModal').on('show.bs.modal', function (event) { // id of the modal with event
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var refNum = button.data('refnum') // Extract info from data-* attributes
+            var status = button.data('status')
+            var action = button.data('action')
+            //var productname = button.data('productname')
+            var fields = button.data('lc') //convert string to json string
+            var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
+            var allLcHTML = ""
+            for (var i in fields) {
+                var lcDetailsHTML = "";
+                lcDetailsHTML = "<label class='col-lg-4 control-label lc-label' id=''>" + i + "</label>"
+                lcDetailsHTML += "<div class='col-lg-4 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i] + "</div>"
+                //lcDetailsHTML += "<label class='col-lg-3 control-label lc-label'>" + i + "</label>"
+                //lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i]+"</div>"
 
 
-            //lcDetailsHTML += "</div><input style='display:none' id='input' type='text' name =" + i + " data-required='true' placeholder='" + fields[i] + "'>"
-            //$("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
-            //$("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");
-            allLcHTML += "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>"
-            allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
-        }
-        var buttons = ""
-        if (usertype === "exporter" && action === "approve lc") {
-            buttons += "<div class='form-group lc-form'>"
-            buttons += "<div class='col-lg-4 '><button type='submit' class='btn btn-primary btn-lg' id='approveButton'><i class='fa fa-check'></i>  Approve</button></div>"
-            buttons += "<div class='col-lg-4 '><button type='submit' class='btn btn-danger btn-lg' id='amendButton'>Request to amend</button></div>"
-            buttons += "<div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>"
-            buttons += "</div>"
-            
-        }
-        var refNumHTML = "<div value='"+refNum+"' id='returnedRef'></div>"
-        // Update the modal's content.
-        var modal = $(this)
-        modal.find('.modal-body section header div div div p#refNum').text(refNum)
-        modal.find('.modal-body #status').text(status);
-        modal.find('.modal-body #lcDetails').html(allLcHTML)
-        modal.find('.modal-body #returnedRefNum').html(refNumHTML)
-        modal.find('.modal-footer #lcButtons').html(buttons)
-        
-        //modal.find('.modal-footer #lcButtons' ).html(buttons)
-        //$(
-        // And if you wish to pass the productid to modal's 'Yes' button for further processing
-        //modal.find('button.btn-danger').val(productid)
+                //lcDetailsHTML += "</div><input style='display:none' id='input' type='text' name =" + i + " data-required='true' placeholder='" + fields[i] + "'>"
+                //$("#lcDetails").append("<div class='form-group lc-form'>" + lcDetailsHTML + "</div>");
+                //$("#lcDetails").append("<div class='line line-dashed line-lg pull-in'></div>");
+                allLcHTML += "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>"
+                allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
+            }
+            var buttons = ""
+            if (usertype === "exporter" && action === "approve lc") {
+                $("#approveContainer").css("visibility", "visible")
+                $("#amendContainer").css("visibility", "visible")
+
+            }
+            var refNumHTML = "<div value='" + refNum + "' id='returnedRef'></div>"
+            // Update the modal's content.
+            var modal = $(this)
+            modal.find('.modal-body section header div div div p#refNum').text(refNum)
+            modal.find('.modal-body #status').text(status);
+            modal.find('.modal-body #lcDetails').html(allLcHTML)
+            modal.find('.modal-body #returnedRefNum').html(refNumHTML)
+
+
+            //modal.find('.modal-footer #lcButtons' ).html(buttons)
+            //$(
+            // And if you wish to pass the productid to modal's 'Yes' button for further processing
+            //modal.find('button.btn-danger').val(productid)
+
+        });
     });
-    //});
-
 }
 
 function getExporterDetails() {
-    // get all exporter details of current importer
-    //var exporterList = ["0000000915","0000000914"];
+// get all exporter details of current importer
+//var exporterList = ["0000000915","0000000914"];
     var expoterList = ["toffeemint1", "toffeemint2"]; //user ids
 
     var allUserCredentials = [
@@ -654,9 +960,7 @@ function getExporterDetails() {
         }
     }
     console.log(exporterCredentials);
-
     return exporterCredentials;
-
 }
 
 

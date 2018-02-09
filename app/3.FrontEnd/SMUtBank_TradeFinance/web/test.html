@@ -6,181 +6,184 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html>
-<head>
+    <head>
 
-<script>
-/*$(document).ready(function(){
-    $("button").click(function(){
-        var refNumList = [1039,1038,1037,1036,1035];
-        for (var i in refNumList){
-            var getContractLink = "http://localhost:9001/lc/getContract?refNum="+refNumList[i];
-            $.getJSON(getContractLink).done(function (data) {
-                var items = [];
-                $.each( data.Content, function( key, val ) {
-                  items.push( "<li id='" + key + "'>" + val + "</li>" );
+        <script>
+            /*$(document).ready(function(){
+             $("button").click(function(){
+             var refNumList = [1039,1038,1037,1036,1035];
+             for (var i in refNumList){
+             var getContractLink = "http://localhost:9001/lc/getContract?refNum="+refNumList[i];
+             $.getJSON(getContractLink).done(function (data) {
+             var items = [];
+             $.each( data.Content, function( key, val ) {
+             items.push( "<li id='" + key + "'>" + val + "</li>" );
+             });
+             
+             $("body").append(items);
+             
+             
+             console.log(data.Content);
+             });
+             
+             }
+             
+             });
+             });*/
+        </script>
+    </head>
+    <body>
+
+        <button id="button1">Get customer details</button>
+        <button id="button2">Get customer accounts</button>
+        <button id="button3">Get all types</button>
+        <button id="button4">Get all types</button>
+        <button id="button5">Get ref num list</button>
+        <button id="button6">Get game question</button>
+        <button id="button7">Get game answer</button>
+        <button id="button8">Set question score</button>
+        <button id="button9">Get game score</button>
+        <button id="button10">Get game leaders</button>
+        <button id="button11">update Status</button>
+        <button id="button12">get amendments</button>
+        <div id="content"></div>
+        <!--<div id="nav">
+        </div>
+        <div id="content"></div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="assets/js/pageLoad.js"></script>
+         <script>
+             $('#nav').load("nav.html");
+        </script>-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="assets/js/DAO/apiUrl.js"></script>
+
+        <script src="assets/js/DAO/lcHandling.js"></script>
+        <script src="assets/js/DAO/userHandling.js"></script>
+        <script src="assets/js/DAO/statusHandling.js"></script>
+        <script src="assets/js/DAO/gameHandling.js"></script>
+        <script>
+            $("#button1").click(function () {
+                var account
+                getCustomerAccounts("toffeemint2", "123456", "999999", function (accounts) { //get currency and importer account
+
+                    account = accounts.Content.ServiceResponse.AccountList.account[0];
+                    if (account == null) {
+                        account = accounts.Content.ServiceResponse.AccountList.account;
+                    }
+                    console.log(account);
+
                 });
-                
-                $("body").append(items);
-               
-               
-            console.log(data.Content);
-             });
-            
-        }
-        
-    });
-});*/
-</script>
-</head>
-<body>
 
-    <button id="button1">Get customer details</button>
-    <button id="button2">Get customer accounts</button>
-    <button id="button3">Get all types</button>
-    <button id="button4">Get all types</button>
-    <button id="button5">Get ref num list</button>
-    <button id="button6">Get game question</button>
-    <button id="button7">Get game answer</button>
-    <button id="button8">Set question score</button>
-    <button id="button9">Get game score</button>
-    <button id="button10">Get game leaders</button>
-    <button id="button11">update Status</button>
-<div id="content"></div>
-<!--<div id="nav">
-</div>
-<div id="content"></div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="assets/js/pageLoad.js"></script>
- <script>
-     $('#nav').load("nav.html");
-</script>-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="assets/js/DAO/apiUrl.js"></script>
-
-<script src="assets/js/DAO/lcHandling.js"></script>
-<script src="assets/js/DAO/userHandling.js"></script>
-<script src="assets/js/DAO/statusHandling.js"></script>
-<script src="assets/js/DAO/gameHandling.js"></script>
-<script>
-    $("#button1").click(function(){
-        var account 
-        getCustomerAccounts("toffeemint2", "123456", "999999", function (accounts) { //get currency and importer account
-        
-        account = accounts.Content.ServiceResponse.AccountList.account[0];
-        if (account == null){
-           account = accounts.Content.ServiceResponse.AccountList.account; 
-        }
-        console.log(account);
-
-    });
-            
-           });
-           
-               $("#button2").click(function(){
-        var account;
-        getCustomerDeatils("toffeemint1", "929780", "999999", function (accounts) { //get currency and importer account
-        
-        
-        console.log(account);
-
-    });
-            
-           });
-         
-          $("#button4").click(function(){//
-              
-             //console.log(getRefNumListAjax());
-             //var numList = getRefNumListAjax();
-             
-             
-            var refNum;
-            getRefNumListAjax(function(refNumList) {
-                 refNum = refNumList.RefNumList.RefNum;
-             });
-             console.log(refNum[0]);
-
-         } );
-         
-         $("#button5").click(function(){//
-              
-             //console.log(getRefNumListAjax());
-             //var numList = getRefNumListAjax();
-             
-             
-             //console.log(getRefNumList("kinetic1", refNumList));
-             
-            var userId = "toffeemint1";
-            var PIN = "929780";
-            var OTP = "999999";
-             
-             
-            var refNum;
-            getCustomerDeatils(userId, PIN, OTP, function(data){
-                console.log(data);
             });
-             
-            
-             
-         } );
 
-        //game test
-         $("#button6").click(function() {
-             getGameQuestion("", "", "", 1, function(callback)   {
-                 console.log(callback);
-             });
-         });
-         
-         $("#button7").click(function() {
-             getGameAnswer("", "", "", 1, function(callback)   {
-                 console.log(callback);
-             });
-         });
-         
-         $("#button8").click(function() {
-             setQuestionScore("kinetic1", "123456", "999999", 1, 1, 10, "Pretest", 1, function(callback)   {
-                 console.log(callback);
-             });
-         });
-         
-         $("#button9").click(function() {
-             getGameScore("kinetic1", "123456", "999999", 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function(callback)   {
-                 console.log(callback);
-             });
-         });
-         
-         $("#button10").click(function() {
-             getLcDetails("kinetic1", "123456", "999999", "0000001071", function (contract){
-                 console.log(contract);
-                
-                var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-                console.log(globalErrorId);
-                if(globalErrorId === "010000"){
-                    exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
-                    console.log(exporterAcct);
-                    expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
-                    console.log(expiryDate);
-                    status = contract.Content.ServiceResponse.LC_Details.LC_record.status;
-                    console.log(status);
-                    lc = contract.Content.ServiceResponse.LC_Details.LC_record;
-                    console.log(lc);
-                    
-                }
-             });
-         });
+            $("#button2").click(function () {
+                var account;
+                getCustomerDeatils("toffeemint1", "929780", "999999", function (accounts) { //get currency and importer account
 
-         $("#button11").click(function() {
-             updateStatus("kinetic1", "123456", "999999", "0000001071","ACKONWLEDGED","", function(data){
-                 console.log(data);
-                
-               
-             });
-         });
-         
-                  
-         
-                  
-    
-</script>
 
-</body>
+                    console.log(account);
+
+                });
+
+            });
+
+            $("#button4").click(function () {//
+
+                //console.log(getRefNumListAjax());
+                //var numList = getRefNumListAjax();
+
+
+                var refNum;
+                getRefNumListAjax(function (refNumList) {
+                    refNum = refNumList.RefNumList.RefNum;
+                });
+                console.log(refNum[0]);
+
+            });
+
+            $("#button5").click(function () {//
+
+                //console.log(getRefNumListAjax());
+                //var numList = getRefNumListAjax();
+
+
+                //console.log(getRefNumList("kinetic1", refNumList));
+
+                var userId = "toffeemint1";
+                var PIN = "929780";
+                var OTP = "999999";
+
+
+                var refNum;
+                getCustomerDeatils(userId, PIN, OTP, function (data) {
+                    console.log(data);
+                });
+
+
+
+            });
+
+            //game test
+            $("#button6").click(function () {
+                getGameQuestion("", "", "", 1, function (callback) {
+                    console.log(callback);
+                });
+            });
+
+            $("#button7").click(function () {
+                getGameAnswer("", "", "", 1, function (callback) {
+                    console.log(callback);
+                });
+            });
+
+            $("#button8").click(function () {
+                setQuestionScore("kinetic1", "123456", "999999", 1, 1, 10, "Pretest", 1, function (callback) {
+                    console.log(callback);
+                });
+            });
+
+            $("#button9").click(function () {
+                getGameScore("kinetic1", "123456", "999999", 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function (callback) {
+                    console.log(callback);
+                });
+            });
+
+            $("#button10").click(function () {
+                getLcDetails("toffeemint2", "123456", "999999", "0000001121", function (contract) {
+                    console.log(contract);
+
+                    var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+                    console.log(globalErrorId);
+                    if (globalErrorId === "010000") {
+                        exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
+                        console.log(exporterAcct);
+                        expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
+                        console.log(expiryDate);
+                        status = contract.Content.ServiceResponse.LC_Details.LC_record.status;
+                        console.log(status);
+                        lc = contract.Content.ServiceResponse.LC_Details.LC_record;
+                        console.log(lc);
+
+                    }
+                });
+            });
+
+            $("#button11").click(function () {
+                modifyLc("toffeemint2", "123456", "999999", "0000001121", function (data) {
+                    console.log(data);
+
+
+                });
+            });
+            $("#button12").click(function () {
+                getLcAmendments("toffeemint2", "123456", "999999", "0000001121", function (amendments) {
+                    console.log(amendments);
+                });
+            });
+
+
+        </script>
+
+    </body>
 </html>

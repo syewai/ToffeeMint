@@ -95,19 +95,25 @@
 <script>
     //once page button clicked, the user is redirected to importer/exporter.html, together with a html page name for loading (stored in a session)
     
-    $('.pages').click(function () {
-            var page = $(this).attr('href');
-            //var page = this.id;
-            console.log(page);
-            $('#content').load(page + ".html");
-            return false;
-        });
+
     
     $(".pagesButton").click(function(){
             var page = $(this).attr('id');
             var pageToLoad = {page: page} ;
             sessionStorage.setItem('page', JSON.stringify(pageToLoad));
             window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");  
+    });
+    
+    $(".homeButton").click(function(){
+            var refNum = $(this).attr('data-refnum');
+            var page = $(this).attr('id');
+            
+            var pageToLoad = {page: page} ;
+            if(refNum != undefined){
+                pageToLoad.refNum = refNum;
+            }
+            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+            window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html?refNum="+refNum);  
     });
     
 </script>

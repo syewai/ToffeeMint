@@ -102,7 +102,7 @@ function applyLcApi(userId, PIN, OTP, lc, callback) {
 
 }
 
-function amendLc(userId, PIN, OTP, refNum, amendments, callback) { //exporter
+function amendLc(userId, PIN, OTP, amendments, callback) { //exporter
 
     var headerObj = {
         Header: {
@@ -113,10 +113,10 @@ function amendLc(userId, PIN, OTP, refNum, amendments, callback) { //exporter
         }
     };
     var header = JSON.stringify(headerObj);
-    var amendedLc = amendments;
-    amendedLc.referenceNumber = refNum;
+    //var amendedLc = amendments;
+    //amendedLc.referenceNumber = refNum;
     var contentObj = {
-        Content: amendedLc
+        Content: amendments
     };
     var content = JSON.stringify(contentObj);
 
@@ -147,16 +147,16 @@ function getLcAmendments(userId, PIN, OTP, refNum, callback) { //exporter
     var header = JSON.stringify(headerObj);
 
     var contentObj = {
-        ReferenceNumber: refNum,
+        referenceNumber: refNum,
         mode : "BC"
     };
     var content = JSON.stringify(contentObj);
 
     $.ajax({
         async: false,
-        type: 'POST',
+//        type: 'POST',
         url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
-        //type: 'GET',
+        type: 'GET',
         //url: apiUrlBC + "getAmendments?Header=" + header + "&refNum=" + refNum,
         dataType: 'json',
         success: callback

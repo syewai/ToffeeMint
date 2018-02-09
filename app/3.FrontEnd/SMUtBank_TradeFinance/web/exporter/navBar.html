@@ -67,52 +67,6 @@
 </section>
 
 <script type="text/javascript">
-    $(document).ready(function (e) {
-
-        var getUserItem = sessionStorage.getItem('user');
-        var user = $.parseJSON(getUserItem);
-        var usertype = user.usertype;
-        if (usertype === "importer" || usertype === "exporter") {
-            var getPageItem = sessionStorage.getItem('page');
-            if (getPageItem !== null) {
-                var newPageJSON = $.parseJSON(getPageItem);
-                var newPage = newPageJSON.page;
-                if (newPage === "homeTemplate" || newPage === "viewLcLogTemplate") {
-                    newPage = "../" + newPage;
-                }
-                console.log(newPage);
-                $('#content').load(newPage + ".html");
-                sessionStorage.removeItem('page');
-            } else {
-                $('#content').load('../homeTemplate.html');
-            //e.defaultPrevented(); 
-            }
-
-           
-            $('.pages').click(function () {
-                var page = $(this).attr('href');
-                //var page = this.id;
-                if (page === "homeTemplate" || page === "viewLcLogTemplate") {
-                    page = "../" + page;
-                }
-                console.log(page);
-                $('#content').load(page + ".html");
-                return false;
-            });
-
-        } else if (usertype === "shipper") {
-            $('#content').load('home.html');
-            //e.defaultPrevented();
-            $('.pages').click(function () {
-                var page = $(this).attr('href');
-                //var page = this.id;
-                console.log(page);
-                $('#content').load(page + ".html");
-                return false;
-            });
-
-        }
-
-    });
+    pageLoad();
 
 </script>

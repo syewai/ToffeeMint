@@ -8,7 +8,7 @@
             </button>
         </div>
         <div class="modal-body">
-
+            <div style="display:hidden" id="returnedRefNum"></div>
             <section class="panel panel-default">
                 <header class="panel-heading font-bold">
                     <div class="bs-example form-horizontal">
@@ -37,6 +37,11 @@
         </div>
         <div class="modal-footer">
             <div class="bs-example form-horizontal" id="lcButtons">
+                <div class='form-group lc-form'>
+                    <div class='col-lg-4 ' id='approveContainer' style="visibility:hidden"><button type='button' class='btn btn-primary btn-lg' id='approveButton'><i class='fa fa-check'></i>  Approve</button></div>
+                    <div class='col-lg-4 ' id='amendContainer' style="visibility:hidden"><button type='button' class='btn btn-danger btn-lg' id='amendLc'>Request to amend</button></div>
+                    <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
+                </div>
             </div>
 
 
@@ -44,33 +49,36 @@
         </div>
     </div>
 </div>
-<div style="display:hidden" id="returnedRefNum"></div>
+
 <script>
-    $(document).ready(function () {
+
+    $("#approveButton").click(function () {
         
-        
-        $("#approveButton").click(function () {
-            var refNum = document.getElementById("returnedRef").value();
-            console.log(refNum);
-            /*var status = "ACKONWLEDGED";
-            updateStatus(userId, PIN, OTP, refNum, status, "", function (data) {
-                console.log(data);
-                console.log(data);
+        var refNum = $("#returnedRef").attr("value");
+        console.log(refNum);
+        var status = "ACKONWLEDGED";
+        updateStatus(userId, PIN, OTP, refNum, status, "", function (data) {
+            console.log(data);
+            var globalErrorID = data.Content.Trade_LCStatus_Update_BCResponse.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+            if (globalErrorID === "010000") {
                 window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
-            });*/
-
+            }
         });
 
-  
-
-        $("#amendButton").click(function () {
-            
-            var page = $(this).attr('id');
-            var pageToLoad = {page: page}; // append refnum into pagetToLoad and set a session 
-            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
-            window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
-            //window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
-        });
     });
+    $("#amendLc").click(function () {
+        var refNum = $("#returnedRef").attr("value");
+        console.log(refNum);
+        var page = $(this).attr('id');
+        console.log(page);
+        var pageToLoad = {page: page, refNum: refNum}; // append refnum into pagetToLoad and set a session 
+        sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+        window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html?refNum="+refNum);
+        //window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
+    });
+
+
+
+
 
 </script>
