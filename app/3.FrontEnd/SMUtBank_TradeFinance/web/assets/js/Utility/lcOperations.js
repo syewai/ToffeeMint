@@ -28,7 +28,9 @@ function applyLcOperation() {
     var globalErrorID;
     var importerAccount = account.accountID;
     console.log(importerAccount);
-    var exporterAccount = document.getElementById("exporterId").value;
+    var exporterAccount = document.getElementById("exporterAcct").value;
+    console.log("exporterAcct");
+    console.log(exporterAccount);
     var expiryDate = document.getElementById("expiryDate").value;
     var confirmed = "false";
     var revocable = "false";
@@ -145,7 +147,7 @@ function homeOperation() {
         var $row = $('<tr></tr>');
         var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
         //var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
-        var $button = $("<button type='button'  class='btn btn-primary lcDetails' data-toggle='modal' data-target='#lcDetailsModal' data-lc='" + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>" + operation + "</button>");
+        var $button = $("<button type='button'  class='btn btn-primary lcDetails' data-action= '" + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='" + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>" + operation + "</button>");
         $button.addClass(buttonAssigned(status)[0]);
         var $refNumCell = $('<td></td>');
         $refNumCell.append(refNum);
@@ -547,13 +549,13 @@ function operationMatch(status, usertype) {
     var url = "lcDetails";
     if (usertype === "importer") {
 
-        if (status.toLowerCase() === "rejected" || status.toLowerCase() === "requested to amend") {
+        if (status.toLowerCase() === "requested to amend") {
             url = "modifyLcDetails";
             operation = "modify lc";
         }
 
     } else if (usertype === "exporter") {
-        if (status.toLowerCase() === "advised") {
+        if (status.toLowerCase() === "pending") {
             url = "approveLc";
             operation = "approve lc";
         } else if (status.toLowerCase() === "acknowledged") {
@@ -585,14 +587,15 @@ function loadLcDetailsModal() {
         var button = $(event.relatedTarget) // Button that triggered the modal
         var refNum = button.data('refnum') // Extract info from data-* attributes
         var status = button.data('status')
+        var action = button.data('action')
         //var productname = button.data('productname')
         var fields = button.data('lc') //convert string to json string
         var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
         var allLcHTML = ""
         for (var i in fields) {
             var lcDetailsHTML = "";
-            lcDetailsHTML = "<label class='col-lg-3 control-label lc-label' id=''>" + i + "</label>"
-            lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i] + "</div>"
+            lcDetailsHTML = "<label class='col-lg-4 control-label lc-label' id=''>" + i + "</label>"
+            lcDetailsHTML += "<div class='col-lg-4 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i] + "</div>"
             //lcDetailsHTML += "<label class='col-lg-3 control-label lc-label'>" + i + "</label>"
             //lcDetailsHTML += "<div class='col-lg-3 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i]+"</div>"
 
@@ -603,13 +606,25 @@ function loadLcDetailsModal() {
             allLcHTML += "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>"
             allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
         }
+        var buttons = ""
+        if (usertype === "exporter" && action === "approve lc") {
+            buttons += "<div class='form-group lc-form'>"
+            buttons += "<div class='col-lg-4 '><button type='submit' class='btn btn-primary btn-lg' id='approveButton'><i class='fa fa-check'></i>  Approve</button></div>"
+            buttons += "<div class='col-lg-4 '><button type='submit' class='btn btn-danger btn-lg' id='amendButton'>Request to amend</button></div>"
+            buttons += "<div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>"
+            buttons += "</div>"
+            
+        }
 
         // Update the modal's content.
         var modal = $(this)
         modal.find('.modal-body section header div div div p#refNum').text(refNum);
         modal.find('.modal-body #status').text(status);
         modal.find('.modal-body #lcDetails').html(allLcHTML)
-
+        modal.find('.modal-footer #lcButtons').html(buttons)
+        
+        //modal.find('.modal-footer #lcButtons' ).html(buttons)
+        //$(
         // And if you wish to pass the productid to modal's 'Yes' button for further processing
         //modal.find('button.btn-danger').val(productid)
     });

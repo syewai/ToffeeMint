@@ -156,6 +156,8 @@
                 }
                 $("#accountId").append(accountId);
                 $("#bankId").append(bankId);
+                var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
+                $("#loginForm").append(exporterAcctInput);
                 var countries = ["Norway","UK","China","Japan"];
                 var randomCountry = countries[Math.floor(Math.random()*countries.length)];
                 console.log(randomCountry);

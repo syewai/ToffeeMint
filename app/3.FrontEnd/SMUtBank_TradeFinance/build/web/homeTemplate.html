@@ -62,7 +62,7 @@
                     <div class="col-sm-4 hidden-xs">
                     </div>
                     <div class="col-sm-4 text-center">
-                        <a id="viewLcLog" class="pages btn btn-s-md btn-dark">View All LC</a>
+                        <a id="viewLcLogTemplate" class="pagesButton btn btn-s-md btn-dark">View All LC</a>
                     </div>
                     <div class="col-sm-4 text-right text-center-xs">
 
@@ -90,4 +90,24 @@
 <script>
     loadLcDetailsModal(); //this method is called from lcOperation.js
 
+</script>
+
+<script>
+    //once page button clicked, the user is redirected to importer/exporter.html, together with a html page name for loading (stored in a session)
+    
+    $('.pages').click(function () {
+            var page = $(this).attr('href');
+            //var page = this.id;
+            console.log(page);
+            $('#content').load(page + ".html");
+            return false;
+        });
+    
+    $(".pagesButton").click(function(){
+            var page = $(this).attr('id');
+            var pageToLoad = {page: page} ;
+            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+            window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");  
+    });
+    
 </script>

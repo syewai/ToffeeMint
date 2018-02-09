@@ -8,36 +8,59 @@
             </button>
         </div>
         <div class="modal-body">
-           
-                    <section class="panel panel-default">
-                        <header class="panel-heading font-bold">
-                            <div class="bs-example form-horizontal">
-                                <div class="form-group lc-form">
-                                    <label class="col-sm-2 control-label lc-label">Ref Num </label>
-                                    <div class="col-sm-2 lc-value">
-                                        <p id="refNum"></p>
-                                    </div>
-                                    <label class="col-sm-2 control-label">Status </label>
-                                    <div class="col-sm-2 lc-value">
-                                        <p id="status"></p>
-                                    </div>                             
-                                </div>
-                            </div>
 
-                        </header>
-                        <div class="panel-body">
-                            <div class="bs-example form-horizontal" id="lcDetails">
-
+            <section class="panel panel-default">
+                <header class="panel-heading font-bold">
+                    <div class="bs-example form-horizontal">
+                        <div class="form-group lc-form">
+                            <label class="col-sm-2 control-label lc-label">Ref Num </label>
+                            <div class="col-sm-2 lc-value">
+                                <p id="refNum"></p>
                             </div>
-                            
+                            <label class="col-sm-2 control-label">Status </label>
+                            <div class="col-sm-2 lc-value">
+                                <p id="status"></p>
+                            </div>                             
                         </div>
+                    </div>
 
-                    </section>
+                </header>
+                <div class="panel-body">
+                    <div class="bs-example form-horizontal" id="lcDetails">
+
+                    </div>
+
+                </div>
+
+            </section>
 
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            <div class="bs-example form-horizontal" id="lcButtons">
+            </div>
+
+
             <!--<button type="button" class="btn btn-primary">Save changes</button>-->
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("#approveButton").click(function () {
+            var status = "waiting documents presentation";
+            
+            updateStatus(userId, PIN, OTP, refNum, status, statusDetails, callback)
+            
+            setStatus(userId, PIN, OTP, refNum, status, function (data) {
+                console.log(data);
+                window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+            });
+        });
+        $("#amendButton").click(function () {
+
+            //window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
+        });
+    });
+
+</script>

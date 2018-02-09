@@ -44,6 +44,7 @@ and open the template in the editor.
     <button id="button8">Set question score</button>
     <button id="button9">Get game score</button>
     <button id="button10">Get game leaders</button>
+    <button id="button11">update Status</button>
 <div id="content"></div>
 <!--<div id="nav">
 </div>
@@ -58,6 +59,7 @@ and open the template in the editor.
 
 <script src="assets/js/DAO/lcHandling.js"></script>
 <script src="assets/js/DAO/userHandling.js"></script>
+<script src="assets/js/DAO/statusHandling.js"></script>
 <script src="assets/js/DAO/gameHandling.js"></script>
 <script>
     $("#button1").click(function(){
@@ -165,7 +167,14 @@ and open the template in the editor.
                 }
              });
          });
-         
+
+         $("#button11").click(function() {
+             updateStatus("kinetic1", "123456", "999999", "0000001071","ACKONWLEDGED","", function(data){
+                 console.log(data);
+                
+               
+             });
+         });
          
                   
          
