@@ -615,12 +615,13 @@ function loadLcDetailsModal() {
             buttons += "</div>"
             
         }
-
+        var refNumHTML = "<div value='"+refNum+"' id='returnedRef'></div>"
         // Update the modal's content.
         var modal = $(this)
-        modal.find('.modal-body section header div div div p#refNum').text(refNum);
+        modal.find('.modal-body section header div div div p#refNum').text(refNum)
         modal.find('.modal-body #status').text(status);
         modal.find('.modal-body #lcDetails').html(allLcHTML)
+        modal.find('.modal-body #returnedRefNum').html(refNumHTML)
         modal.find('.modal-footer #lcButtons').html(buttons)
         
         //modal.find('.modal-footer #lcButtons' ).html(buttons)

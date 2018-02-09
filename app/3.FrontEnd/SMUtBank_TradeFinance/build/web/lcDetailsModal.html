@@ -44,21 +44,32 @@
         </div>
     </div>
 </div>
-
+<div style="display:hidden" id="returnedRefNum"></div>
 <script>
     $(document).ready(function () {
+        
+        
         $("#approveButton").click(function () {
-            var status = "ACKONWLEDGED";
-            
-            updateStatus(userId, PIN, OTP, refNum, status, "", callback)
-            
-            setStatus(userId, PIN, OTP, refNum, status, function (data) {
+            var refNum = document.getElementById("returnedRef").value();
+            console.log(refNum);
+            /*var status = "ACKONWLEDGED";
+            updateStatus(userId, PIN, OTP, refNum, status, "", function (data) {
+                console.log(data);
                 console.log(data);
                 window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
-            });
-        });
-        $("#amendButton").click(function () {
+            });*/
 
+        });
+
+  
+
+        $("#amendButton").click(function () {
+            
+            
+            var page = $(this).attr('id');
+            var pageToLoad = {page: page}; // append refnum into pagetToLoad and set a session 
+            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+            window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
             //window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
         });
     });
