@@ -146,7 +146,7 @@ function homeOperation() {
         var url = operations[1];
         var $row = $('<tr></tr>');
         var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
-        //var $button = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
+        //var $x = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
         var $button = $("<button type='button'  class='btn btn-primary lcDetails' data-action= '" + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='" + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>" + operation + "</button>");
         $button.addClass(buttonAssigned(status)[0]);
         var $refNumCell = $('<td></td>');

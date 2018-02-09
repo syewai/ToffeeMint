@@ -48,9 +48,9 @@
 <script>
     $(document).ready(function () {
         $("#approveButton").click(function () {
-            var status = "waiting documents presentation";
+            var status = "ACKONWLEDGED";
             
-            updateStatus(userId, PIN, OTP, refNum, status, statusDetails, callback)
+            updateStatus(userId, PIN, OTP, refNum, status, "", callback)
             
             setStatus(userId, PIN, OTP, refNum, status, function (data) {
                 console.log(data);
