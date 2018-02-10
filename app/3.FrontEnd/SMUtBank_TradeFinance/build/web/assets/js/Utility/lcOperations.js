@@ -108,85 +108,89 @@ function homeOperation() {
         }
     }
     var numOfRows = 5;
-    for (var i = 0; i < numOfRows; i++) {
+    if (refNumberList.length > 0) {
+
+
+        for (var i = 0; i < numOfRows; i++) {
 //call web service to get lc details for each ref number 
 
-        var refNum = refNumberList[i];
-        //var refNumInt = parseInt(refNum);
-        //get status of the ref num
-        //getStatus(userId, PIN, OTP, refNum, callback)
+            var refNum = refNumberList[i];
+            //var refNumInt = parseInt(refNum);
+            //get status of the ref num
+            //getStatus(userId, PIN, OTP, refNum, callback)
 
 
-        var lc = {};
-        //if (status !== "") {
+            var lc = {};
+            //if (status !== "") {
 //get contract of the ref num
-        var exporterAcct = "";
-        var importerAcct = "";
-        var expiryDate = "";
-        var status = "";
-        var globalErrorId = "";
-        getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
-            globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-            console.log(globalErrorId);
-            if (globalErrorId === "010000") {
-                importerAcct = contract.Content.ServiceResponse.LC_Details.LC_record.importer_account_num;
-                exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
-                expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
-                status = contract.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
-                lc = contract.Content.ServiceResponse.LC_Details.LC_record;
+            var exporterAcct = "";
+            var importerAcct = "";
+            var expiryDate = "";
+            var status = "";
+            var globalErrorId = "";
+            getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+                globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+                console.log(globalErrorId);
+                if (globalErrorId === "010000") {
+                    importerAcct = contract.Content.ServiceResponse.LC_Details.LC_record.importer_account_num;
+                    exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
+                    expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
+                    status = contract.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
+                    lc = contract.Content.ServiceResponse.LC_Details.LC_record;
 
-            }
+                }
 
-        });
-        lc = JSON.stringify(lc);
+            });
+            lc = JSON.stringify(lc);
 //        console.log(lc);
-        console.log("test");
-        console.log(status);
-        //get operation of the status
-        var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
+            console.log("test");
+            console.log(status);
+            //get operation of the status
+            var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
 
-        var operation = operations[0];
-        var url = operations[1];
-        var $row = $('<tr></tr>');
-        var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
-        //var $x = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
-        var button = "";
+            var operation = operations[0];
+            var url = operations[1];
+            var $row = $('<tr></tr>');
+            var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
+            //var $x = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
+            var button = "";
 
-        if (status === "pending") {
-            button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
-                    + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"
-                    + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>"
-                    + operation + "</button>";
+            if (status === "pending") {
+                button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
+                        + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"
+                        + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>"
+                        + operation + "</button>";
+            }
+            if (status === "amendments requested") {
+                button = "<button type='button'  data-refnum=" + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
+                        + operation + "</button>";
+            }
+            var $button = $(button);
+
+            $button.addClass(buttonAssigned(status)[0]);
+            var $refNumCell = $('<td></td>');
+            $refNumCell.append(refNum);
+            $row.append($refNumCell);
+
+            if (usertype === "importer") {
+                var $exporterAcctCell = $('<td>' + exporterAcct + '</td>');
+                $row.append($exporterAcctCell);
+            } else {
+                var $importerAcctCell = $('<td>' + importerAcct + '</td>');
+                $row.append($importerAcctCell);
+            }
+            var $expiryDateCell = $('<td>' + expiryDate + '</td>');
+            $row.append($expiryDateCell);
+            var $statusCell = $('<td id="status" class="font-bold">' + status + '</td>');
+            $statusCell.addClass(buttonAssigned(status)[1]);
+            $row.append($statusCell);
+            var $buttonCell = $('<td></td>');
+            $buttonCell.append($button);
+            $row.append($buttonCell);
+            $('#latestLCs').append($row);
+            //}
+
         }
-        if (status === "amendments requested") {
-            button = "<button type='button'  data-refnum=" + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
-                    + operation + "</button>";
-        }
-        var $button = $(button);
-
-        $button.addClass(buttonAssigned(status)[0]);
-        var $refNumCell = $('<td></td>');
-        $refNumCell.append(refNum);
-        $row.append($refNumCell);
-
-        if (usertype === "importer") {
-            var $exporterAcctCell = $('<td>' + exporterAcct + '</td>');
-            $row.append($exporterAcctCell);
-        } else {
-            var $importerAcctCell = $('<td>' + importerAcct + '</td>');
-            $row.append($importerAcctCell);
-        }
-        var $expiryDateCell = $('<td>' + expiryDate + '</td>');
-        $row.append($expiryDateCell);
-        var $statusCell = $('<td id="status" class="font-bold">' + status + '</td>');
-        $statusCell.addClass(buttonAssigned(status)[1]);
-        $row.append($statusCell);
-        var $buttonCell = $('<td></td>');
-        $buttonCell.append($button);
-        $row.append($buttonCell);
-        $('#latestLCs').append($row);
-        //}
-
     }
 
 }
@@ -571,22 +575,22 @@ function modifyLcOps() {
         };
         console.log(lc);
         //amend lc
-       // var validateLcApplication = lcModificationForm(userId, PIN, OTP, lc);
+        // var validateLcApplication = lcModificationForm(userId, PIN, OTP, lc);
         //console.log(validateLcApplication);
         /*if (validateLcApplication !== undefined) {
-            if (validateLcApplication.hasOwnProperty("errorMsg")) {
-                var errorMsg = validateLcApplication.errorMsg;
-                console.log("error");
-                console.log(errorMsg);
-                $("#authError").html(errorMsg);
-            } else if (validateLcApplication.hasOwnProperty("success")) {
-                $("#authError").html("submitted");
-                console.log("success");
-                console.log(validateLcApplication);
-                //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
-                //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
-            }
-        }*/
+         if (validateLcApplication.hasOwnProperty("errorMsg")) {
+         var errorMsg = validateLcApplication.errorMsg;
+         console.log("error");
+         console.log(errorMsg);
+         $("#authError").html(errorMsg);
+         } else if (validateLcApplication.hasOwnProperty("success")) {
+         $("#authError").html("submitted");
+         console.log("success");
+         console.log(validateLcApplication);
+         //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
+         //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+         }
+         }*/
 
     });
     $("#cancelButton").click(function () {
