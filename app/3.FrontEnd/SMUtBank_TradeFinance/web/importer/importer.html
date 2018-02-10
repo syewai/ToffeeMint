@@ -22,13 +22,14 @@
         <script src="../assets/js/ie/excanvas.js"></script>
       <![endif]-->
         <script src="../assets/js/jquery.min.js"></script>
-                <!-- Bootstrap -->
+        <!-- Bootstrap -->
         <script src="../assets/js/bootstrap.js"></script>
     </head>
 
     <body class="">
-                <!--Login-->
-        
+        <!--Login-->
+        <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false"></button>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
         <section class="vbox">
             <!--Header-->
             <header class="bg-black dk header navbar navbar-fixed-top-xs" id="header">
@@ -69,10 +70,17 @@
 
         <script>
             $(document).ready(function () {
-                
+
                 $("#header").load("../header.html");
                 $('#nav-bar').load("navBar.html");
                 
+                /*$("#myModal").load("../gameModal.html", function () {
+                    $('#myModal').modalSteps();
+                    jQuery(function () {
+                        jQuery('#modal').click();
+                    });
+                });*/
+
             });
 
 
@@ -102,6 +110,10 @@
         <script src="../assets/js/file-input/bootstrap-filestyle.min.js"></script>
         <!-- select2 -->
         <script src="../assets/js/select2/select2.min.js"></script>
+        
+        <!-- game modal & timer-->
+        <script src="../assets/js/game/jquery-bootstrap-modal-steps.min.js"></script>
+        <script src="../assets/js/game/easytimer.min.js"></script>
 
     </body>
 

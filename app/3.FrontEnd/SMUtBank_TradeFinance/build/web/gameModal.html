@@ -1,0 +1,27 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="js-title-step"></h4>
+            <div id="target" class="modal-body">
+                <div class="row hide" data-step="1" data-title="Introduction">
+                    <div class="well">Content for introduction here.</div>
+                </div>
+                <div id="#target"></div>
+                <script>
+                    var gQuestionId = 0;
+                    var timer = new Timer();
+                    preQuiz();
+                    //showResults();
+                </script>
+                
+                
+            </div>
+            <div class="modal-footer">
+                <!--<button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button> -->
+                <!--<button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button> -->
+                <button type="button" class="btn btn-success js-btn-step" data-orientation="next" onclick='onNext(gQuestionId++, timer)'></button>
+                <!---->
+            </div>
+        </div>
+    </div>
+</div>
