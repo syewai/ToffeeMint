@@ -126,8 +126,8 @@ function lcModificationForm(userId, PIN, OTP, lc) {
     //var lcDetails = {};
     modifyLc(userId, PIN, OTP, lc.referenceNumber, lc, function (modification) {
         console.log(modification);
-        errorMsg = modification.Content.ServiceResponse.ServiceRespHeader.ErrorText;
-        globalErrorID = modification.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+        errorMsg = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.ErrorText;
+        globalErrorID = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
         if (globalErrorID === "010000") {
             //lcDetails = amendments.Content.ServiceResponse.LC_Details;
             modifiedDetails = modification;

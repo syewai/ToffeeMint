@@ -154,15 +154,16 @@ function homeOperation() {
             var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
             //var $x = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
             var button = "";
-
-            if (status === "pending") {
+            console.log(operation);
+            if (operation === "view lc") {
                 button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
                         + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"
                         + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>"
                         + operation + "</button>";
             }
-            if (status === "amendments requested") {
-                button = "<button type='button'  data-refnum=" + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
+            if (operation === "modify lc") {
+                button = "<button type='button'  data-refnum="
+                        + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
                         + operation + "</button>";
             }
             var $button = $(button);
@@ -296,56 +297,74 @@ function emptyShipperHome() {
 
 
 function getAllLcDetailsShipper() {
-    var refNumberList;
-    getRefNumList(//calling this method from assets/js/DAO/lcHandling.js
-            userId, PIN, OTP, function (refNumList) {
-                refNumberList = refNumList.RefNumList.RefNum;
-            });
+
+    var refNumberList = [];
+    var refNumberListValidation = validateGetRefNumList(userId, PIN, OTP);
     console.log(refNumberList);
-    var numOfRows = refNumberList.length;
-    var allLcDetails = [];
-    for (var i = 0; i < numOfRows; i++) {
-//call web service to get lc details for each ref number 
-
-        var refNum = refNumberList[i];
-
-        //get status of the ref num
-        //getStatus(userId, PIN, OTP, refNum, callback)
-        var status = "";
-
-        var availableStatus = ["shipped to carrier", "documents uploaded", "bg requested", "documents issued", "payment advised", "documents accepted", "bol verifed", "item colleccted"];
-        var statusIncluded = $.inArray(status, availableStatus);
-
-        if (status !== "" && statusIncluded !== -1) {
-//get contract of the ref num
-            var country = "";
-            var exporterAcct = "";
-            var shipDate = "";
-            getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
-                if (contract !== "") {
-                    exporterAcct = contract.Content.exporterAccount;
-                    shipDate = contract.Content.shipDate;
-                    country = contract.Content.shipDestination;
-                }
-
-            });
-            //get operation of the status
-            var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
-
-            var operation = operations[0];
-            var url = operations[1];
-            var lcObject = {
-                refNum: refNum,
-                country: country,
-                exporter: exporterAcct,
-                shipDate: shipDate,
-                status: status,
-                operation: operation,
-                url: url
-            };
-            allLcDetails[i] = lcObject;
+    if (refNumberListValidation !== undefined) {
+        if (refNumberListValidation.hasOwnProperty("errorMsg")) {
+            var errorMsg = refNumberListValidation.errorMsg;
+            console.log("error");
+            console.log(errorMsg);
+            $("#authError").html(errorMsg);
+        } else if (refNumberListValidation.hasOwnProperty("success")) {
+            refNumberList = refNumberListValidation.success;
+            console.log(refNumberList);
         }
     }
+
+    var numOfRows = refNumberList.length;
+    var allLcDetails = [];
+
+    if (refNumberList.length > 0) {
+
+
+        for (var i = 0; i < numOfRows; i++) {
+//call web service to get lc details for each ref number 
+
+            var refNum = refNumberList[i];
+            var availableStatus = ["acknowledged", "relevant documents uploaded", "documents accepted by importer", "item colleccted"];
+            //acknowledged = Awaiting Document Presentation
+         
+//get contract of the ref num
+            var exporterAcct = "";
+            var importerAcct = "";
+            var shipDate = "";
+            var status = "";
+            var globalErrorId = "";
+            var country = "";
+            
+            getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+                globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+                console.log(globalErrorId);
+                if (globalErrorId === "010000") {
+                    status = contract.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
+                    var statusIncluded = $.inArray(status, availableStatus);
+                    if (status !== "" && statusIncluded !== -1) {
+                        importerAcct = contract.Content.ServiceResponse.LC_Details.LC_record.importer_account_num;
+                        exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
+                        shipDate = contract.Content.ServiceResponse.LC_Details.LC_record.ship_date;
+                        country = contract.Content.ServiceResponse.LC_Details.LC_record.ship_destination;                    
+                        var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
+                        var operation = operations[0];
+                        var url = operations[1];
+                        var lcObject = {
+                            refNum: refNum,
+                            country: country,
+                            exporter: exporterAcct,
+                            shipDate: shipDate,
+                            status: status,
+                            operation: operation,
+                            url: url
+                        };
+                         allLcDetails[i] = lcObject;
+                    }
+                }
+
+            });              
+        }     
+    }
+
     return allLcDetails;
 }
 
@@ -450,14 +469,13 @@ function modifyLcOps() {
     var originalLc = null;
 
     //get original contract, store in amendments variable
-    getLcAmendments(userId, PIN, OTP, refNum, function (amendments) {//calling this method from  assets/js/DAO/lcHandling.js
-        var globalErrorId = amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+        var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
         console.log(globalErrorId);
         var fields = {};
         if (globalErrorId === "010000") {
-            fields = amendments.Content.ServiceResponse.LC_Amend.LC_Amend;
-            console.log(fields);
-            amendmentDetails = fields;
+            fields = contract.Content.ServiceResponse.LC_Details.LC_record;
+            originalLc = fields;
             importerAccount = fields.importer_account_num; //no change
             console.log(importerAccount);
             exporterAccount = fields.exporter_account_num; //no change
@@ -485,14 +503,15 @@ function modifyLcOps() {
     var originalAmount = "";
     var originalDesc = "";
     var originalExpiryDate = "";
-    getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
-        var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    getLcAmendments(userId, PIN, OTP, refNum, function (amendments) {//calling this method from  assets/js/DAO/lcHandling.js
+        var globalErrorId = amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
         console.log(globalErrorId);
         var fields = {};
         if (globalErrorId === "010000") {
+            fields = amendments.Content.ServiceResponse.LC_Amend.LC_Amend;
+            console.log(fields);
+            amendmentDetails = fields;
 
-            fields = contract.Content.ServiceResponse.LC_Details.LC_record;
-            originalLc = fields;
             //importerAccount = fields.importer_account_num; //no change
             //exporterAccount = fields.exporter_account_num; //no change
             originalExpiryDate = fields.expiry_date; //no change
@@ -579,19 +598,19 @@ function modifyLcOps() {
         var validateLcApplication = lcModificationForm(userId, PIN, OTP, lc);
         console.log(validateLcApplication);
         if (validateLcApplication !== undefined) {
-         if (validateLcApplication.hasOwnProperty("errorMsg")) {
-         var errorMsg = validateLcApplication.errorMsg;
-            console.log("error");
-            console.log(errorMsg);
-            $("#authError").html(errorMsg);
-        } else if (validateLcApplication.hasOwnProperty("success")) {
-            $("#authError").html("submitted");
-            console.log("success");
-            console.log(validateLcApplication);
-            //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
-            window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+            if (validateLcApplication.hasOwnProperty("errorMsg")) {
+                var errorMsg = validateLcApplication.errorMsg;
+                console.log("error");
+                console.log(errorMsg);
+                $("#authError").html(errorMsg);
+            } else if (validateLcApplication.hasOwnProperty("success")) {
+                $("#authError").html("submitted");
+                console.log("success");
+                console.log(validateLcApplication);
+                //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
+                window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+            }
         }
-    }
 
     });
     $("#cancelButton").click(function () {
@@ -880,7 +899,7 @@ function operationMatch(status, usertype) {
             operation = "ship goods";
         }
     } else if (usertype === "shipper") {
-        if (status.toLowerCase() === "shipped to carrier") {
+        if (status.toLowerCase() === "acknowledged") {
             url = "submitBol";
             operation = "submit bol"
         } else {

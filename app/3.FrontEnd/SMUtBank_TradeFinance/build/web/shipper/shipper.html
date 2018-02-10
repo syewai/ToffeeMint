@@ -1,94 +1,107 @@
 <!DOCTYPE html>
 <html lang="en" class="app">
 
-<head>
-    <meta charset="utf-8" />
-    <title>SMU tBank - Trade Finance Application</title>
-    
-    <meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/css/font.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/js/calendar/bootstrap_calendar.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/js/jvectormap/jquery-jvectormap-1.2.2.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/js/select2/select2.css" type="text/css" />
-    <link rel="stylesheet" href="../assets/js/select2/theme.css" type="text/css" />
-    <!--[if lt IE 9]>
-    <script src="../assets/js/ie/html5shiv.js"></script>
-    <script src="../assets/js/ie/respond.min.js"></script>
-    <script src="../assets/js/ie/excanvas.js"></script>
-  <![endif]-->
-   
+    <head>
+        <meta charset="utf-8" />
+        <title>SMU tBank - Trade Finance Application</title>
 
-   
+        <meta name="description" content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
+        <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
+        <link rel="stylesheet" href="../assets/css/font-awesome.min.css" type="text/css" />
+        <link rel="stylesheet" href="../assets/css/font.css" type="text/css" />
+        <link rel="stylesheet" href="../assets/js/calendar/bootstrap_calendar.css" type="text/css" />
+        <link rel="stylesheet" href="../assets/js/jvectormap/jquery-jvectormap-1.2.2.css" type="text/css" />
+        <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
+        <link rel="stylesheet" href="../assets/js/select2/select2.css" type="text/css" />
+        <link rel="stylesheet" href="../assets/js/select2/theme.css" type="text/css" />
+        <!--[if lt IE 9]>
+        <script src="../assets/js/ie/html5shiv.js"></script>
+        <script src="../assets/js/ie/respond.min.js"></script>
+        <script src="../assets/js/ie/excanvas.js"></script>
+      <![endif]-->
+        <script src="../assets/js/jquery.min.js"></script>
+                <!-- Bootstrap -->
+        <script src="../assets/js/bootstrap.js"></script>
+    </head>
 
-</head>
+    <body class="">
+                <!--Login-->
+        
+        <section class="vbox">
+            <!--Header-->
+            <header class="bg-black dk header navbar navbar-fixed-top-xs" id="header">
+            </header>
+            <!--End of Header-->
+            <section>
+                <section class="hbox stretch">
+                    <!-- .aside -->
+                    <aside class="bg-dark lter aside-md hidden-print hidden-xs" id="nav-bar">
 
-<body class="">
-    
-    <section class="vbox">
-        <!--Header-->
-        <header class="bg-black dk header navbar navbar-fixed-top-xs" id="header">
-        </header>
-        <!--End of Header-->
-        <section>
-            <section class="hbox stretch">
-                <!-- .aside -->
-                <aside class="bg-dark lter aside-md hidden-print hidden-xs" id="nav-bar">
+                    </aside>
+                    <!-- /.aside -->
+                    <!--Content-->
+                    <section id="content">
 
-                </aside>
-                <!-- /.aside -->
-                <!--Content-->
-                <section id="content">
+
+                    </section>
+                    <!--End of Content-->
 
 
                 </section>
-                <!--End of Content-->
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-                
-                <script src="../assets/js/Utility/pageLoad.js"></script>
-                 <script>
-                     $("#header").load("../header.html");
-                     $('#nav-bar').load("navBar.html");
-                </script>
-
+                <!--End of hbox stretch -->
             </section>
-            <!--End of hbox stretch -->
+
         </section>
+        <!--End of Vbox-->
+        <script src="../assets/js/DAO/apiUrl.js"></script>
+        <script src="../assets/js/DAO/userHandling.js"></script>
+        <script src="../assets/js/DAO/lcHandling.js"></script>
+        <script src="../assets/js/DAO/statusHandling.js"></script>
+        <script src="../assets/js/Utility/pageLoad.js"></script>
+        <script src="../assets/js/Utility/formValidation.js"></script>
+        <script src="../assets/js/Utility/lcOperations.js"></script>
+        <script src="../assets/js/DAO/notificationHandling.js"></script>
+        <script src="../assets/js/Utility/login.js"></script>
+        <script src="../assets/js/Utility/logout.js"></script>
 
-    </section>
-    <!--End of Vbox-->
+        <script>
+            $(document).ready(function () {
+                
+                $("#header").load("../header.html");
+                $('#nav-bar').load("navBar.html");
+                
+            });
 
-    <script src="../assets/js/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="../assets/js/bootstrap.js"></script>
-    <!-- App -->
-    <script src="../assets/js/app.js"></script>
-    <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="../assets/js/charts/easypiechart/jquery.easy-pie-chart.js"></script>
-    <script src="../assets/js/charts/sparkline/jquery.sparkline.min.js"></script>
-    <script src="../assets/js/charts/flot/jquery.flot.min.js"></script>
-    <script src="../assets/js/charts/flot/jquery.flot.tooltip.min.js"></script>
-    <script src="../assets/js/charts/flot/jquery.flot.resize.js"></script>
-    <script src="../assets/js/charts/flot/jquery.flot.grow.js"></script>
-    <script src="../assets/js/charts/flot/demo.js"></script>
 
-    <script src="../assets/js/calendar/bootstrap_calendar.js"></script>
-    <script src="../assets/js/calendar/demo.js"></script>
+        </script>
 
-    <script src="../assets/js/sortable/jquery.sortable.js"></script>
+        <!-- App -->
+        <script src="../assets/js/app.js"></script>
+        <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
+        <script src="../assets/js/charts/easypiechart/jquery.easy-pie-chart.js"></script>
+        <script src="../assets/js/charts/sparkline/jquery.sparkline.min.js"></script>
+        <script src="../assets/js/charts/flot/jquery.flot.min.js"></script>
+        <script src="../assets/js/charts/flot/jquery.flot.tooltip.min.js"></script>
+        <script src="../assets/js/charts/flot/jquery.flot.resize.js"></script>
+        <script src="../assets/js/charts/flot/jquery.flot.grow.js"></script>
+        <script src="../assets/js/charts/flot/demo.js"></script>
 
-    <script src="../assets/js/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="../assets/js/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-    <script src="../assets/js/jvectormap/demo.js"></script>
-    <script src="../assets/js/app.plugin.js"></script>
-    <!-- file input -->  
-    <script src="../assets/js/file-input/bootstrap-filestyle.min.js"></script>
-    <!-- select2 -->
-    <script src="../assets/js/select2/select2.min.js"></script>   
-</body>
+        <script src="../assets/js/calendar/bootstrap_calendar.js"></script>
+        <script src="../assets/js/calendar/demo.js"></script>
+
+        <script src="../assets/js/sortable/jquery.sortable.js"></script>
+
+        <script src="../assets/js/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+        <script src="../assets/js/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+        <script src="../assets/js/jvectormap/demo.js"></script>
+        <script src="../assets/js/app.plugin.js"></script>
+        <!-- file input -->  
+        <script src="../assets/js/file-input/bootstrap-filestyle.min.js"></script>
+        <!-- select2 -->
+        <script src="../assets/js/select2/select2.min.js"></script>
+
+    </body>
 
 </html>
