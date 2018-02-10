@@ -46,7 +46,7 @@ function applyLcOperation() {
     var shipPeriod = "90 Days";
     var goodsDescription = document.getElementById("goodsDesc").value;
     var docsRequired = "none";
-    var additionalConditions = document.getElementById("additonalConditions").value;
+    var additionalConditions = document.getElementById("additionalConditions").value;
     var senderToReceiverInfo = "none";
     var mode = "BC";
 
@@ -456,6 +456,7 @@ function modifyLcOps() {
         var fields = {};
         if (globalErrorId === "010000") {
             fields = amendments.Content.ServiceResponse.LC_Amend.LC_Amend;
+            console.log(fields);
             amendmentDetails = fields;
             importerAccount = fields.importer_account_num; //no change
             console.log(importerAccount);
@@ -575,22 +576,22 @@ function modifyLcOps() {
         };
         console.log(lc);
         //amend lc
-        // var validateLcApplication = lcModificationForm(userId, PIN, OTP, lc);
-        //console.log(validateLcApplication);
-        /*if (validateLcApplication !== undefined) {
+        var validateLcApplication = lcModificationForm(userId, PIN, OTP, lc);
+        console.log(validateLcApplication);
+        if (validateLcApplication !== undefined) {
          if (validateLcApplication.hasOwnProperty("errorMsg")) {
          var errorMsg = validateLcApplication.errorMsg;
-         console.log("error");
-         console.log(errorMsg);
-         $("#authError").html(errorMsg);
-         } else if (validateLcApplication.hasOwnProperty("success")) {
-         $("#authError").html("submitted");
-         console.log("success");
-         console.log(validateLcApplication);
-         //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
-         //window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
-         }
-         }*/
+            console.log("error");
+            console.log(errorMsg);
+            $("#authError").html(errorMsg);
+        } else if (validateLcApplication.hasOwnProperty("success")) {
+            $("#authError").html("submitted");
+            console.log("success");
+            console.log(validateLcApplication);
+            //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
+            window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+        }
+    }
 
     });
     $("#cancelButton").click(function () {
@@ -633,7 +634,7 @@ function amendLcOps() {
         if (globalErrorId === "010000") {
             fields = contract.Content.ServiceResponse.LC_Details.LC_record;
             importerAccount = fields.importer_account_num; //no change
-            console.log(importerAccount);
+            console.log(fields);
             exporterAccount = fields.exporter_account_num; //no change
             expiryDate = fields.expiry_date; //no change
             expiryPlace = fields.expiry_place;
@@ -696,8 +697,11 @@ function amendLcOps() {
             senderToReceiverInfo: senderToReceiverInfo,
             mode: mode
         };
+        console.log("lc to be amended");
+        console.log(lc);
         //amend lc
         var validateLcApplication = lcAmendmentForm(userId, PIN, OTP, lc);
+        console.log("amended");
         console.log(validateLcApplication);
         if (validateLcApplication !== undefined) {
             if (validateLcApplication.hasOwnProperty("errorMsg")) {
@@ -710,7 +714,7 @@ function amendLcOps() {
                 console.log("success");
                 console.log(validateLcApplication);
                 //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
-                window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+                //window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
             }
         }
 
