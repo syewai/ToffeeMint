@@ -155,13 +155,13 @@ function homeOperation() {
             //var $x = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
             var button = "";
             console.log(operation);
-            if (operation === "view lc") {
-                button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
-                        + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"
-                        + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>"
-                        + operation + "</button>";
-            }
-            if (operation === "modify lc") {
+
+            button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
+                    + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"
+                    + lc + "'  data-status='" + status + "' data-refnum='" + refNum + "'>"
+                    + operation + "</button>";
+
+            if (operation === "modify lc" || operation === "submit bol") {
                 button = "<button type='button'  data-refnum="
                         + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
                         + operation + "</button>";
@@ -325,7 +325,7 @@ function getAllLcDetailsShipper() {
             var refNum = refNumberList[i];
             var availableStatus = ["acknowledged", "relevant documents uploaded", "documents accepted by importer", "item colleccted"];
             //acknowledged = Awaiting Document Presentation
-         
+
 //get contract of the ref num
             var exporterAcct = "";
             var importerAcct = "";
@@ -333,7 +333,7 @@ function getAllLcDetailsShipper() {
             var status = "";
             var globalErrorId = "";
             var country = "";
-            
+
             getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
                 globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
                 console.log(globalErrorId);
@@ -344,7 +344,7 @@ function getAllLcDetailsShipper() {
                         importerAcct = contract.Content.ServiceResponse.LC_Details.LC_record.importer_account_num;
                         exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
                         shipDate = contract.Content.ServiceResponse.LC_Details.LC_record.ship_date;
-                        country = contract.Content.ServiceResponse.LC_Details.LC_record.ship_destination;                    
+                        country = contract.Content.ServiceResponse.LC_Details.LC_record.ship_destination;
                         var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
                         var operation = operations[0];
                         var url = operations[1];
@@ -357,12 +357,12 @@ function getAllLcDetailsShipper() {
                             operation: operation,
                             url: url
                         };
-                         allLcDetails[i] = lcObject;
+                        allLcDetails[i] = lcObject;
                     }
                 }
 
-            });              
-        }     
+            });
+        }
     }
 
     return allLcDetails;
@@ -570,6 +570,8 @@ function modifyLcOps() {
         if (goodsDescription === "") {
             goodsDescription = document.getElementById("goodsDescription").placeholder;
         }
+        console.log(importerAccount);
+
         var lc = {
             referenceNumber: refNum,
             importerAccount: importerAccount,
@@ -733,7 +735,7 @@ function amendLcOps() {
                 console.log("success");
                 console.log(validateLcApplication);
                 //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
-                //window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+                window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
             }
         }
 
@@ -872,7 +874,7 @@ function buttonAssigned(status) { // this method is to assign button color (by a
 //element = document.getElementById("lcDetails");
     var name = "btn-primary";
     var text = "text-primary";
-    if (status === "rejected" || status === "requested to amend") {
+    if (status === "rejected" || status === "amendments requested") {
         name = "btn-danger";
         text = "text-danger";
     }
@@ -888,6 +890,12 @@ function operationMatch(status, usertype) {
         if (status.toLowerCase() === "amendments requested") {
             url = "modifyLc";
             operation = "modify lc";
+        } else if (status.toLowerCase() === "documents uploaded") {
+            url = "acceptDocs";
+            operation = "accept documents";
+        } else if (status.toLowerCase() === "documents accepted") {
+            url = "collectGoods";
+            operation = "collect goods";
         }
 
     } else if (usertype === "exporter") {
@@ -895,13 +903,15 @@ function operationMatch(status, usertype) {
             url = "approveLc";
             operation = "approve lc";
         } else if (status.toLowerCase() === "acknowledged") {
-            url = "shipGoods";
-            operation = "ship goods";
+            //url = "shipGoods";
+            //operation = "ship goods";
+            url = "submitBol";
+            operation = "submit bol";
         }
     } else if (usertype === "shipper") {
         if (status.toLowerCase() === "acknowledged") {
             url = "submitBol";
-            operation = "submit bol"
+            operation = "submit bol";
         } else {
             url = "view contract";
             operation = "view contract";
@@ -944,10 +954,25 @@ function loadLcDetailsModal() {
             }
             var buttons = ""
             if (usertype === "exporter" && action === "approve lc") {
-                $("#approveContainer").css("visibility", "visible")
-                $("#amendContainer").css("visibility", "visible")
+                $("#amendLcContainer").css("display", "block")
 
+            } else if (usertype === "importer" && action === "accept documents") {
+                $("#acceptDocsContainer").css("display", "block")
+
+            } else {
+                $("#viewLcContainer").css("display", "block")
             }
+            /*if (usertype === "importer" && action === "collect goods") {
+                var url = "";
+                getBOLUrl(userId, PIN, OTP, refNum, function (data) {
+                    var globalErrorId = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID
+                    if (globalErrorId === "010000") {
+                        url = data.Content.ServiceResponse.BOL_Details.BOL_record_output.BOL_Link
+                    }
+
+                })
+                var urlHTML = "<div id='qrcode' value='" + url + "'></div>";
+            }*/
             var refNumHTML = "<div value='" + refNum + "' id='returnedRef'></div>"
             // Update the modal's content.
             var modal = $(this)
@@ -955,15 +980,15 @@ function loadLcDetailsModal() {
             modal.find('.modal-body #status').text(status);
             modal.find('.modal-body #lcDetails').html(allLcHTML)
             modal.find('.modal-body #returnedRefNum').html(refNumHTML)
-
+           // modal.find('.modal-body #lcQRCode').html(urlHTML)
 
             //modal.find('.modal-footer #lcButtons' ).html(buttons)
             //$(
             // And if you wish to pass the productid to modal's 'Yes' button for further processing
             //modal.find('button.btn-danger').val(productid)
 
-        });
-    });
+        })
+    })
 }
 
 function getExporterDetails() {
@@ -989,11 +1014,6 @@ function getExporterDetails() {
     console.log(exporterCredentials);
     return exporterCredentials;
 }
-
-
-
-
-
 
 
 

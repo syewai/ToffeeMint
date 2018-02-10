@@ -130,7 +130,12 @@ function lcModificationForm(userId, PIN, OTP, lc) {
         globalErrorID = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
         if (globalErrorID === "010000") {
             //lcDetails = amendments.Content.ServiceResponse.LC_Details;
-            modifiedDetails = modification;
+           
+            updateStatus(userId, PIN, OTP, lc.referenceNumber, "acknowledged", "", function (data) {
+                if (globalErrorID === "010000") {
+                     modifiedDetails = modification;
+                }
+            });
         }
 
     });

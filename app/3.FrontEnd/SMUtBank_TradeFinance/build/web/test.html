@@ -46,6 +46,8 @@ and open the template in the editor.
         <button id="button10">Get game leaders</button>
         <button id="button11">update Status</button>
         <button id="button12">get amendments</button>
+        <button id="button13">uploadBOL</button>
+        <button id="button14">update status</button>
         <div id="content"></div>
         <!--<div id="nav">
         </div>
@@ -55,13 +57,23 @@ and open the template in the editor.
          <script>
              $('#nav').load("nav.html");
         </script>-->
+
+
+
+        <!--<input id="text" type="text" value="http://jindo.dev.naver.com/collie" style="width:80%" /><br />-->
+        <div id="qrcode" style="width:100px; height:100px; margin-top:15px;"></div>
+
+
+
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="assets/js/DAO/apiUrl.js"></script>
-
+        <script src="assets/js/DAO/docsHandling.js"></script>
         <script src="assets/js/DAO/lcHandling.js"></script>
         <script src="assets/js/DAO/userHandling.js"></script>
         <script src="assets/js/DAO/statusHandling.js"></script>
         <script src="assets/js/DAO/gameHandling.js"></script>
+        <script src="assets/js/qrcode/qrcode.js"></script>
         <script>
             $("#button1").click(function () {
                 var account
@@ -182,8 +194,32 @@ and open the template in the editor.
                 });
             });
 
+            $("#button13").click(function () {
+                uploadBOL("kinetic1", "123456", "999999", "0000001081", "http://bit.ly/2BPThUM", function (data) {
+                    console.log(data);
+                });
+            });
+            $("#button14").click(function () {
+                updateStatus("toffeemint2", "123456", "999999", "0000001160", "documents Uploaded", "", function (data) {
+                    console.log(data);
+
+
+                });
+            });
+
+
+
+var qrcode = new QRCode(document.getElementById("qrcode"), {
+	text: "http://jindo.dev.naver.com/collie",
+	width: 128,
+	height: 128,
+	colorDark : "#000000",
+	colorLight : "#ffffff",
+	correctLevel : QRCode.CorrectLevel.H
+});
 
         </script>
+
 
     </body>
 </html>
