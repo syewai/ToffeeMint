@@ -3,15 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/importer/importer.html</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/homeTemplate.html</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/shipper/shipper.html</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/Utility/formValidation.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/shipper/home.html</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/importer/navBar.html</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/shipper/navBar.html</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/Utility/lcOperations.js</file>
-            <file>file:/C:/Users/user/Desktop/ToffeeMint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/lcHandling.js</file>
+            <file>file:/C:/Users/martin/Desktop/WithLeaderBoard/toffeemint/app/3.FrontEnd/SMUtBank_TradeFinance/web/importer/importer.html</file>
+            <file>file:/C:/Users/martin/Desktop/WithLeaderBoard/toffeemint/app/3.FrontEnd/SMUtBank_TradeFinance/web/homeTemplate.html</file>
+            <file>file:/C:/Users/martin/Desktop/WithLeaderBoard/toffeemint/app/3.FrontEnd/SMUtBank_TradeFinance/web/assets/js/DAO/gameHandling.js</file>
+            <file>file:/C:/Users/martin/Desktop/WithLeaderBoard/toffeemint/app/3.FrontEnd/SMUtBank_TradeFinance/web/importer/leaderBoard.html</file>
         </group>
     </open-files>
 </project-private>
