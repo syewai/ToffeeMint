@@ -113,13 +113,7 @@ function homeOperation() {
 
         for (var i = 0; i < numOfRows; i++) {
 //call web service to get lc details for each ref number 
-
             var refNum = refNumberList[i];
-            //var refNumInt = parseInt(refNum);
-            //get status of the ref num
-            //getStatus(userId, PIN, OTP, refNum, callback)
-
-
             var lc = {};
             //if (status !== "") {
 //get contract of the ref num
@@ -166,8 +160,8 @@ function homeOperation() {
                         + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
                         + operation + "</button>";
             }
+            
             var $button = $(button);
-
             $button.addClass(buttonAssigned(status)[0]);
             var $refNumCell = $('<td></td>');
             $refNumCell.append(refNum);

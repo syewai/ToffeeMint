@@ -131,11 +131,11 @@ function lcModificationForm(userId, PIN, OTP, lc) {
         if (globalErrorID === "010000") {
             //lcDetails = amendments.Content.ServiceResponse.LC_Details;
            
-            updateStatus(userId, PIN, OTP, lc.referenceNumber, "acknowledged", "", function (data) {
+            /*updateStatus(userId, PIN, OTP, lc.referenceNumber, "acknowledged", "", function (data) {
                 if (globalErrorID === "010000") {
                      modifiedDetails = modification;
                 }
-            });
+            });*/
         }
 
     });
