@@ -53,12 +53,12 @@
                     </section>
                 </div>
             </div>
-
+            
             <div class="row">
                 <div class="col-sm-6">
                     <section class="panel panel-default">
                         <header class="panel-heading">
-                            <span class="h4">Bill of Lading</span>
+                            <span class="h4">Documents</span>
                         </header>
                         <div class="panel-body">
                             <div class="form-group">
@@ -66,52 +66,29 @@
                                 <input id="bolLink"  type="text"  class="form-control" name="bolLink" />
                                 <!--<a id="bolLink" target="_blank"></a>-->
                             </div>
-                            <div></div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <section class="panel panel-default">
-                        <header class="panel-heading">
-                            <span class="h4">Cert of Origin</span>
-                        </header>
-                        <div class="panel-body">
-                            <div class="form-group">
+                             <div class="form-group">
                                 <label for="cooLink">Cert of Origin</label>
                                 <input id="cooLink"  type="text"  class="form-control" name="cooLink" />
                                 <!--<a id="cooLink" target="_blank"></a>-->
                             </div>
-                            <div></div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <section class="panel panel-default">
-                        <header class="panel-heading">
-                            <span class="h4">Insurance</span>
-                        </header>
-                        <div class="panel-body">
                             <div class="form-group">
                                 <!--<a id="insuranceLink" target="_blank"></a>-->
                                 <label for="insuranceLink">Insurance</label>
                                 <input id="insuranceLink"  type="text"  class="form-control" name="insuranceLink" />
                             </div>
                             <div></div>
+                            <div id="authError"></div>
+                            <footer class="text-center bg-light lter">
+                                <div class='form-group lc-form'>
+                                    <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-primary btn-lg' id="uploadDocsButton">Upload</button></div>
+                                    <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-default btn-lg' id='cancelButton'>Cancel</button></div>
+                                </div>
+                            </footer>
                         </div>
                     </section>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-6" style="text-align:center;">
-                    <div class='col-sm-2'><button type='button' class='btn btn-default' id='cancelButton'>Cancel</button></div>
-                    <div class='col-sm-2'><button id="uploadDocsButton" type="button" class="btn btn-primary btn-s-xs">Upload</button></div>
-                </div>
-            </div>
-
+            
         </form>
 
 
@@ -130,17 +107,7 @@
 <script type="text/javascript" src="../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>
 
-<!--<script src="../assets/js/applyLc.js"></script>
-<script src="../assets/js/retrieveRefNumList.js"></script>
-<!--<script src="../assets/js/applyLcBc.js"></script>-->
-<script src="../assets/js/Utility/globalFunctions.js"></script>
-<script src="../assets/js/DAO/apiUrl.js"></script>
-<script src="../assets/js/DAO/lcHandling.js"></script>
-<script src="../assets/js/DAO/docsHandling.js"></script>
-<script src="../assets/js/DAO/statusHandling.js"></script>
-<script src="../assets/js/Utility/formValidation.js"></script>
-<script src="../assets/js/Utility/lcOperations.js"></script>
-<script src="../assets/js/Utility/documentsOperation.js"></script>
+
 
 <script type="text/javascript">
     $('.form_date').datetimepicker({

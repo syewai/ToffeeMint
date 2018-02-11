@@ -10,11 +10,11 @@ function applyLcButton() {
 
 function approveLcButton() {
     //var refNum = getQueryVariable("refNum");
-    var buttons = "<div class='form-group lc-form'>";
+   /* var buttons = "<div class='form-group lc-form'>";
     buttons += "<div class='col-sm-2 '><button type='submit' class='btn btn-primary' id='approveButton'>Approve</button></div>";
     buttons += "<div class='col-sm-2 '><button type='submit' class='btn btn-primary' id='amendButton'>Request to amend</button></div>";
     buttons += "</div>";
-    $("#lcButtons").append(buttons);
+    $("#lcButtons").append(buttons);*/
 
     
 }
@@ -34,10 +34,10 @@ function viewLcButton(usertype) {
 }
 
 function modifyLcButton() {
-    var buttons = "<div class='form-group'>";
+   /* var buttons = "<div class='form-group'>";
     buttons += "<div class='col-sm-2'><button type='button' class='btn btn-primary' id='cancelButton'>Cancel</button></div>";
     buttons += "<div class='col-sm-2'><button type='button' class='btn btn-lg btn-danger font-bold' id='modifyButton'>Modify</button></div>";
     buttons += "</div>";
 
-    $("#footerButton").append(buttons);
+    $("#footerButton").append(buttons);*/
 }

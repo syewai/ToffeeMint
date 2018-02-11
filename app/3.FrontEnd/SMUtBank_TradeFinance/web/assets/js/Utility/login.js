@@ -1,14 +1,21 @@
 var getUserItem = sessionStorage.getItem('user');
+var getAdminItem = sessionStorage.getItem('admin');
 var user = $.parseJSON(getUserItem);
-
+var admin = $.parseJSON(getAdminItem);
 var userId = "";
 var PIN = "";
 var usertype = "";
+var customerID = "";
 var OTP = "";
-if(user !== null){
+if (user !== null) {
     userId = user.userID;
     PIN = user.PIN;
     OTP = user.OTP;
+}
+if (admin !== null) {
+    userId = admin.userID;
+    PIN = admin.PIN;
+    OTP = admin.OTP;
 }
 function createSMSOTP() {
     userId = document.getElementById("userID").value;
@@ -32,18 +39,19 @@ function createSMSOTP() {
     }
     var globalErrorID = "";
     var errorMsg = "";
-    getCustomerDeatils(userId, PIN, OTP, function(data) {
+    getCustomerDeatils(userId, PIN, OTP, function (data) {
         //console.log(data);
         //get error id to check existance of the user
         errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
         globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+        if (globalErrorID === "010000") {
+            customerID = data.Content.ServiceResponse.CDMCustomer.customer.customerID;
+        }
+
     });  //parse in an empty OTP to activate sms otp
     if (globalErrorID !== "") {
         if (globalErrorID === "010041") {//OTP expiry error - request new otp 
             buildSMSOTP();
-            //call notification to send sms
-            //console.log(errorMsg);
-            //return {errorMsg: errorMsg};
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
 
@@ -53,8 +61,10 @@ function createSMSOTP() {
         } else {
             //if user authentication successful, store userid,pin and otp in a session, load role selector 
             ////console.log(username + password + usertype);
-            var user = new User(userId, PIN, OTP, usertype);
-            if(usertype === "shipper"){
+
+            var user = new User(userId, PIN, OTP, usertype, customerID);
+
+            if (usertype === "shipper") {
                 sessionStorage.setItem('admin', JSON.stringify(user));
             } else {
                 sessionStorage.setItem('user', JSON.stringify(user));
@@ -65,6 +75,7 @@ function createSMSOTP() {
             // return {userID: userId, PIN: PIN, usertype: usertype, phoneNumber: cellPhoneNumber};
         }
     }
+
 
 }
 
@@ -78,38 +89,36 @@ function authenticateSMSOTP() {
     }
     var globalErrorID = "";
     var errorMsg = "";
-     getCustomerDeatils(userId, PIN, OTP, function(data) {
+    getCustomerDeatils(userId, PIN, OTP, function (data) {
         //console.log(data);
         //get error id to check existance of the user
         errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
         globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-        if (globalErrorID !== "") {
-        if (globalErrorID === "010041") {//OTP expiry error - request new otp 
+        if (globalErrorID === "010000") {
+            customerID = data.Content.ServiceResponse.CDMCustomer.customer.customerID;
+        }
+
+    });   //parse in an empty OTP to activate sms otp
+
+    if (globalErrorID !== "") {
+        if (globalErrorID !== "010000") {//OTP expiry error - request new otp 
             buildSMSOTP();
-            //call notification to send sms
-            //console.log(errorMsg);
-            //return {errorMsg: errorMsg};
-
-        } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
-
-            //console.log(errorMsg);
-            return  {errorMsg: errorMsg};
 
         } else {
             //if user authentication successful, store userid,pin and otp in a session, load role selector 
             ////console.log(username + password + usertype);
-            var customerID = data.Content.ServiceResponse.CDMCustomer.customer.customerID;
+
             var user = new User(userId, PIN, OTP, usertype, customerID);
-            sessionStorage.setItem('user', JSON.stringify(user));
+
+            if (usertype === "shipper") {
+                sessionStorage.setItem('admin', JSON.stringify(user));
+            } else {
+                sessionStorage.setItem('user', JSON.stringify(user));
+            }
             window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
 
-            ////console.log(phoneNum);
-            // return {userID: userId, PIN: PIN, usertype: usertype, phoneNumber: cellPhoneNumber};
         }
-    } //update otp to the new otp, and authenticate otp by using authenticateCustomerDetails
-    });   //parse in an empty OTP to activate sms otp
-    
-
+    }
 }
 
 

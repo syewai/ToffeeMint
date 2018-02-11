@@ -107,14 +107,19 @@
                                 <label>Additional Conditions</label>
                                 <textarea id="additionalConditions"  class="form-control" rows="6" placeholder="Additional Conditions" name="additionalConditions" readonly></textarea>
                             </div>
-                            <div class="form-group">
-                                <label>Upload Bill of Exchange</label>
-                                <input type="file" class="filestyle" data-icon="false" data-classButton="btn btn-default" data-classInput="form-control inline input-s">
-                            </div>
+                            <!-- <div class="form-group">
+                                 <label>Upload Bill of Exchange</label>
+                                 <input type="file" class="filestyle" data-icon="false" data-classButton="btn btn-default" data-classInput="form-control inline input-s">
+                             </div>-->
                             <div id="authError"></div>
                             <footer class="text-center bg-light lter">
-                                <button id="create_button_api" type="button" class="btn btn-success btn-s-xs">Submit</button>
-                                <!--<button id="create_button_bc" type="button" class="btn btn-success btn-s-xs">Submit TO Block chain</button>-->
+                                <div class='form-group lc-form'>
+                                     <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-primary btn-lg' id='applyLcButton'>Apply LC</button></div>
+                                     <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-default btn-lg' id='cancelButton'>Cancel</button></div>
+
+                                    <!--<div class='col-sm-2 '><button type='submit' class='btn btn-success' id='applyLcButton'>Apply LC</button></div>
+                                    <div class='col-sm-2 '><button type='button' class='btn btn-default' id='cancelButton'>Cancel</button></div>-->
+                                </div>
                             </footer>
                         </div>
                     </section>
@@ -158,8 +163,8 @@
                 $("#bankId").append(bankId);
                 var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
                 $("#loginForm").append(exporterAcctInput);
-                var countries = ["Norway","UK","China","Japan"];
-                var randomCountry = countries[Math.floor(Math.random()*countries.length)];
+                var countries = ["Norway", "UK", "China", "Japan"];
+                var randomCountry = countries[Math.floor(Math.random() * countries.length)];
                 //console.log(randomCountry);
                 var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + randomCountry + "' >";
                 $("#loginForm").append(countryInput);
@@ -187,12 +192,7 @@
 <!--<script src="../assets/js/applyLc.js"></script>
 <script src="../assets/js/retrieveRefNumList.js"></script>
 <!--<script src="../assets/js/applyLcBc.js"></script>-->
-<script src="../assets/js/Utility/globalFunctions.js"></script>
-<script src="../assets/js/DAO/apiUrl.js"></script>
-<script src="../assets/js/DAO/lcHandling.js"></script>
-<script src="../assets/js/DAO/statusHandling.js"></script>
-<script src="../assets/js/Utility/formValidation.js"></script>
-<script src="../assets/js/Utility/lcOperations.js"></script>
+
 
 <script type="text/javascript">
             $('.form_date').datetimepicker({
@@ -206,9 +206,21 @@
             });
 </script>
 <script type="text/javascript">
-    $("#create_button_api").click(function () {
+    $("#applyLcButton").click(function () {
 
-        applyLcOperation(); //caling this method from assets/js/Utility/lcOperations.js
+        var applyLc = applyLcOperation(); //caling this method from assets/js/Utility/lcOperations.js
+        if (applyLc !== undefined) {
+            if (applyLc.hasOwnProperty("errorMsg")) {
+
+                var errorMsg = applyLc.errorMsg;
+                $("#authError").html(errorMsg);
+            }
+        }
+
+    });
+    $("#cancelButton").click(function () {
+
+        window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
 
     });
 </script>

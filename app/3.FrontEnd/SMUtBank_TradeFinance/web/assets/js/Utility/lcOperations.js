@@ -50,6 +50,26 @@ function applyLcOperation() {
     var senderToReceiverInfo = "none";
     var mode = "BC";
 
+    if (!(exporterAccount.length > 0)) {
+
+        return {errorMsg: "Exporter account cannot be blank"};
+    }
+    if (!(goodsDescription.length > 0)) {
+
+        return {errorMsg: "Goods description cannot be blank"};
+    }
+    if (!(amount.length > 0)) {
+
+        return {errorMsg: "Amount cannot be blank"};
+    }
+    if (!(expiryDate.length > 0)) {
+
+        return {errorMsg: "Expiry date cannot be blank"};
+    }
+
+
+
+
     var lc = {
         importerAccount: importerAccount,
         exporterAccount: exporterAccount,
@@ -562,8 +582,7 @@ function modifyLcOps() {
         }
     }
 
-    modifyLcButton();
-    $("#modifyButton").click(function () {
+    $("#modifyLcButton").click(function () {
         expiryDate = document.getElementById("expiryDate").value;
         if (expiryDate === "") {
             expiryDate = document.getElementById("expiryDate").placeholder;
@@ -816,15 +835,15 @@ function showLcDetailsModal() {
 
 function loadLcDetailsModal() {
     $(document).ready(function () {
-        
-        
+
+
         $('#lcDetailsModal').on('show.bs.modal', function (event) { // id of the modal with event
             var button = $(event.relatedTarget) // Button that triggered the modal
             var refNum = button.data('refnum') // Extract info from data-* attributes
             var status = button.data('status')
             var action = button.data('action')
             var links = button.data("links")
-            
+
             var fields = button.data('lc') //convert string to json string
             var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
             var allLcHTML = ""
@@ -834,7 +853,7 @@ function loadLcDetailsModal() {
                 for (var i in links) {
                     var lcDetailsHTML = "";
                     lcDetailsHTML = "<label class='col-lg-4 control-label lc-label' id=''>" + i + "</label>"
-                    lcDetailsHTML += "<div class='col-lg-8 font-bold' id='lcValue'><p id='" + i + "'></p>" + links[i] + "</div>"
+                    lcDetailsHTML += "<div class='col-lg-8 font-bold' id='lcValue'><a href='" + links[i] + "' target='_blank'>" + links[i] + "</a></div>"
 
                     allLcHTML += "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>"
                     allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
@@ -851,17 +870,50 @@ function loadLcDetailsModal() {
                 allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
             }
 
-
-            var buttons = ""
+            var buttonGroup = $("<div class='form-group lc-form'></div>")
+            var actionDiv = $("<div class='col-lg-4 ' style='' id='actionDiv'></div>")
+            var actionButton = $("<button type='button' class='actionButton btn btn-primary btn-lg'><i class='fa fa-check'></i>  </button>")
+            var cancelDiv = $("<div class='col-lg-4 ' style='' id='cancelDiv'></div>")
+            var cancelButton = $("<button type='button' class='cancelButton btn btn-danger btn-lg'></button>")
+            var closeDiv = $("<div class='col-lg-4 '></div>")
+            var closeButton = $("<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>")
+            var attrToChange = [];
             if (usertype === "exporter" && action === "approve lc") {
-                $("#amendLcContainer").css("display", "block")
+                attrToChange = ["approveButton", "amendLc", "Approve", "Request to amend", "visible", "visible"]
 
             } else if (usertype === "importer" && action === "accept documents") {
-                $("#acceptDocsContainer").css("display", "block")
+                attrToChange = ["acceptDocs", "cancel", "Accept Documents", "Cancel", "visible", "visible"]
+
+            } else if (usertype === "importer" && action === "collect goods") {
+                attrToChange = ["collectGoods", "", "Collect Goods", "", "visible", "hidden"]
 
             } else {
-                $("#viewLcContainer").css("display", "block")
+                attrToChange = ["", "", "", "", "hidden", "hidden"]
             }
+
+            actionButton.attr("id", attrToChange[0]).append(attrToChange[2])
+            cancelButton.attr("id", attrToChange[1]).append(attrToChange[3])
+            actionDiv.css("visibility", attrToChange[4])
+            cancelDiv.css("visibility", attrToChange[5])
+
+            actionDiv.append(actionButton)
+            cancelDiv.append(cancelButton)
+            closeDiv.append(closeButton)
+            buttonGroup.append(actionDiv)
+            buttonGroup.append(cancelDiv)
+            buttonGroup.append(closeDiv)
+
+
+            /*var buttons = ""
+             if (usertype === "exporter" && action === "approve lc") {
+             $("#amendLcContainer").css("display", "block")
+             
+             } else if (usertype === "importer" && action === "accept documents") {
+             $("#acceptDocsContainer").css("display", "block")
+             
+             } else {
+             $("#viewLcContainer").css("display", "block")
+             }*/
 
             var refNumHTML = "<div value='" + refNum + "' id='returnedRef'></div>"
             // Update the modal's content.
@@ -870,9 +922,52 @@ function loadLcDetailsModal() {
             modal.find('.modal-body #status').text(status);
             modal.find('.modal-body #lcDetails').html(allLcHTML)
             modal.find('.modal-body #returnedRefNum').html(refNumHTML)
+            modal.find('.modal-footer #lcButtons').html(buttonGroup)
+            buttonClicks()
 
         })
     })
+}
+
+function buttonClicks() {
+    $("#approveButton").click(function () {
+
+        var refNum = $("#returnedRef").attr("value");
+        //console.log(refNum);
+        var status = "acknowledged";
+        updateStatus(userId, PIN, OTP, refNum, status, "", function (data) {
+            //console.log(data);
+            var globalErrorID = data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
+            if (globalErrorID === "010000") {
+                window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
+            }
+        });
+
+    });
+    $("#amendLc").click(function () {
+        var refNum = $("#returnedRef").attr("value");
+        //console.log(refNum);
+        var page = $(this).attr('id');
+        //console.log(page);
+        var pageToLoad = {page: page, refNum: refNum}; // append refnum into pagetToLoad and set a session 
+        sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+        window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html?refNum=" + refNum);
+        //window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
+    });
+
+    $("#acceptDocs").click(function () {
+        var refNum = $("#returnedRef").attr("value");
+        //console.log(refNum);
+        var status = "documents accepted";
+        updateStatus(userId, PIN, OTP, refNum, status, "", function (data) {
+            //console.log(data);
+            var globalErrorID = data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
+            if (globalErrorID === "010000") {
+                window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
+            }
+        });
+    });
+
 }
 
 function getExporterDetails() {

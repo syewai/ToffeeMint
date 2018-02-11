@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -26,45 +27,52 @@
 
                 </header>
                 <div class="panel-body">
+                    <div class="bs-example form-horizontal" id="lcDetails">
 
-                    <div class="bs-example form-horizontal" id="lcDetails"></div>
+                    </div>
+                    <div class="bs-example form-horizontal" id="lcQRCode">
+
+                    </div>
 
                 </div>
 
             </section>
+
         </div>
+        <div class="modal-footer">
+            <div class="bs-example form-horizontal" id="lcButtons">
+               <!--<div class='form-group lc-form' id="viewLcContainer" style="display:none">
+                    <div class='col-lg-4 ' style="visibility:hidden"><button type='button' class='btn btn-primary btn-lg'><i class='fa fa-check'></i>  Approve</button></div>
+                    <div class='col-lg-4 ' style="visibility:hidden"><button type='button' class='btn btn-danger btn-lg'>Request to amend</button></div>
+                    <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
+                </div>
+                <div class='form-group lc-form' id="amendLcContainer" style="display:none">
+                    <div class='col-lg-4 ' id='approveContainer' ><button type='button' class='btn btn-primary btn-lg' id='approveButton'><i class='fa fa-check'></i>  Approve</button></div>
+                    <div class='col-lg-4 ' id='amendContainer' ><button type='button' class='btn btn-danger btn-lg' id='amendLc'>Request to amend</button></div>
+                    <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
+                </div>
+                <div class='form-group lc-form' id="acceptDocsContainer" style="display:none">
+                    <div class='col-lg-4 '  ><button type='button' class='btn btn-primary btn-lg' id='acceptDocs'><i class='fa fa-check'></i>  Accept Documents</button></div>
+                    <div class='col-lg-4 '  ><button type='button' class='btn btn-danger btn-lg'>Cancel</button></div>
+                    <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
+                </div>
+                <div class='form-group lc-form' id="collectGoodsContainer" style="display:none">
+                    <div class='col-lg-4 '  ><button type='button' class='btn btn-primary btn-lg' id='collectGoods'><i class='fa fa-check'></i>  Collect Goods</button></div>
+                    <div class='col-lg-4 '  ><button type='button' class='btn btn-danger btn-lg'>Cancel</button></div>
+                    <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
+                </div>
+            </div>-->
 
 
-
-    </div>
-    <div class="modal-footer">
-        <div class="bs-example form-horizontal" id="lcButtons">
-            <div class='form-group lc-form' id="viewLcContainer" style="display:none">
-                <div class='col-lg-4 ' style="visibility:hidden"><button type='button' class='btn btn-primary btn-lg'><i class='fa fa-check'></i>  Approve</button></div>
-                <div class='col-lg-4 ' style="visibility:hidden"><button type='button' class='btn btn-danger btn-lg'>Request to amend</button></div>
-                <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
-            </div>
-            <div class='form-group lc-form' id="amendLcContainer" style="display:none">
-                <div class='col-lg-4 ' id='approveContainer' ><button type='button' class='btn btn-primary btn-lg' id='approveButton'><i class='fa fa-check'></i>  Approve</button></div>
-                <div class='col-lg-4 ' id='amendContainer' ><button type='button' class='btn btn-danger btn-lg' id='amendLc'>Request to amend</button></div>
-                <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
-            </div>
-            <div class='form-group lc-form' id="acceptDocsContainer" style="display:none">
-                <div class='col-lg-4 '  ><button type='button' class='btn btn-primary btn-lg' id='acceptDocs'><i class='fa fa-check'></i>  Accept Documents</button></div>
-                <div class='col-lg-4 '  ><button type='button' class='btn btn-danger btn-lg'>Cancel</button></div>
-                <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
-            </div>
+            <!--<button type="button" class="btn btn-primary">Save changes</button>-->
         </div>
-
-
-        <!--<button type="button" class="btn btn-primary">Save changes</button>-->
     </div>
 </div>
-</div>
+
 
 <script>
 
-    $("#approveButton").click(function () {
+   /* $("#approveButton").click(function () {
 
         var refNum = $("#returnedRef").attr("value");
         //console.log(refNum);
@@ -100,7 +108,7 @@
                 window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
             }
         });
-    });
+    });*/
 
 
 
