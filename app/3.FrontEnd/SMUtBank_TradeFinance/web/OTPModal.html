@@ -49,7 +49,7 @@ and open the template in the editor.
     $("#login_button").click(function (event) {
 
         var otp = authenticateSMSOTP();
-        console.log(otp);
+        //console.log(otp);
         if (otp !== undefined) {
             if (otp.hasOwnProperty("errorMsg")) {
                 $("#authError").html(otp.errorMsg);

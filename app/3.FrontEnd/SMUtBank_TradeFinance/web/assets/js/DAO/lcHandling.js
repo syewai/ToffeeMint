@@ -90,8 +90,8 @@ function applyLcApi(userId, PIN, OTP, lc, callback) {
         Content: lc
     };
     var content = JSON.stringify(contentObj);
-    console.log("content");
-    console.log(content);
+    //console.log("content");
+    //console.log(content);
     $.ajax({
         async: false,
         type: 'POST',

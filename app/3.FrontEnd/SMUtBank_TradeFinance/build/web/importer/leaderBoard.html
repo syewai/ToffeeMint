@@ -80,11 +80,11 @@
                     if (xhr.readyState == 4) {
                         data = xhr.response;
 //                        var num = parseInt(data); //convert String to Number
-//                        console.log(typeof(data));
-//                        console.log(data);
+//                        //console.log(typeof(data));
+//                        //console.log(data);
                         array = data.split(",");
-//                        console.log(typeof(array));
-//                        console.log(array);
+//                        //console.log(typeof(array));
+//                        //console.log(array);
 
                         for (i = 0; i <= array.length - 3; i += 3) {
                             nameArr.push(array[i]);
@@ -92,9 +92,9 @@
                             tScoreArr.push(array[i + 2]);
 
                         }
-//                        console.log(nameArr);
-//                        console.log(iScoreArr);
-//                        console.log(tScoreArr);
+//                        //console.log(nameArr);
+//                        //console.log(iScoreArr);
+//                        //console.log(tScoreArr);
                     }
                     yourGlobalVariable = data;
                     call2Bar();
@@ -114,8 +114,8 @@
                 testArr = callback;
             });
             mainArr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
-            console.log(mainArr);
-            console.log(mainArr.length);
+            //console.log(mainArr);
+            //console.log(mainArr.length);
 
 //            arr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'][0]['user_Id'];
 
@@ -124,13 +124,13 @@
                 arrUserId[i] = mainArr[i]['user_Id'];
                 arrScore[i] = mainArr[i]['score'];
 //                array1.push(arr);
-//                console.log(arr);
-//                console.log(arr[0]['score']);
-//                console.log(arr[i]['user_Id']);
+//                //console.log(arr);
+//                //console.log(arr[0]['score']);
+//                //console.log(arr[i]['user_Id']);
             }
 
-            console.log(arrUserId);
-            console.log(arrScore);
+            //console.log(arrUserId);
+            //console.log(arrScore);
 
             function call2Bar() {
                 var ctx = document.getElementById("myChart");

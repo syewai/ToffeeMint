@@ -4,7 +4,7 @@
     protectUser(); // calling from userHandling
     var getUserItem = sessionStorage.getItem('user');
     var user = $.parseJSON(getUserItem);
-    console.log(user.customerID);
+    //console.log(user.customerID);
     $('#username').html("Welcome back, " + user.userID);
     var usertype = user.usertype;
     $('#usertype').html(usertype+" (Customer ID - "+user.customerID+")");
@@ -17,7 +17,8 @@
     //e.preventDefault();
 </script>
 <script type="text/javascript">
-    homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
+
+      homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
 
 </script>
 

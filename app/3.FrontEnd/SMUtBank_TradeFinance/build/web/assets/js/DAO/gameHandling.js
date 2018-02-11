@@ -165,7 +165,7 @@ function onNext(questionId, timer) {
             if (result === answer) {
                 score = time * 10;
                 setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, questionId, 1, score, "Pretest", 1, function (callback) {
-                    console.log(callback);
+                    //console.log(callback);
                 });
             }
 

@@ -5,7 +5,7 @@
     protectUser(); // calling from userHandling
     var getUserItem = sessionStorage.getItem('user');
     var user = $.parseJSON(getUserItem);
-    console.log(user.customerID);
+    //console.log(user.customerID);
     $('#username').html("Welcome back, " + user.userID);
     var usertype = user.usertype;
     $('#usertype').html(usertype+" (Customer ID - "+user.customerID+")");
@@ -60,7 +60,7 @@
 
                             var allLcs = getAllLcDetailsShipper();  // this method is calleed from Utility/lcOperations.js
                             //print all 
-                            console.log(allLcs);
+                            //console.log(allLcs);
 
                             shipperHomeOperation(allLcs);
                             var country = document.getElementById("country");
@@ -86,8 +86,8 @@
                                     }
                                 }
                                 shipperHomeOperation(lcs);
-                                console.log(filters);
-                                console.log(lcs);
+                                //console.log(filters);
+                                //console.log(lcs);
 
 
 
@@ -98,7 +98,7 @@
                                 emptyShipperHome();
                                 var lcs = [];
                                 shipDate = $('#shipDate').val();
-                                console.log(shipDate);
+                                //console.log(shipDate);
                                 filters["shipDate"] = shipDate;
                                 for (var i in allLcs) {
                                     var countryCondition = allLcs[i]["country"] === filters["country"];
@@ -114,12 +114,12 @@
                                     }
                                 }
                                 shipperHomeOperation(lcs);
-                                console.log(filters);
-                                console.log(lcs);
+                                //console.log(filters);
+                                //console.log(lcs);
 
 
                             };
-                            //console.log(filter);
+                            ////console.log(filter);
 
                         </script>
                     </div>

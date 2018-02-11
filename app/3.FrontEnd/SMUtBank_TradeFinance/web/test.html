@@ -23,7 +23,7 @@ and open the template in the editor.
              $("body").append(items);
              
              
-             console.log(data.Content);
+             //console.log(data.Content);
              });
              
              }
@@ -48,6 +48,7 @@ and open the template in the editor.
         <button id="button12">get amendments</button>
         <button id="button13">uploadBOL</button>
         <button id="button14">update status</button>
+        <button id="button15">get bol links</button>
         <div id="content"></div>
         <!--<div id="nav">
         </div>
@@ -83,7 +84,7 @@ and open the template in the editor.
                     if (account == null) {
                         account = accounts.Content.ServiceResponse.AccountList.account;
                     }
-                    console.log(account);
+                    //console.log(account);
 
                 });
 
@@ -94,7 +95,7 @@ and open the template in the editor.
                 getCustomerDeatils("toffeemint1", "929780", "999999", function (accounts) { //get currency and importer account
 
 
-                    console.log(account);
+                    //console.log(account);
 
                 });
 
@@ -102,7 +103,7 @@ and open the template in the editor.
 
             $("#button4").click(function () {//
 
-                //console.log(getRefNumListAjax());
+                ////console.log(getRefNumListAjax());
                 //var numList = getRefNumListAjax();
 
 
@@ -110,17 +111,17 @@ and open the template in the editor.
                 getRefNumListAjax(function (refNumList) {
                     refNum = refNumList.RefNumList.RefNum;
                 });
-                console.log(refNum[0]);
+                //console.log(refNum[0]);
 
             });
 
             $("#button5").click(function () {//
 
-                //console.log(getRefNumListAjax());
+                ////console.log(getRefNumListAjax());
                 //var numList = getRefNumListAjax();
 
 
-                //console.log(getRefNumList("kinetic1", refNumList));
+                ////console.log(getRefNumList("kinetic1", refNumList));
 
                 var userId = "toffeemint1";
                 var PIN = "929780";
@@ -129,7 +130,7 @@ and open the template in the editor.
 
                 var refNum;
                 getCustomerDeatils(userId, PIN, OTP, function (data) {
-                    console.log(data);
+                    //console.log(data);
                 });
 
 
@@ -139,43 +140,43 @@ and open the template in the editor.
             //game test
             $("#button6").click(function () {
                 getGameQuestion("", "", "", 1, function (callback) {
-                    console.log(callback);
+                    //console.log(callback);
                 });
             });
 
             $("#button7").click(function () {
                 getGameAnswer("", "", "", 1, function (callback) {
-                    console.log(callback);
+                    //console.log(callback);
                 });
             });
 
             $("#button8").click(function () {
                 setQuestionScore("kinetic1", "123456", "999999", 1, 1, 10, "Pretest", 1, function (callback) {
-                    console.log(callback);
+                    //console.log(callback);
                 });
             });
 
             $("#button9").click(function () {
                 getGameScore("kinetic1", "123456", "999999", 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function (callback) {
-                    console.log(callback);
+                    //console.log(callback);
                 });
             });
 
             $("#button10").click(function () {
                 getLcDetails("toffeemint2", "123456", "999999", "0000001121", function (contract) {
-                    console.log(contract);
+                    //console.log(contract);
 
                     var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-                    console.log(globalErrorId);
+                    //console.log(globalErrorId);
                     if (globalErrorId === "010000") {
                         exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
-                        console.log(exporterAcct);
+                        //console.log(exporterAcct);
                         expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
-                        console.log(expiryDate);
+                        //console.log(expiryDate);
                         status = contract.Content.ServiceResponse.LC_Details.LC_record.status;
-                        console.log(status);
+                        //console.log(status);
                         lc = contract.Content.ServiceResponse.LC_Details.LC_record;
-                        console.log(lc);
+                        //console.log(lc);
 
                     }
                 });
@@ -183,40 +184,44 @@ and open the template in the editor.
 
             $("#button11").click(function () {
                 modifyLc("toffeemint2", "123456", "999999", "0000001121", function (data) {
-                    console.log(data);
+                    //console.log(data);
 
 
                 });
             });
             $("#button12").click(function () {
                 getLcAmendments("toffeemint2", "123456", "999999", "0000001133", function (amendments) {
-                    console.log(amendments);
+                    //console.log(amendments);
                 });
             });
 
             $("#button13").click(function () {
                 uploadBOL("kinetic1", "123456", "999999", "0000001081", "http://bit.ly/2BPThUM", function (data) {
-                    console.log(data);
+                    //console.log(data);
                 });
             });
             $("#button14").click(function () {
-                updateStatus("toffeemint2", "123456", "999999", "0000001160", "documents Uploaded", "", function (data) {
-                    console.log(data);
+                updateStatus("kinetic1", "123456", "999999", "0000001160", "documents Uploaded", "", function (data) {
+                    //console.log(data);
 
 
                 });
             });
 
+            $("#button15").click(function () {
+                getBOLUrl("toffeemint2", "123456", "999999", "0000001195", function (data) {
+                    //console.log(data);
+                });
+            });
 
-
-var qrcode = new QRCode(document.getElementById("qrcode"), {
-	text: "http://jindo.dev.naver.com/collie",
-	width: 128,
-	height: 128,
-	colorDark : "#000000",
-	colorLight : "#ffffff",
-	correctLevel : QRCode.CorrectLevel.H
-});
+            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: "http://jindo.dev.naver.com/collie",
+                width: 128,
+                height: 128,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
 
         </script>
 

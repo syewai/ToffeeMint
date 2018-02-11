@@ -102,7 +102,7 @@ function protectUser() {
             $("#login_button").click(function () {
 
                 var otp = authenticateSMSOTP();
-                console.log(otp);
+                //console.log(otp);
                 if (otp !== undefined) {
                     if (otp.hasOwnProperty("errorMsg")) {
                         $("#authError").html(otp.errorMsg);
@@ -156,7 +156,7 @@ function protectAdmin() {
             $("#login_button").click(function () {
 
                 var otp = authenticateSMSOTP();
-                console.log(otp);
+                //console.log(otp);
                 if (otp !== undefined) {
                     if (otp.hasOwnProperty("errorMsg")) {
                         $("#authError").html(otp.errorMsg);

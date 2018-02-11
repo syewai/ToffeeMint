@@ -16,17 +16,17 @@ function lcApplicationForm(userId, PIN, OTP, lc) {
 
             buildSMSOTP();
             //call notification to send sms
-            console.log(errorMsg);
+            //console.log(errorMsg);
             return {errorMsg: errorMsg};
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message, 
 
-            console.log(errorMsg);
+            //console.log(errorMsg);
             return {errorMsg: errorMsg};
 
         } else {//submit lc application --> for now get ref num and upload lc to bc
 
-            console.log(lcDetails);
+            //console.log(lcDetails);
 
             /*This portion indicates the process of lc submission to bc*/
 
@@ -36,7 +36,7 @@ function lcApplicationForm(userId, PIN, OTP, lc) {
             // var refNumber = parseInt(refNum);
             //2. Call applyLc method to apply lc
             // applyLc(userId, PIN, OTP, refNumber, lc, function (data) { //calling this method from assets/js/DAO/lcHandling.js
-            //   console.log(data);
+            //   //console.log(data);
             //});
             /*End of lc submission on bc*/
             return  {success: lcDetails};
@@ -67,12 +67,12 @@ function validateGetRefNumList(userId, PIN, OTP) {
 
             buildSMSOTP();
             //call notification to send sms
-            console.log(errorMsg);
+            //console.log(errorMsg);
             return {errorMsg: errorMsg};
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message, 
 
-            console.log(errorMsg);
+            //console.log(errorMsg);
             return {errorMsg: errorMsg};
         }
     }
@@ -100,17 +100,17 @@ function lcAmendmentForm(userId, PIN, OTP, lc) {
 
             buildSMSOTP();
             //call notification to send sms
-            console.log(errorMsg);
+            //console.log(errorMsg);
             return {errorMsg: errorMsg};
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message, 
 
-            console.log(errorMsg);
+            //console.log(errorMsg);
             return {errorMsg: errorMsg};
 
         } else {//submit lc application --> for now get ref num and upload lc to bc
 
-            console.log(amendmentsDetails);
+            //console.log(amendmentsDetails);
             return  {success: amendmentsDetails};
         }
 
@@ -125,10 +125,11 @@ function lcModificationForm(userId, PIN, OTP, lc) {
     var modifiedDetails = {};
     //var lcDetails = {};
     modifyLc(userId, PIN, OTP, lc.referenceNumber, lc, function (modification) {
-        console.log(modification);
+        //console.log(modification);
         errorMsg = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.ErrorText;
         globalErrorID = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
         if (globalErrorID === "010000") {
+            modifiedDetails = modification;
             //lcDetails = amendments.Content.ServiceResponse.LC_Details;
            
             /*updateStatus(userId, PIN, OTP, lc.referenceNumber, "acknowledged", "", function (data) {
@@ -145,17 +146,17 @@ function lcModificationForm(userId, PIN, OTP, lc) {
 
             buildSMSOTP();
             //call notification to send sms
-            console.log(errorMsg);
+            //console.log(errorMsg);
             return {errorMsg: errorMsg};
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message, 
 
-            console.log(errorMsg);
+            //console.log(errorMsg);
             return {errorMsg: errorMsg};
 
         } else {//submit lc application --> for now get ref num and upload lc to bc
 
-            console.log(modifiedDetails);
+            //console.log(modifiedDetails);
             return  {success: modifiedDetails};
         }
 

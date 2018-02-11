@@ -13,7 +13,7 @@ function pageLoad() {
                 if (newPage === "homeTemplate" || newPage === "viewLcLogTemplate") {
                     newPage = "../" + newPage;
                 }
-                console.log(newPage);
+                //console.log(newPage);
                 //empty content
                 $('#content').load(newPage + ".html");
                 sessionStorage.removeItem('page');
@@ -31,7 +31,7 @@ function pageLoad() {
                 if (page === "homeTemplate" || page === "viewLcLogTemplate") {
                     page = "../" + page;
                 }
-                console.log(page);
+                //console.log(page);
                 $('#content').empty();
                 $('#content').load(page + ".html");
                 return false;
@@ -44,7 +44,7 @@ function pageLoad() {
             $('.pages').click(function () {
                 var page = $(this).attr('href');
                 //var page = this.id;
-                console.log(page);
+                //console.log(page);
                 $('#content').empty();
                 $('#content').load(page + ".html");
                 return false;

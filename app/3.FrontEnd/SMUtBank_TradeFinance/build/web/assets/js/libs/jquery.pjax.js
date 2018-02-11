@@ -150,7 +150,7 @@ function handleSubmit(event, container, options) {
 // Use it just like $.ajax:
 //
 //   var xhr = $.pjax({ url: this.href, container: '#main' })
-//   console.log( xhr.readyState )
+//   //console.log( xhr.readyState )
 //
 // Returns whatever $.ajax returns.
 function pjax(options) {

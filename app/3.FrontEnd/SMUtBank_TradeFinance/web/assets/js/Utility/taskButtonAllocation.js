@@ -29,7 +29,7 @@ function amendLcButton() {
 function viewLcButton(usertype) {
     var buttons = "<div class='form-group'><div class='col-sm-4 col-sm-offset-2'><a href='"+usertype+".html'><button type='submit' class='btn btn-primary'>Home</button></a></div>";
     buttons += "</div>";
-    console.log(usertype);
+    //console.log(usertype);
     $("#lcButtons").append(buttons);
 }
 

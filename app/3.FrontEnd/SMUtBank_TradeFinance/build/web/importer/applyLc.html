@@ -125,11 +125,11 @@
         <script type="text/javascript">
 
             var allExporterDetails = getExporterDetails();
-            console.log(allExporterDetails);
+            //console.log(allExporterDetails);
             var optionHTML = "";
             for (var i = 0; i < allExporterDetails.length; i++) {
                 var userCredential = allExporterDetails[i];
-                console.log(userCredential["userId"]);
+                //console.log(userCredential["userId"]);
                 optionHTML += "<option value='" + userCredential['customerId'] + "'>" + userCredential['userId'] + "</option>";
             }
             $("#exporterId").append(optionHTML);
@@ -160,7 +160,7 @@
                 $("#loginForm").append(exporterAcctInput);
                 var countries = ["Norway","UK","China","Japan"];
                 var randomCountry = countries[Math.floor(Math.random()*countries.length)];
-                console.log(randomCountry);
+                //console.log(randomCountry);
                 var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + randomCountry + "' >";
                 $("#loginForm").append(countryInput);
 

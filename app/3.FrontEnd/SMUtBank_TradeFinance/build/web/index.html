@@ -76,12 +76,12 @@
                 var getErrorItem = sessionStorage.getItem('error');
                 if (getErrorItem !== null) {
                     var error = $.parseJSON(getErrorItem);
-                    console.log("loginerror");
-                    console.log("are you here??");
+                    //console.log("loginerror");
+                    //console.log("are you here??");
                     $("#authError").html(error.errorMsg);
                 }
 
-                //console.log(error);
+                ////console.log(error);
 
 
                 $("#showOTPModal").on("hide", function () {    // remove the event listeners when the dialog is dismissed
@@ -94,7 +94,7 @@
                 $("#showOTPBtn").click(function () {
 
                     var generateOTP = createSMSOTP();
-                    console.log(generateOTP);
+                    //console.log(generateOTP);
                     if (generateOTP !== undefined) {
                         if (generateOTP.hasOwnProperty("errorMsg")) {
 

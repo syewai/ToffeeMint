@@ -48,8 +48,8 @@ function sendSMS(userId, PIN, OTP, messageInfo, callback) {
         }
     };
     var content = JSON.stringify(contentObj);
-    console.log("content");
-    console.log(content);
+    //console.log("content");
+    //console.log(content);
     $.ajax({
         async: false,
         type: 'POST',

@@ -166,7 +166,7 @@ $.fn.calendar = function(options) {
         }
                 
         function showDaysOfMonth(month, year){
-            //console.log("show (month, year): ", month, " ", year)
+            ////console.log("show (month, year): ", month, " ", year)
             lblTextMonth.text(months[month] + " " + year);
             
             //days of month
