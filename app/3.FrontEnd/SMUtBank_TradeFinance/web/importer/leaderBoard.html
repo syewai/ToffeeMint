@@ -15,7 +15,7 @@
 </head>
 
 <script>
-    getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function(callback) {
+    getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function(callback) {
         totalScore = JSON.stringify(callback.Content.ServiceResponse.ScoreDetails.total_score).substr(1).slice(0, -1);
         $('#tScore').html(totalScore);
     });
@@ -47,7 +47,7 @@
                         <span class="easypiechart pos-abt" data-percent="100" data-line-width="4" data-track-Color="#fff" data-scale-Color="false" data-size="50" data-line-cap='butt' data-animate="2000" data-target="#bugs" data-update="3000"></span>
                     </span>
                     <a class="clear" href="#">
-                        <span class="h3 block m-t-xs"><strong id="bugs">468</strong></span>
+                        <span class="h3 block m-t-xs"><strong id="bugs">-</strong></span>
                         <small class="text-muted text-uc font-bold">Team Score</small>
                     </a>
                 </div>
@@ -110,7 +110,7 @@
             var arrScore = [];
 
 
-            getGameLeaders("kinetic1", "123456", "999999", 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", true, function (callback) {
+            getGameLeaders("kinetic1", "123456", "999999", sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
                 testArr = callback;
             });
             mainArr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main

@@ -1,6 +1,9 @@
+
+//game session stored upon login
+
+
+
 //web service calls for game 
-
-
 function getGameQuestion(userId, PIN, OTP, questionId, callback) {
 
     var headerObj = {
@@ -148,11 +151,13 @@ function getGameLeaders(userId, PIN, OTP, gameId, startTime, endTime, mode, byGr
 }
 
 
-//functions to display on html
-
+//function to get game score upon next button
 function onNext(questionId, timer) {
     var answer;
     var score;
+
+    var getGameItem = sessionStorage.getItem('game');
+    var game = $.parseJSON(getGameItem);
 
     timer.stop();
     var time = timerStart(timer);
@@ -164,8 +169,8 @@ function onNext(questionId, timer) {
 
             if (result === answer) {
                 score = time * 10;
-                setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, questionId, 1, score, "Pretest", 1, function (callback) {
-                    //console.log(callback);
+                setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, questionId, sessionStorage.gameID, score, "Pretest", 1, function (callback) {
+                    console.log(callback);
                 });
             }
 
@@ -173,7 +178,7 @@ function onNext(questionId, timer) {
     }
 }
 
-
+//timer function to calculate score
 function timerStart(timer) {
     timer.start({countdown: true, startValues: {seconds: 59}});
     $('#countdownTimer .values').html(timer.getTimeValues().toString(['seconds']));
@@ -188,6 +193,8 @@ function timerStart(timer) {
 }
 
 
+
+//fill prequiz game modal
 function preQuiz() {
     var gNumberOfQuestions = 25;
     var pagesBeforeQuiz = 1;
@@ -247,25 +254,29 @@ function preQuiz() {
     gAppendString += gNumberOfQuestions + 1 + pagesBeforeQuiz;
     gAppendString += '" data-title="Congratulations! You have completed the Pre-Quiz">';
     gAppendString += "Head on over to the Leaderboard to view your score! Continue with the instructions on your lab sheet."
-    
+
     //display append
     $('#target').append(gAppendString);
 }
 
-function loadTotalScore() {
-    var gNumberOfQuestions = 27;
-    getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function (callback) {
-        var tScore = JSON.stringify(callback.Content.ServiceResponse.ScoreDetails.total_score).substr(1).slice(0, -1);
-        if (tScore === "ul") {
-            tScore = 0;
-        }
-        gAppendString = '<div class="row hide" data-step="';
-        gAppendString += gNumberOfQuestions;
-        gAppendString += '" data-title="Complete">';
-        gAppendString += 'Your Current Score is : ';
-        gAppendString += tScore;
-        gAppendString += '</div></div>';
-    });
 
-    $('#target').append(gAppendString);
-}
+//function to load total score to game modal, outdated
+/* function loadTotalScore() {
+ var gNumberOfQuestions = 27;
+ getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function (callback) {
+ var tScore = JSON.stringify(callback.Content.ServiceResponse.ScoreDetails.total_score).substr(1).slice(0, -1);
+ if (tScore === "ul") {
+ tScore = 0;
+ }
+ gAppendString = '<div class="row hide" data-step="';
+ gAppendString += gNumberOfQuestions;
+ gAppendString += '" data-title="Complete">';
+ gAppendString += 'Your Current Score is : ';
+ gAppendString += tScore;
+ gAppendString += '</div></div>';
+ });
+ 
+ $('#target').append(gAppendString);
+ } */
+
+

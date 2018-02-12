@@ -68,6 +68,7 @@ function createSMSOTP() {
                 sessionStorage.setItem('admin', JSON.stringify(user));
             } else {
                 sessionStorage.setItem('user', JSON.stringify(user));
+
             }
             window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
 
@@ -114,6 +115,8 @@ function authenticateSMSOTP() {
                 sessionStorage.setItem('admin', JSON.stringify(user));
             } else {
                 sessionStorage.setItem('user', JSON.stringify(user));
+                sessionStorage.gameID = 100;
+                sessionStorage.showQuiz = 1;
             }
             window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
 
