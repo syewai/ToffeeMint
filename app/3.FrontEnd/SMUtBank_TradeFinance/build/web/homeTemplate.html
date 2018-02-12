@@ -9,10 +9,10 @@
     //console.log(user.customerID);
     $('#username').html("Welcome back, " + user.userID);
     var usertype = user.usertype;
-    $('#usertype').html(usertype+" (Customer ID - "+user.customerID+")");
-    var colHeader = "importer";
+    $('#usertype').html(convertToDisplay(usertype," ")+" (Customer ID - "+user.customerID+")");
+    var colHeader = "Importer";
     if(usertype === "importer"){
-        colHeader = "exporter";
+        colHeader = "Exporter";
     }
     $('#roleTh').html(colHeader+" account");
     $("#lcDetailsModal").load("../lcDetailsModal.html");

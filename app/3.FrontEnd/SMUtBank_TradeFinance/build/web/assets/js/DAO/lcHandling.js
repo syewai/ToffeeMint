@@ -257,3 +257,7 @@ function deleteLc() {
 
 }
 
+function getAllCountries() {
+    var countries = ["Norway", "UK", "China", "Japan","USA"];
+    return countries;
+}

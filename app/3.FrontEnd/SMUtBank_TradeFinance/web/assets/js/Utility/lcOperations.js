@@ -31,7 +31,7 @@ function applyLcOperation() {
     var exporterAccount = document.getElementById("exporterAcct").value;
     //console.log("exporterAcct");
     //console.log(exporterAccount);
-    var expiryDate = document.getElementById("expiryDate").value;
+    var expiryDate = document.getElementById("shipDate").value;
     var confirmed = "false";
     var revocable = "false";
     var availableBy = "TERM";
@@ -40,13 +40,13 @@ function applyLcOperation() {
     var currency = account.currency; //getCustomerAccounts
     var applicableRules = "none";
     var partialShipments = "false";
-    var shipDestination = document.getElementById("country").value;
-    ;
-    var shipDate = document.getElementById("expiryDate").value; // for testing purpose, Remember to change it!!
-    var shipPeriod = "90 Days";
+    var shipDestination = document.getElementById("shipDestination").value;
+    var shipDate = document.getElementById("shipDate").value; // for testing purpose, Remember to change it!!
+    var shipPeriod = document.getElementById("shipPeriod").value;
     var goodsDescription = document.getElementById("goodsDesc").value;
     var docsRequired = "none";
-    var additionalConditions = document.getElementById("additionalConditions").value;
+    var additionalConditions = "";
+    //document.getElementById("additionalConditions").value;
     var senderToReceiverInfo = "none";
     var mode = "BC";
 
@@ -58,15 +58,22 @@ function applyLcOperation() {
 
         return {errorMsg: "Goods description cannot be blank"};
     }
+    if (!(shipPeriod.length > 0)) {
+
+        return {errorMsg: "Ship period cannot be blank"};
+    }
     if (!(amount.length > 0)) {
 
         return {errorMsg: "Amount cannot be blank"};
     }
-    if (!(expiryDate.length > 0)) {
+    if (!(shipDate.length > 0)) {
 
         return {errorMsg: "Expiry date cannot be blank"};
     }
+    if (!(shipDestination.length > 0)) {
 
+        return {errorMsg: "ship Destination cannot be blank"};
+    }
 
 
 
@@ -185,16 +192,16 @@ function homeOperation() {
             button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
                     + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"
                     + lc + "' data-links='" + links + "' data-status='" + status + "' data-refnum='" + refNum + "'>"
-                    + operation + "</button>";
+                    + convertToDisplay(operation, " ") + "</button>";
 
             if (operation === "modify lc" || operation === "submit bol") {
                 button = "<button type='button'  data-refnum="
                         + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
-                        + operation + "</button>";
+                        + convertToDisplay(operation, " ") + "</button>";
             }
 
             var $button = $(button);
-            $button.addClass(buttonAssigned(status)[0]);
+            $button.addClass(buttonAssigned(operation)[0]);
             var $refNumCell = $('<td></td>');
             $refNumCell.append(refNum);
             $row.append($refNumCell);
@@ -208,8 +215,8 @@ function homeOperation() {
             }
             var $expiryDateCell = $('<td>' + expiryDate + '</td>');
             $row.append($expiryDateCell);
-            var $statusCell = $('<td id="status" class="font-bold">' + status + '</td>');
-            $statusCell.addClass(buttonAssigned(status)[1]);
+            var $statusCell = $('<td id="status" class="font-bold">' + convertToDisplay(status, " ") + '</td>');
+            $statusCell.addClass(buttonAssigned(operation)[1]);
             $row.append($statusCell);
             var $buttonCell = $('<td></td>');
             $buttonCell.append($button);
@@ -775,12 +782,13 @@ function amendLcOps() {
 function totalLcs() {
 
 }
-function buttonAssigned(status) { // this method is to assign button color (by adding class name to the button element) based on status 
+function buttonAssigned(action) { // this method is to assign button color (by adding class name to the button element) based on action
 //var element, name, arr;
 //element = document.getElementById("lcDetails");
     var name = "btn-primary";
     var text = "text-primary";
-    if (status === "rejected" || status === "amendments requested") {
+    //if (status === "rejected" || status === "amendments requested") {
+    if (action !== "view lc") {
         name = "btn-danger";
         text = "text-danger";
     }
@@ -845,8 +853,13 @@ function loadLcDetailsModal() {
             var links = button.data("links")
 
             var fields = button.data('lc') //convert string to json string
-            var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
+            //var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
+            var currency = fields['currency'];
+            var allNecessaryFields = ["goods_description", "importer_ID", "exporter_ID", "creation_datetime", "issuing_bank_id",
+                "ship_period", "amount", "exporter_account_num", "ship_destination", "importer_account_num"];
             var allLcHTML = ""
+
+
             if (links !== "") {
                 var bolLink = "http://bit.ly/2BPThUM" //links["bolLink"]
                 //new QRCode( document.getElementById"), bolLink);
@@ -856,7 +869,7 @@ function loadLcDetailsModal() {
                 //var qrCode = $("<div id='qrcode'></div>")
                 //$('#lcQRCode').qrcode({width: 100,height: 100,text: bolLink});
                 for (var i in links) {
-                    var lcDetailsHTML = "";
+                    var lcDetailsHTML = ""
                     lcDetailsHTML = "<label class='col-lg-4 control-label lc-label' id=''>" + i + "</label>"
                     lcDetailsHTML += "<div class='col-lg-8 font-bold' id='lcValue'><a href='" + links[i] + "' target='_blank'>" + links[i] + "</a></div>"
 
@@ -867,13 +880,33 @@ function loadLcDetailsModal() {
 
             }
             for (var i in fields) {
-                var lcDetailsHTML = "";
-                lcDetailsHTML = "<label class='col-lg-4 control-label lc-label' id=''>" + i + "</label>"
-                lcDetailsHTML += "<div class='col-lg-8 font-bold' id='lcValue'><p id='" + i + "'></p>" + fields[i] + "</div>"
+                for (var j = 0; j < allNecessaryFields.length; j++) {
+                    if (allNecessaryFields[j] === i) {
 
-                allLcHTML += "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>"
-                allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
+                        var field = convertToDisplay(i, "_")
+                        console.log(field)
+                        var fieldValue = fields[i]
+
+                        if (i === "amount") {
+                            fieldValue = currency + " " + fieldValue
+                        }
+
+                        // convert underscorename to display name
+                        //var displayName = convertUnderscoreToDisplay(i);
+                        var lcDetailsHTML = "";
+                        lcDetailsHTML = "<label class='col-lg-4 control-label lc-label' id=''>" + field + "</label>"
+                        lcDetailsHTML += "<div class='col-lg-8 font-bold' id='lcValue'><p id='" + i + "'></p>" + fieldValue + "</div>"
+
+                        allLcHTML += "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>"
+                        allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>"
+
+                    }
+                }
+
             }
+            status = convertToDisplay(status, " ");
+            var statusP = $("<p id='statusValue' class='font-bold h3 font-bold m-t'>" + status + "</p>")
+
 
             var buttonGroup = $("<div class='form-group lc-form'></div>")
             var actionDiv = $("<div class='col-lg-4 ' style='' id='actionDiv'></div>")
@@ -908,6 +941,13 @@ function loadLcDetailsModal() {
             buttonGroup.append(cancelDiv)
             buttonGroup.append(closeDiv)
 
+            var text = "text-primary";
+
+            if (action !== "view lc") {
+
+                text = "text-danger";
+            }
+            statusP.addClass(text)
 
             /*var buttons = ""
              if (usertype === "exporter" && action === "approve lc") {
@@ -924,7 +964,7 @@ function loadLcDetailsModal() {
             // Update the modal's content.
             var modal = $(this)
             modal.find('.modal-body section header div div div p#refNum').text(refNum)
-            modal.find('.modal-body #status').text(status);
+            modal.find('.modal-body #status').html(statusP);
             modal.find('.modal-body #lcDetails').html(allLcHTML)
             modal.find('.modal-body #returnedRefNum').html(refNumHTML)
             modal.find('.modal-footer #lcButtons').html(buttonGroup)
@@ -935,6 +975,7 @@ function loadLcDetailsModal() {
         $("#lcDetailsModal").on('hidden.bs.modal', function (e) {
             $(e.target).removeData('bs.modal');
             $("#qrcode").html("");
+            $("#statusValue").attr("class", "h3 font-bold m-t")
         });
         /*$(".modal").on("hidden.bs.modal", function () {
          $(".modal-body").html("");
@@ -1021,7 +1062,15 @@ function getExporterDetails() {
     return exporterCredentials;
 }
 
+function getAllCountries() {
+    var countries = ["Norway", "UK", "China", "Japan", "USA"];
+    return countries;
+}
 
+function getAllShipPeriods() {
+    var shipPeriods = ["7days", "14days"];
+    return shipPeriods;
+}
 
 
 

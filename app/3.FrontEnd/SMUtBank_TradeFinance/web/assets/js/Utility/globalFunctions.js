@@ -67,10 +67,29 @@ function attributeMapping(underscore) {
         "partialShipments", "shipDestination",
         "shipPeriod", "senderToReceiverInfo",
         "docsRequired"];
+
     var map = {};
-    for (var i=0; i<allNecessaryFields.length; i++){
+    for (var i = 0; i < allNecessaryFields.length; i++) {
         map[allNecessaryFields[i]] = allNecessaryFieldsName[i];
     }
     return map[underscore];
-    
+
 }
+
+function convertToDisplay(underscore,symbol) {
+
+    var arr = underscore.trim().split(symbol);
+    var newWord = "";
+
+    for (var i = 0; i < arr.length; i++) {
+        if (i < 2) {
+            var word = arr[i];
+            word = capitalizeFirstLetter(word);
+            newWord += word + " ";
+        }
+
+    }
+    newWord.trim();
+    return newWord;
+}
+

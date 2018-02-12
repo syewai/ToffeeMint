@@ -94,19 +94,37 @@
                         </header>
                         <div class="panel-body">
                             <div class="form-group">
+                                <div class="">
+                                    <label>Ship Period</label>
+                                    <select id="shipPeriod" name="shipPeriod" class="form-control m-b ">
+                                        <option value="">--Select a ship period below--</option>
+                                        <option value="7days">7 Days</option> 
+                                        <option value="14days">14 Days</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label>Amount</label>
                                 <input id="amount" type="text" class="form-control" data-type="digits" data-required="true" required>
                             </div>
 
                             <div class="form-group">
-                                <label for="expiryDate">Expiry Date</label>
-                                <input type='text' class="form-control form_date" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" data-required="true" required/>
+                                <label for="shipDate">Ship Date</label>
+                                <input type='text' class="form-control form_date" id='shipDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" data-required="true" required/>
                             </div>
-
                             <div class="form-group">
+                                <div class="">
+                                    <label>Ship Destination</label>
+                                    <select name = 'shipDestination' id='shipDestination' class="form-control m-b ">
+                                        <option value="">--Select a ship destination below--</option>
+                                        
+                                    </select>
+                                </div>
+                            </div>
+                            <!--<div class="form-group">
                                 <label>Additional Conditions</label>
                                 <textarea id="additionalConditions"  class="form-control" rows="6" placeholder="Additional Conditions" name="additionalConditions" readonly></textarea>
-                            </div>
+                            </div>-->
                             <!-- <div class="form-group">
                                  <label>Upload Bill of Exchange</label>
                                  <input type="file" class="filestyle" data-icon="false" data-classButton="btn btn-default" data-classInput="form-control inline input-s">
@@ -114,8 +132,8 @@
                             <div id="authError"></div>
                             <footer class="text-center bg-light lter">
                                 <div class='form-group lc-form'>
-                                     <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-primary btn-lg' id='applyLcButton'>Apply LC</button></div>
-                                     <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-default btn-lg' id='cancelButton'>Cancel</button></div>
+                                    <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-primary btn-lg' id='applyLcButton'>Apply LC</button></div>
+                                    <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-default btn-lg' id='cancelButton'>Cancel</button></div>
 
                                     <!--<div class='col-sm-2 '><button type='submit' class='btn btn-success' id='applyLcButton'>Apply LC</button></div>
                                     <div class='col-sm-2 '><button type='button' class='btn btn-default' id='cancelButton'>Cancel</button></div>-->
@@ -129,6 +147,15 @@
         </form>
         <script type="text/javascript">
 
+            //get all countries
+            var allCountries = getAllCountries();
+            var countriesHTML = "";
+            for (var i = 0; i < allCountries.length; i++) {
+                var country = allCountries[i];
+                countriesHTML += "<option value='" + allCountries[i] + "'>" + allCountries[i] + "</option>";
+            }
+            $("#shipDestination").append(countriesHTML);
+ 
             var allExporterDetails = getExporterDetails();
             //console.log(allExporterDetails);
             var optionHTML = "";
@@ -163,11 +190,11 @@
                 $("#bankId").append(bankId);
                 var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
                 $("#loginForm").append(exporterAcctInput);
-                var countries = ["Norway", "UK", "China", "Japan"];
-                var randomCountry = countries[Math.floor(Math.random() * countries.length)];
+                
+                //var randomCountry = countries[Math.floor(Math.random() * countries.length)];
                 //console.log(randomCountry);
-                var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + randomCountry + "' >";
-                $("#loginForm").append(countryInput);
+               //var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + randomCountry + "' >";
+                //$("#loginForm").append(countryInput);
 
             };
 
