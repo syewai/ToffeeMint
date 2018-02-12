@@ -128,7 +128,7 @@ function uploadBol() {
                     //console.log("docs uploaded");
                     //console.log(data);
                     //After ,page will be redirected to homepage.
-                    window.location.replace("/SMUtBank_TradeFinance/"+usertype+"/"+usertype+".html");
+                    window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
                 }
             });
 

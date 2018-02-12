@@ -66,3 +66,13 @@ function sendSMSOTP() {
     //ribOTPAuth.action to authenticate otp
 }
 
+function getQRCode(length,height,bolLink,callback) {
+ 
+    $.ajax({
+        async: false,
+        type: 'GET',
+        url: 'https://chart.googleapis.com/chart?cht=qr&chs='+length+'x'+height+'&chl='+bolLink,
+        success: callback  //fatal error!!
+    });
+    
+}

@@ -49,6 +49,7 @@ and open the template in the editor.
         <button id="button13">uploadBOL</button>
         <button id="button14">update status</button>
         <button id="button15">get bol links</button>
+        <button id="button16">get qr code</button>
         <div id="content"></div>
         <!--<div id="nav">
         </div>
@@ -74,6 +75,7 @@ and open the template in the editor.
         <script src="assets/js/DAO/userHandling.js"></script>
         <script src="assets/js/DAO/statusHandling.js"></script>
         <script src="assets/js/DAO/gameHandling.js"></script>
+         <script src="assets/js/DAO/notificationHandling.js"></script>
         <script src="assets/js/qrcode/qrcode.js"></script>
         <script>
             $("#button1").click(function () {
@@ -213,16 +215,11 @@ and open the template in the editor.
                     //console.log(data);
                 });
             });
-
-            var qrcode = new QRCode(document.getElementById("qrcode"), {
-                text: "http://jindo.dev.naver.com/collie",
-                width: 128,
-                height: 128,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
+            $("#button16").click(function () {
+                getQRCode(100,100, 'http://bit.ly/2BPThUM', function (data) {
+                    console.log(data)
+                });
             });
-
         </script>
 
 

@@ -849,7 +849,12 @@ function loadLcDetailsModal() {
             var allLcHTML = ""
             if (links !== "") {
                 var bolLink = "http://bit.ly/2BPThUM" //links["bolLink"]
-
+                //new QRCode( document.getElementById"), bolLink);
+                if (status === "documents accepted" || status === "goods collected") {
+                    new QRCode(document.getElementById("qrcode"), {width: 150, height: 150, text: bolLink})
+                }
+                //var qrCode = $("<div id='qrcode'></div>")
+                //$('#lcQRCode').qrcode({width: 100,height: 100,text: bolLink});
                 for (var i in links) {
                     var lcDetailsHTML = "";
                     lcDetailsHTML = "<label class='col-lg-4 control-label lc-label' id=''>" + i + "</label>"
@@ -923,9 +928,19 @@ function loadLcDetailsModal() {
             modal.find('.modal-body #lcDetails').html(allLcHTML)
             modal.find('.modal-body #returnedRefNum').html(refNumHTML)
             modal.find('.modal-footer #lcButtons').html(buttonGroup)
+            //modal.find('.modal-body #lcQRCode').html(qrCode)
             buttonClicks()
 
-        })
+        });
+        $("#lcDetailsModal").on('hidden.bs.modal', function (e) {
+            $(e.target).removeData('bs.modal');
+            $("#qrcode").html("");
+        });
+        /*$(".modal").on("hidden.bs.modal", function () {
+         $(".modal-body").html("");
+         $(".modal-footer").html("");
+         });*/
+
     })
 }
 
@@ -959,6 +974,18 @@ function buttonClicks() {
         var refNum = $("#returnedRef").attr("value");
         //console.log(refNum);
         var status = "documents accepted";
+        updateStatus(userId, PIN, OTP, refNum, status, "", function (data) {
+            //console.log(data);
+            var globalErrorID = data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
+            if (globalErrorID === "010000") {
+                window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
+            }
+        });
+    });
+    $("#collectGoods").click(function () {
+        var refNum = $("#returnedRef").attr("value");
+        //console.log(refNum);
+        var status = "goods collected";
         updateStatus(userId, PIN, OTP, refNum, status, "", function (data) {
             //console.log(data);
             var globalErrorID = data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
