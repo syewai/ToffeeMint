@@ -50,6 +50,7 @@ and open the template in the editor.
         <button id="button14">update status</button>
         <button id="button15">get bol links</button>
         <button id="button16">get qr code</button>
+        <button id="button17">leaders</button>
         <div id="content"></div>
         <!--<div id="nav">
         </div>
@@ -153,14 +154,14 @@ and open the template in the editor.
             });
 
             $("#button8").click(function () {
-                setQuestionScore("kinetic1", "123456", "999999", 1, 1, 10, "Pretest", 1, function (callback) {
-                    //console.log(callback);
+                setQuestionScore("kinetic1", "123456", "999999", 2, 103, 10, "Pretest", 1, function (callback) {
+                    console.log(callback);
                 });
             });
 
             $("#button9").click(function () {
-                getGameScore("kinetic1", "123456", "999999", 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function (callback) {
-                    //console.log(callback);
+                getGameScore("kinetic1", "123456", "999999", 103, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function (callback) {
+                    console.log(callback);
                 });
             });
 
@@ -220,6 +221,13 @@ and open the template in the editor.
                     console.log(data)
                 });
             });
+            
+            $("#button17").click(function () {
+                getGameLeaders("kinetic1", "123456", "999999", 103, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
+                    console.log(callback)
+                });
+            });
+            
         </script>
 
 
