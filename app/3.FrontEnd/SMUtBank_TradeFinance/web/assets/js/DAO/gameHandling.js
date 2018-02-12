@@ -152,28 +152,27 @@ function getGameLeaders(userId, PIN, OTP, gameId, startTime, endTime, mode, byGr
 
 
 //function to get game score upon next button
-function onNext(questionId, timer) {
+function onNext(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
     var score;
 
-    var getGameItem = sessionStorage.getItem('game');
-    var game = $.parseJSON(getGameItem);
-
     timer.stop();
     var time = timerStart(timer);
-
-    result = $("input[name=" + questionId + "]:checked").val();
-    if (questionId >= 1) {
-        getGameAnswer("", "", "", questionId, function (callback) {
+    
+    if (counter >= pagesBeforeQuiz && counter <= chosenQuestions.length) {
+        var questionID = counter - pagesBeforeQuiz;
+       
+        result = $("input[name=" + counter + "]:checked").val();
+       
+        getGameAnswer("", "", "", chosenQuestions[questionID], function (callback) {
             answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
-
+            console.log(answer);
             if (result === answer) {
                 score = time * 10;
-                setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, questionId, sessionStorage.gameID, score, "Pretest", 1, function (callback) {
-                    console.log(callback);
+                setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function (callback) {
+                    
                 });
             }
-
         });
     }
 }
@@ -195,15 +194,14 @@ function timerStart(timer) {
 
 
 //fill prequiz game modal
-function preQuiz() {
-    var gNumberOfQuestions = 25;
-    var pagesBeforeQuiz = 1;
+function preQuiz(chosenQuestions, pagesBeforeQuiz) {
     var gQuestion;
     var gChoices;
     var gAppendString = "";
 
-    for (var i = 1; i <= gNumberOfQuestions; i++) {
-        getGameQuestion("", "", "", i, function (callback) {
+    var gNumberOfQuestions = chosenQuestions.length;
+    for (var i = 0; i < gNumberOfQuestions; i++) {
+        getGameQuestion("", "", "", chosenQuestions[i], function (callback) {
 
             //get respective data from json string
             gQuestion = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
@@ -211,7 +209,7 @@ function preQuiz() {
 
             //append to div
             gAppendString += '<div class="row hide" data-step="';
-            gAppendString += Number(i) + pagesBeforeQuiz;
+            gAppendString += Number(i) + pagesBeforeQuiz + 1;
             gAppendString += '" data-title="Pre-Quiz">';
             gAppendString += ('<div id="countdownTimer"><div class="values"></div></div>');
             gAppendString += gQuestion;
@@ -237,7 +235,7 @@ function preQuiz() {
                 //append to div
                 if (option !== undefined) {
                     gAppendString += '<input type="radio" name="';
-                    gAppendString += (i);
+                    gAppendString += (i) + 1;
                     gAppendString += '" value="';
                     gAppendString += option;
                     gAppendString += '">';

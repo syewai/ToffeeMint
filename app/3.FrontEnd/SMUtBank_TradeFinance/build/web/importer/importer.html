@@ -76,13 +76,9 @@
 
         <script>
             $(document).ready(function () {
-
                 $("#header").load("../header.html");
                 $('#nav-bar').load("navBar.html");
-                
-                //console.log("GAMEID : " + sessionStorage.gameID);
-                console.log("SHOWQUIZ: " + sessionStorage.showQuiz);
-                
+                                
                 if (sessionStorage.showQuiz == 1) {
                     $("#myModal").load("../gameModal.html", function () {
                         $('#myModal').modalSteps();

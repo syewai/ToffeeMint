@@ -115,7 +115,10 @@ function authenticateSMSOTP() {
                 sessionStorage.setItem('admin', JSON.stringify(user));
             } else {
                 sessionStorage.setItem('user', JSON.stringify(user));
-                sessionStorage.gameID = 100;
+                sessionStorage.userID = userId;
+                sessionStorage.PIN = PIN;
+                sessionStorage.OTP = OTP;
+                sessionStorage.gameID = 104;
                 sessionStorage.showQuiz = 1;
             }
             window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
