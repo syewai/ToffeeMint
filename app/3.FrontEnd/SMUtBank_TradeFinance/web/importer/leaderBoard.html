@@ -15,7 +15,7 @@
 </head>
 
 <script>
-    getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function(callback) {
+    getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function(callback) {
         totalScore = JSON.stringify(callback.Content.ServiceResponse.ScoreDetails.total_score).substr(1).slice(0, -1);
         $('#tScore').html(totalScore);
     });
@@ -47,7 +47,7 @@
                         <span class="easypiechart pos-abt" data-percent="100" data-line-width="4" data-track-Color="#fff" data-scale-Color="false" data-size="50" data-line-cap='butt' data-animate="2000" data-target="#bugs" data-update="3000"></span>
                     </span>
                     <a class="clear" href="#">
-                        <span class="h3 block m-t-xs"><strong id="bugs">-</strong></span>
+                        <span class="h3 block m-t-xs"><strong id="bugs">468</strong></span>
                         <small class="text-muted text-uc font-bold">Team Score</small>
                     </a>
                 </div>
@@ -61,76 +61,35 @@
         </div>
 
         <script>
-            function xmlreq() {
-
-            }
-            var yourGlobalVariable;
-            var nameArr = [];
-            var iScoreArr = [];
-            var tScoreArr = [];
-            var name;
-            var array;
-            var data;
-            var text;
-
             $(document).ready(function () {
 
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState == 4) {
-                        data = xhr.response;
-//                        var num = parseInt(data); //convert String to Number
-//                        //console.log(typeof(data));
-//                        //console.log(data);
-                        array = data.split(",");
-//                        //console.log(typeof(array));
-//                        //console.log(array);
-
-                        for (i = 0; i <= array.length - 3; i += 3) {
-                            nameArr.push(array[i]);
-                            iScoreArr.push(array[i + 1]);
-                            tScoreArr.push(array[i + 2]);
-
-                        }
-//                        //console.log(nameArr);
-//                        //console.log(iScoreArr);
-//                        //console.log(tScoreArr);
                     }
                     yourGlobalVariable = data;
                     call2Bar();
-//                    callBar();
                 }
-                xhr.open('GET', 'scoreServlet', true);
+                xhr.open('GET', true);
                 xhr.send(null);
             });
-
-
-            var mainArr;
-            var arrUserId = [];
-            var arrScore = [];
-
-
-            getGameLeaders("kinetic1", "123456", "999999", sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
+            
+            getGameLeaders("kinetic1", "123456", "999999", 1, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
                 testArr = callback;
             });
             mainArr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
-            //console.log(mainArr);
-            //console.log(mainArr.length);
-
-//            arr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'][0]['user_Id'];
+            console.log(mainArr);
+            console.log(mainArr.length);
 
             for (i = 0; i < mainArr.length; i++) {
-//                arr[i] = mainArr[i];
                 arrUserId[i] = mainArr[i]['user_Id'];
                 arrScore[i] = mainArr[i]['score'];
-//                array1.push(arr);
-//                //console.log(arr);
-//                //console.log(arr[0]['score']);
-//                //console.log(arr[i]['user_Id']);
+//                console.log(arr[0]['score']);
+//                console.log(arr[i]['user_Id']);
             }
 
-            //console.log(arrUserId);
-            //console.log(arrScore);
+            console.log(arrUserId);
+            console.log(arrScore);
 
             function call2Bar() {
                 var ctx = document.getElementById("myChart");
@@ -190,51 +149,6 @@
                                 }],
                             yAxes: [{
                                     stacked: true,
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
-                        }
-                    }
-                });
-            }
-
-
-
-
-            function callBar() {
-                var ctx = document.getElementById("myChart");
-                var myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-//            labels: ["2013", "2014", "2015", "2016", "2017", "2018"],
-
-                        labels: nameArr,
-                        datasets: [{
-                                label: nameArr.length + ' Students Total Score',
-                                data: iScoreArr,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255,99,132,1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
                                     ticks: {
                                         beginAtZero: true
                                     }
