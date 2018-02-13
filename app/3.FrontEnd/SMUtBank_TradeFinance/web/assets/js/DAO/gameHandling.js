@@ -152,7 +152,7 @@ function getGameLeaders(userId, PIN, OTP, gameId, startTime, endTime, mode, byGr
 
 
 //function to get game score upon next button
-function onNext(counter, pagesBeforeQuiz, chosenQuestions, timer) {
+function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
     var score;
 
@@ -177,6 +177,32 @@ function onNext(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     }
 }
 
+function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
+    var answer;
+    var score;
+
+    timer.stop();
+    var time = timerStart(timer);
+    
+    if (counter >= pagesBeforeQuiz && counter <= chosenQuestions.length) {
+        var questionID = counter - pagesBeforeQuiz;
+       
+        result = $("input[name=" + counter + "]:checked").val();
+       
+        getGameAnswer("", "", "", chosenQuestions[questionID], function (callback) {
+            answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
+            console.log(answer);
+            if (result === answer) {
+                score = time * 10;
+                setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Posttest", 1, function (callback) {
+                    
+                });
+            }
+        });
+    }
+}
+
+
 //timer function to calculate score
 function timerStart(timer) {
     timer.start({countdown: true, startValues: {seconds: 59}});
@@ -195,6 +221,70 @@ function timerStart(timer) {
 
 //fill prequiz game modal
 function preQuiz(chosenQuestions, pagesBeforeQuiz) {
+    var gQuestion;
+    var gChoices;
+    var gAppendString = "";
+
+    var gNumberOfQuestions = chosenQuestions.length;
+    for (var i = 0; i < gNumberOfQuestions; i++) {
+        getGameQuestion("", "", "", chosenQuestions[i], function (callback) {
+
+            //get respective data from json string
+            gQuestion = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
+            gChoices = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.choices);
+
+            //append to div
+            gAppendString += '<div class="row hide" data-step="';
+            gAppendString += Number(i) + pagesBeforeQuiz + 1;
+            gAppendString += '" data-title="Pre-Quiz">';
+            gAppendString += ('<div id="countdownTimer"><div class="values"></div></div>');
+            gAppendString += gQuestion;
+            gAppendString += '<div class="btn-group" data-toggle="buttons">';
+
+            //split choices
+            var options = gChoices.split("&&");
+
+            //add labels to choices
+            var labels = ["a)", "b)", "c)", "d)", "e)"];
+
+            //iterate through all choices to display
+            for (var j = 0; j < options.length; j++) {
+                var option = options[j];
+                var label = labels[j];
+                if (j === 0) {
+                    option = option.substr(1);
+                } else if (j === options.length - 1) {
+                    option = option.slice(0, -1);
+                }
+                var answer = label + " " + option;
+                
+                //append to div
+                if (option !== undefined) {
+                    gAppendString += '<label class="btn btn-primary active">';
+                    gAppendString += '<input type="radio" name="';
+                    gAppendString += (i) + 1;
+                    gAppendString += '" value="';
+                    gAppendString += option;
+                    gAppendString += '">';
+                    gAppendString += answer;
+                    gAppendString += '<br>';
+
+                }
+            }
+            //append to div close tag
+            gAppendString += '</div></div></div>';
+        });
+    }
+    gAppendString += '<div class="row hide" data-step="';
+    gAppendString += gNumberOfQuestions + 1 + pagesBeforeQuiz;
+    gAppendString += '" data-title="Congratulations! You have completed the Pre-Quiz">';
+    gAppendString += "Continue with the instructions on your lab sheet."
+
+    //display append
+    $('#target').append(gAppendString);
+}
+
+function postQuiz(chosenQuestions, pagesBeforeQuiz) {
     var gQuestion;
     var gChoices;
     var gAppendString = "";
@@ -250,13 +340,12 @@ function preQuiz(chosenQuestions, pagesBeforeQuiz) {
     }
     gAppendString += '<div class="row hide" data-step="';
     gAppendString += gNumberOfQuestions + 1 + pagesBeforeQuiz;
-    gAppendString += '" data-title="Congratulations! You have completed the Pre-Quiz">';
-    gAppendString += "Head on over to the Leaderboard to view your score! Continue with the instructions on your lab sheet."
+    gAppendString += '" data-title="The End">';
+    gAppendString += "We have come to the end of our UAT. Thank you for taking your time out. We hope you learnt something new today.  "
 
     //display append
     $('#target').append(gAppendString);
 }
-
 
 //function to load total score to game modal, outdated
 /* function loadTotalScore() {

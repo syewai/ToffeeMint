@@ -186,8 +186,8 @@
 
                     }
                 }
-                $("#accountId").append(accountId);
-                $("#bankId").append(bankId);
+                $("#accountId").html(accountId);
+                $("#bankId").html(bankId);
                 var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
                 $("#loginForm").append(exporterAcctInput);
                 

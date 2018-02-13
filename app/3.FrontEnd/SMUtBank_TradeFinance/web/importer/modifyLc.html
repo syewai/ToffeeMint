@@ -40,31 +40,43 @@
                         </header>
                         <div class="panel-body">
                             <div class="form-group">
+                                <div class="">
+                                    <label>Ship Period</label>
+                                    <select id="shipPeriod" name="shipPeriod" class="form-control m-b ">
+                                        <option value="">--Select a ship period below--</option>
+                                        <option value="7days">7 Days</option> 
+                                        <option value="14days">14 Days</option>
+                                    </select>
+                                </div>
+                                <div id="shipPeriod-p"></div>
+                            </div>
+                            <div class="form-group">
                                 <label>Amount</label>
                                 <input id="amount" type="text" class="form-control" data-type="digits" >
-                            <div id="amount-p"></div>
+                                <div id="amount-p"></div>
                             </div>
 
                             <div class="form-group">
-                                <label for="expiryDate">Expiry Date</label>
+                                <label for="expiryDate">Ship Date</label>
                                 <input type='text' class="form-control form_date" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" >
+                                <div id="expiryDate-p"></div>
                             </div>
-                            <div id="expiryDate-p"></div>
-                            <div class="form-group">
+                            <!--<div class="form-group">
                                 <label>Additional Conditions</label>
                                 <textarea id="additionalConditions"  class="form-control" rows="6" placeholder="Additional Conditions" name="additonalConditions" readonly></textarea>
                             </div>
-                            <div id="additionalConditions-p"></div>
+                            <div id="additionalConditions-p"></div>-->
                             <!--<div class="form-group">
                                 <label>Upload Bill of Exchange</label>
                                 <input type="file" class="filestyle" data-icon="false" data-classButton="btn btn-default" data-classInput="form-control inline input-s">
                             </div>-->
                             <div id="authError"></div>
-                               <footer class="text-center bg-light lter">
+                            <footer class="text-center bg-light lter">
                                 <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-primary btn-lg' id="modifyLcButton">Modify</button></div>
                                 <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-default btn-lg' id='cancelButton'>Cancel</button></div>
                             </footer>
                         </div>
+
                     </section>
                 </div>
             </div>

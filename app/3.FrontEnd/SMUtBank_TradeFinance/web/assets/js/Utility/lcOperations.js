@@ -134,11 +134,13 @@ function homeOperation() {
             //console.log(refNumberList);
         }
     }
-    var numOfRows = 5;
+    console.log(refNumberList);
+   
+    var numOfRows = refNumberList.length;
     if (refNumberList.length > 0) {
+        console.log("HERE");
 
-
-        for (var i = 0; i < numOfRows; i++) {
+        for (var i = 0; i < numOfRows && i < 5; i++) {
 //call web service to get lc details for each ref number 
             var refNum = refNumberList[i];
             var lc = {};
@@ -536,6 +538,7 @@ function modifyLcOps() {
     var originalAmount = "";
     var originalDesc = "";
     var originalExpiryDate = "";
+    var originalShipPeriod = "";
     getLcAmendments(userId, PIN, OTP, refNum, function (amendments) {//calling this method from  assets/js/DAO/lcHandling.js
         var globalErrorId = amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
         //console.log(globalErrorId);
@@ -554,6 +557,7 @@ function modifyLcOps() {
             //availableBy = fields.available_by;
             //termDays = fields.term_days;
             originalAmount = fields.amount;
+            originalShipPeriod = fields.shipPeriod;
             //currency = fields.currency; //no change
             //applicableRules = fields.applicable_rules;
             //partialShipments = fields.partial_shipments;
@@ -564,9 +568,9 @@ function modifyLcOps() {
             //docsRequired = fields.docs_required;
             //additionalConditions = fields.additional_conditions;
             //senderToReceiverInfo = fields.sender_to_receiver_info;
-            $("#goodsDescription").attr("placeholder", goodsDescription);
-            $("#amount").attr("placeholder", amount);
-            $("#expiryDate").attr("placeholder", expiryDate);
+            /*$("#goodsDescription").attr("placeholder", goodsDescription);
+             $("#amount").attr("placeholder", amount);
+             $("#expiryDate").attr("placeholder", expiryDate);*/
         }
     });
 
@@ -590,6 +594,10 @@ function modifyLcOps() {
     }
 
     $("#modifyLcButton").click(function () {
+        shipPeriod = document.getElementById("shipPeriod").value;
+        if (shipPeriod === "") {
+            shipPeriod = document.getElementById("shipPeriod").placeholder;
+        }
         expiryDate = document.getElementById("expiryDate").value;
         if (expiryDate === "") {
             expiryDate = document.getElementById("expiryDate").placeholder;
@@ -709,11 +717,15 @@ function amendLcOps() {
             $("#goodsDescription").attr("placeholder", goodsDescription);
             $("#amount").attr("placeholder", amount);
             $("#expiryDate").attr("placeholder", expiryDate);
+            $("#shipPeriod").attr("placeholder", shipPeriod);
+
         }
     });
     $("#amendLcButton").click(function () {
-
-
+        shipPeriod = document.getElementById("shipPeriod").value;
+        if (shipPeriod === "") {
+            shipPeriod = document.getElementById("shipPeriod").placeholder;
+        }
         expiryDate = document.getElementById("expiryDate").value;
         if (expiryDate === "") {
             expiryDate = document.getElementById("expiryDate").placeholder;
@@ -1045,9 +1057,13 @@ function getExporterDetails() {
 
     var allUserCredentials = [
         {userId: "toffeemint1", customerId: "0000000914", bankId: "1", accountId: "0000002473"},
-        {userId: "toffeemint2", customerId: "0000000915", bankId: "1", accountId: "0000002480"}
-        /* {userId: "toffeemint3", customerId: "0000000915", bankId: "", accountId: ""},
-         {userId: "toffeemint4", customerId: "0000000915", bankId: "", accountId: ""}*/
+        {userId: "toffeemint2", customerId: "0000000915", bankId: "1", accountId: "0000002480"},
+        {userId: "toffeemint4", customerId: "0000000918", bankId: "1", accountId: "0000002482"},
+        {userId: "toffeemint5", customerId: "0000000919", bankId: "1", accountId: "0000002483"},
+        {userId: "toffeemint6", customerId: "0000000920", bankId: "1", accountId: "0000002484"},
+        {userId: "toffeemint7", customerId: "0000000924", bankId: "1", accountId: "0000002486"},
+        {userId: "toffeemint8", customerId: "0000000921", bankId: "1", accountId: "0000002485"},
+        {userId: "toffeemint9", customerId: "0000000925", bankId: "1", accountId: "0000002487"}
     ];
     //console.log(allUserCredentials);
     var exporterCredentials = [];

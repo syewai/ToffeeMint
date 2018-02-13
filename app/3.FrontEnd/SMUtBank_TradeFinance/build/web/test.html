@@ -81,7 +81,7 @@ and open the template in the editor.
         <script>
             $("#button1").click(function () {
                 var account
-                getCustomerAccounts("toffeemint2", "123456", "999999", function (accounts) { //get currency and importer account
+                getCustomerAccounts("toffeemint4", "123456", "999999", function (accounts) { //get currency and importer account
 
                     account = accounts.Content.ServiceResponse.AccountList.account[0];
                     if (account == null) {
@@ -95,10 +95,10 @@ and open the template in the editor.
 
             $("#button2").click(function () {
                 var account;
-                getCustomerDeatils("toffeemint1", "929780", "999999", function (accounts) { //get currency and importer account
+                getCustomerDeatils("toffeemint4", "123456", "999999", function (accounts) { //get currency and importer account
 
 
-                    //console.log(account);
+                    console.log(account);
 
                 });
 
