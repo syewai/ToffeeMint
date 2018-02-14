@@ -5,6 +5,7 @@
  */
 var apiUrl = getApiUrl();
 var apiUrlBC = getApiUrlBC();
+var apiEvents = getApiEvents();
 function uploadBOL(userId, PIN, OTP, refNum, billOfLadingURL, callback) {//importer
 
     var headerObj = {

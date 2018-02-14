@@ -28,21 +28,24 @@
                                 <label>Goods Description</label>
                                 <input id="goodsDescription"  type="text"  class="form-control goodsDesc" name="goodsDescription" readonly>
                             </div>
-
+                            <div class="form-group">
+                                <label>Ship Period</label>
+                                <input id="shipPeriod" type="text" class="form-control"  readonly>
+                            </div>
                             <div class="form-group">
                                 <label>Amount</label>
                                 <input id="amount" type="text" class="form-control" data-type="digits" readonly>
                             </div>
 
                             <div class="form-group">
-                                <label for="expiryDate">Expiry Date</label>
+                                <label for="expiryDate">Ship Date</label>
                                 <input type='text' class="form-control form_date" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" readonly/>
                             </div>
 
-                            <div class="form-group">
+                            <!--<div class="form-group">
                                 <label>Additional Conditions</label>
                                 <textarea id="additionalConditions"  class="form-control" rows="6" placeholder="Additional Conditions" name="additonalConditions" readonly></textarea>
-                            </div>
+                            </div>-->
                             <!--<div class="form-group">
                                 <label>Upload Bill of Exchange</label>
                                 <input type="file" class="filestyle" data-icon="false" data-classButton="btn btn-default" data-classInput="form-control inline input-s">
@@ -53,7 +56,7 @@
                     </section>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-sm-6">
                     <section class="panel panel-default">
@@ -66,7 +69,7 @@
                                 <input id="bolLink"  type="text"  class="form-control" name="bolLink" />
                                 <!--<a id="bolLink" target="_blank"></a>-->
                             </div>
-                             <div class="form-group">
+                            <div class="form-group">
                                 <label for="cooLink">Cert of Origin</label>
                                 <input id="cooLink"  type="text"  class="form-control" name="cooLink" />
                                 <!--<a id="cooLink" target="_blank"></a>-->
@@ -88,7 +91,7 @@
                     </section>
                 </div>
             </div>
-            
+
         </form>
 
 

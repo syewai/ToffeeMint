@@ -42,7 +42,10 @@ function applyLcOperation() {
     var partialShipments = "false";
     var shipDestination = document.getElementById("shipDestination").value;
     var shipDate = document.getElementById("shipDate").value; // for testing purpose, Remember to change it!!
+
+
     var shipPeriod = document.getElementById("shipPeriod").value;
+    console.log(shipDate);
     var goodsDescription = document.getElementById("goodsDesc").value;
     var docsRequired = "none";
     var additionalConditions = "";
@@ -61,6 +64,11 @@ function applyLcOperation() {
     if (!(shipPeriod.length > 0)) {
 
         return {errorMsg: "Ship period cannot be blank"};
+    } else {
+        if (moment(shipDate, 'YYYY-MM-DD', true).format() === "Invalid date") {
+            return {errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"};
+        }
+
     }
     if (!(amount.length > 0)) {
 
@@ -68,8 +76,9 @@ function applyLcOperation() {
     }
     if (!(shipDate.length > 0)) {
 
-        return {errorMsg: "Expiry date cannot be blank"};
+        return {errorMsg: "Ship date cannot be blank"};
     }
+
     if (!(shipDestination.length > 0)) {
 
         return {errorMsg: "ship Destination cannot be blank"};
@@ -135,7 +144,7 @@ function homeOperation() {
         }
     }
     console.log(refNumberList);
-   
+
     var numOfRows = refNumberList.length;
     if (refNumberList.length > 0) {
         console.log("HERE");
@@ -164,6 +173,14 @@ function homeOperation() {
                 }
 
             });
+            lc = JSON.stringify(lc);
+
+            var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
+            var operation = operations[0];
+            var url = operations[1];
+            var $row = $('<tr></tr>');
+            var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
+
             var links = "";
             getBOLUrl(userId, PIN, OTP, refNum, function (data) {
                 var globalErrorId = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
@@ -172,28 +189,23 @@ function homeOperation() {
                 }
 
             });
-            //console.log(links);
-            /*links = JSON.parse(links);
-             links = JSON.stringify(links);
-             */
-            lc = JSON.stringify(lc);
-//        //console.log(lc);
-            //console.log("test");
-            //console.log(status);
-            //get operation of the status
-            var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
+            //get bc receipt
+            var bcReceipt = "";
+            getBlockchainReceipt(userId, PIN, OTP, refNum, function (data) {
+                if (data != null) {
+                    bcReceipt = data[0][1];
+                }
+            });
+            /*if (bcReceipt !== "") {
+             bcReceipt = JSON.parse(bcReceipt);
+             //$("#json").html(JSON.stringify(bcReceipt, undefined, 2));
+             //$("#content").html(bcReceipt);
+             }*/
 
-            var operation = operations[0];
-            var url = operations[1];
-            var $row = $('<tr></tr>');
-            var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
-            //var $x = $("<a type='button' id='lcDetails' class='btn btn-s-md' href='" + href + "'>" + operation + "</a> ");
             var button = "";
-            //console.log(operation);
-
             button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
                     + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"
-                    + lc + "' data-links='" + links + "' data-status='" + status + "' data-refnum='" + refNum + "'>"
+                    + lc + "' data-bcreceipt='" + bcReceipt + "' data-links='" + links + "' data-status='" + status + "' data-refnum='" + refNum + "'>"
                     + convertToDisplay(operation, " ") + "</button>";
 
             if (operation === "modify lc" || operation === "submit bol") {
@@ -579,6 +591,10 @@ function modifyLcOps() {
             var fieldCamel = attributeMapping(field);
             var originalValue = originalLc[field];
             var amendedValue = amendmentDetails[field];
+            if (fieldCamel === "shipPeriod") {
+                $('#shipPeriod option[value="' + shipPeriod + '"]').insertBefore('#shipPeriod option[value=""]');
+                $("#shipPeriod").val($("#shipPeriod option:first").val());
+            }
             $("#" + fieldCamel).attr("placeholder", originalValue);
             //console.log(fieldCamel);
             var suggestion = "";
@@ -601,6 +617,10 @@ function modifyLcOps() {
         expiryDate = document.getElementById("expiryDate").value;
         if (expiryDate === "") {
             expiryDate = document.getElementById("expiryDate").placeholder;
+        } else {
+            if (moment(expiryDate, 'YYYY-MM-DD', true).format() === "Invalid date") {
+                return {errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"};
+            }
         }
         amount = document.getElementById("amount").value;
         if (amount === "") {
@@ -718,6 +738,8 @@ function amendLcOps() {
             $("#amount").attr("placeholder", amount);
             $("#expiryDate").attr("placeholder", expiryDate);
             $("#shipPeriod").attr("placeholder", shipPeriod);
+            $('#shipPeriod option[value="' + shipPeriod + '"]').insertBefore('#shipPeriod option[value=""]');
+            $("#shipPeriod").val($("#shipPeriod option:first").val());
 
         }
     });
@@ -727,8 +749,12 @@ function amendLcOps() {
             shipPeriod = document.getElementById("shipPeriod").placeholder;
         }
         expiryDate = document.getElementById("expiryDate").value;
-        if (expiryDate === "") {
+         if (expiryDate === "") {
             expiryDate = document.getElementById("expiryDate").placeholder;
+        } else {
+            if (moment(expiryDate, 'YYYY-MM-DD', true).format() === "Invalid date") {
+                return {errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"};
+            }
         }
         amount = document.getElementById("amount").value;
         if (amount === "") {
@@ -826,8 +852,8 @@ function operationMatch(status, usertype) {
 
     } else if (usertype === "exporter") {
         if (status.toLowerCase() === "pending") {
-            url = "approveLc";
-            operation = "approve lc";
+            url = "reviewLc";
+            operation = "review lc";
         } else if (status.toLowerCase() === "acknowledged") {
             //url = "shipGoods";
             //operation = "ship goods";
@@ -863,7 +889,7 @@ function loadLcDetailsModal() {
             var status = button.data('status')
             var action = button.data('action')
             var links = button.data("links")
-
+            var bcReceipt = button.data('bcreceipt')
             var fields = button.data('lc') //convert string to json string
             //var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
             var currency = fields['currency'];
@@ -979,6 +1005,7 @@ function loadLcDetailsModal() {
             modal.find('.modal-body #status').html(statusP);
             modal.find('.modal-body #lcDetails').html(allLcHTML)
             modal.find('.modal-body #returnedRefNum').html(refNumHTML)
+            modal.find('.modal-body #json').html(JSON.stringify(bcReceipt, undefined, 2))
             modal.find('.modal-footer #lcButtons').html(buttonGroup)
             //modal.find('.modal-body #lcQRCode').html(qrCode)
             buttonClicks()
@@ -996,7 +1023,6 @@ function loadLcDetailsModal() {
 
     })
 }
-
 function buttonClicks() {
     $("#approveButton").click(function () {
 

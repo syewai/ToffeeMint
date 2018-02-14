@@ -51,7 +51,9 @@ and open the template in the editor.
         <button id="button15">get bol links</button>
         <button id="button16">get qr code</button>
         <button id="button17">leaders</button>
+        <button id="button18">Get created contract</button>
         <div id="content"></div>
+        <pre id="json"></pre>
         <!--<div id="nav">
         </div>
         <div id="content"></div>
@@ -76,7 +78,7 @@ and open the template in the editor.
         <script src="assets/js/DAO/userHandling.js"></script>
         <script src="assets/js/DAO/statusHandling.js"></script>
         <script src="assets/js/DAO/gameHandling.js"></script>
-         <script src="assets/js/DAO/notificationHandling.js"></script>
+        <script src="assets/js/DAO/notificationHandling.js"></script>
         <script src="assets/js/qrcode/qrcode.js"></script>
         <script>
             $("#button1").click(function () {
@@ -217,17 +219,32 @@ and open the template in the editor.
                 });
             });
             $("#button16").click(function () {
-                getQRCode(100,100, 'http://bit.ly/2BPThUM', function (data) {
+                getQRCode(100, 100, 'http://bit.ly/2BPThUM', function (data) {
                     console.log(data)
                 });
             });
-            
+
             $("#button17").click(function () {
                 getGameLeaders("kinetic1", "123456", "999999", 103, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
                     console.log(callback)
                 });
             });
-            
+            $("#button18").click(function () {
+                var bcReceipt = ""
+                getBlockchainReceipt("kinetic1", "123456", "999999", "0000001450", function (data) {
+                    if (data !== null) {
+                        bcReceipt = data[0][1]
+                    }
+                });
+                if (bcReceipt !== "") {
+                    bcReceipt = JSON.parse(bcReceipt);
+                    $("#json").html(JSON.stringify(bcReceipt, undefined, 2));
+                    //$("#content").html(bcReceipt);
+                }
+            });
+
+
+
         </script>
 
 

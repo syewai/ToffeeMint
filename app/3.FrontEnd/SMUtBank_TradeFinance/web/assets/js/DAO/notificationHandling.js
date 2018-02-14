@@ -5,6 +5,7 @@
  */
 var apiUrl = getApiUrl();
 var apiUrlBC = getApiUrlBC();
+var apiEvents = getApiEvents();
 var defaultOTP = "999999";
 
 function getPhoneNumber(userId, PIN, OTP) {

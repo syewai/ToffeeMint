@@ -300,7 +300,7 @@ function postQuiz(chosenQuestions, pagesBeforeQuiz) {
             //append to div
             gAppendString += '<div class="row hide" data-step="';
             gAppendString += Number(i) + pagesBeforeQuiz + 1;
-            gAppendString += '" data-title="Pre-Quiz">';
+            gAppendString += '" data-title="Post-Quiz">';
             gAppendString += ('<div id="countdownTimer"><div class="values"></div></div>');
             gAppendString += gQuestion;
             gAppendString += '<form>';

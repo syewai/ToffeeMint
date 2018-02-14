@@ -5,7 +5,7 @@
 //calling getApiUrl() and getApiUrlBC() from assets/js/DAO/apiUrl.js
 var apiUrl = getApiUrl();
 var apiUrlBC = getApiUrlBC();
-
+var apiEvents = getApiEvents();
 function LetterOfCredits(importerAccount,
         exporterAccount,
         expiryDate,
@@ -260,4 +260,17 @@ function deleteLc() {
 function getAllCountries() {
     var countries = ["Norway", "UK", "China", "Japan","USA"];
     return countries;
+}
+
+function getBlockchainReceipt(userId, PIN, OTP,refNum,callback) {
+  
+    $.ajax({
+        async: false,
+        type: 'GET',
+        url: apiEvents+'LCCreated?refNum='+refNum,
+        dataType: 'json',
+        success: callback
+
+    });
+
 }

@@ -19,7 +19,7 @@
                             </div>
                             <label class="col-lg-2 control-label">Status </label>
                             <div class="col-lg-4 lc-value" id="status">
-                               
+
                             </div>                             
                         </div>
                     </div>
@@ -33,7 +33,18 @@
                     <div class="bs-example form-horizontal" id="lcDetails">
 
                     </div>
-                    
+                    <div class="bs-example form-horizontal" id="lcReceipt">
+                        <div class='form-group lc-form'>
+                            <label class='col-lg-4 control-label lc-label'>Blockchain Receipt</label>
+                        </div>
+                        <div class='form-group lc-form'>
+                            <!--<iframe class='col-lg-8 font-bold' id='lcValue'></iframe>-->
+                            <div class='col-lg-12 font-bold' id='lcValue'><p id=''></p>
+                                <pre id="json" style="background-color: white !important"></pre>
+                            </div>
+                        </div>
+                        <div class='line line-dashed line-lg pull-in'></div>
+                    </div>
 
                 </div>
 
@@ -42,76 +53,6 @@
         </div>
         <div class="modal-footer">
             <div class="bs-example form-horizontal" id="lcButtons">
-               <!--<div class='form-group lc-form' id="viewLcContainer" style="display:none">
-                    <div class='col-lg-4 ' style="visibility:hidden"><button type='button' class='btn btn-primary btn-lg'><i class='fa fa-check'></i>  Approve</button></div>
-                    <div class='col-lg-4 ' style="visibility:hidden"><button type='button' class='btn btn-danger btn-lg'>Request to amend</button></div>
-                    <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
-                </div>
-                <div class='form-group lc-form' id="amendLcContainer" style="display:none">
-                    <div class='col-lg-4 ' id='approveContainer' ><button type='button' class='btn btn-primary btn-lg' id='approveButton'><i class='fa fa-check'></i>  Approve</button></div>
-                    <div class='col-lg-4 ' id='amendContainer' ><button type='button' class='btn btn-danger btn-lg' id='amendLc'>Request to amend</button></div>
-                    <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
-                </div>
-                <div class='form-group lc-form' id="acceptDocsContainer" style="display:none">
-                    <div class='col-lg-4 '  ><button type='button' class='btn btn-primary btn-lg' id='acceptDocs'><i class='fa fa-check'></i>  Accept Documents</button></div>
-                    <div class='col-lg-4 '  ><button type='button' class='btn btn-danger btn-lg'>Cancel</button></div>
-                    <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
-                </div>
-                <div class='form-group lc-form' id="collectGoodsContainer" style="display:none">
-                    <div class='col-lg-4 '  ><button type='button' class='btn btn-primary btn-lg' id='collectGoods'><i class='fa fa-check'></i>  Collect Goods</button></div>
-                    <div class='col-lg-4 '  ><button type='button' class='btn btn-danger btn-lg'>Cancel</button></div>
-                    <div class='col-lg-4 '><button type='button' class='btn btn-default' data-dismiss='modal'>Close</button></div>
-                </div>
-            </div>-->
-
-
-            <!--<button type="button" class="btn btn-primary">Save changes</button>-->
         </div>
     </div>
 </div>
-
-
-<script>
-
-   /* $("#approveButton").click(function () {
-
-        var refNum = $("#returnedRef").attr("value");
-        //console.log(refNum);
-        var status = "acknowledged";
-        updateStatus(userId, PIN, OTP, refNum, status, "", function (data) {
-            //console.log(data);
-            var globalErrorID = data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
-            if (globalErrorID === "010000") {
-                window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
-            }
-        });
-
-    });
-    $("#amendLc").click(function () {
-        var refNum = $("#returnedRef").attr("value");
-        //console.log(refNum);
-        var page = $(this).attr('id');
-        //console.log(page);
-        var pageToLoad = {page: page, refNum: refNum}; // append refnum into pagetToLoad and set a session 
-        sessionStorage.setItem('page', JSON.stringify(pageToLoad));
-        window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html?refNum=" + refNum);
-        //window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
-    });
-
-    $("#acceptDocs").click(function () {
-        var refNum = $("#returnedRef").attr("value");
-        //console.log(refNum);
-        var status = "documents accepted";
-        updateStatus(userId, PIN, OTP, refNum, status, "", function (data) {
-            //console.log(data);
-            var globalErrorID = data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
-            if (globalErrorID === "010000") {
-                window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
-            }
-        });
-    });*/
-
-
-
-
-</script>
