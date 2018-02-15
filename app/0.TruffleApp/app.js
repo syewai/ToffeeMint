@@ -466,7 +466,7 @@ function LCCreationListener(refNum) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
             var arr = [];
-            instance.LCCreated({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
+            instance.LCCreated({}, { fromBlock: 0, toBlock: 'latest' }).get(function(error, event) {
                 //if (refNum == "" || refNum == event.args.refNum) {
                 //    arr.push([event.args.refNum, event.args.contractValues]);
                 //}
