@@ -467,11 +467,11 @@ function LCCreationListener(refNum) {
         LetterOfCredit.deployed().then(function(instance) {
             var arr = [];
             instance.LCCreated({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
-                if (refNum == "" || refNum == event.args.refNum) {
-                    arr.push([event.args.refNum, event.args.contractValues]);
-                }
-                console.log(arr);
-                resolve(arr);
+                //if (refNum == "" || refNum == event.args.refNum) {
+                //    arr.push([event.args.refNum, event.args.contractValues]);
+                //}
+                console.log(event);
+                resolve(event);
             })
         });
     })
