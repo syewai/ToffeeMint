@@ -190,12 +190,12 @@ function homeOperation() {
 
             });
             //get bc receipt
-            var bcReceipt = "";
-            getBlockchainReceipt(userId, PIN, OTP, refNum, function (data) {
-                if (data != null) {
-                    bcReceipt = data[0][1];
-                }
-            });
+            /*var bcReceipt = "";
+             getBlockchainReceipt(userId, PIN, OTP, refNum, function (data) {
+             if (data != null) {
+             bcReceipt = data[0][1];
+             }
+             });*/
             /*if (bcReceipt !== "") {
              bcReceipt = JSON.parse(bcReceipt);
              //$("#json").html(JSON.stringify(bcReceipt, undefined, 2));
@@ -205,7 +205,7 @@ function homeOperation() {
             var button = "";
             button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
                     + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-lc='"
-                    + lc + "' data-bcreceipt='" + bcReceipt + "' data-links='" + links + "' data-status='" + status + "' data-refnum='" + refNum + "'>"
+                    + lc + "' data-links='" + links + "' data-status='" + status + "' data-refnum='" + refNum + "'>"
                     + convertToDisplay(operation, " ") + "</button>";
 
             if (operation === "modify lc" || operation === "submit bol") {
@@ -749,7 +749,7 @@ function amendLcOps() {
             shipPeriod = document.getElementById("shipPeriod").placeholder;
         }
         expiryDate = document.getElementById("expiryDate").value;
-         if (expiryDate === "") {
+        if (expiryDate === "") {
             expiryDate = document.getElementById("expiryDate").placeholder;
         } else {
             if (moment(expiryDate, 'YYYY-MM-DD', true).format() === "Invalid date") {
@@ -889,15 +889,26 @@ function loadLcDetailsModal() {
             var status = button.data('status')
             var action = button.data('action')
             var links = button.data("links")
-            var bcReceipt = button.data('bcreceipt')
+            //var bcReceipt = button.data('bcreceipt')
             var fields = button.data('lc') //convert string to json string
             //var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
             var currency = fields['currency'];
             var allNecessaryFields = ["goods_description", "importer_ID", "exporter_ID", "creation_datetime", "issuing_bank_id",
                 "ship_period", "amount", "exporter_account_num", "ship_destination", "importer_account_num"];
             var allLcHTML = ""
-
-
+            /*Call getBCreceipt after user clicks */
+            //get bc receipt
+            var bcReceipt = "";
+            getBlockchainReceipt(userId, PIN, OTP, refNum, function (data) {
+                console.log(data)
+                if (data != null) {
+                    bcReceipt = data[0][1]
+                    console.log(bcReceipt)
+                }
+            });
+            
+            
+            
             if (links !== "") {
                 var bolLink = "http://bit.ly/2BPThUM" //links["bolLink"]
                 //new QRCode( document.getElementById"), bolLink);
@@ -1005,7 +1016,8 @@ function loadLcDetailsModal() {
             modal.find('.modal-body #status').html(statusP);
             modal.find('.modal-body #lcDetails').html(allLcHTML)
             modal.find('.modal-body #returnedRefNum').html(refNumHTML)
-            modal.find('.modal-body #json').html(JSON.stringify(bcReceipt, undefined, 2))
+            //modal.find('.modal-body #json').html(JSON.stringify(bcReceipt, undefined, 2))
+            modal.find('.modal-body #json').html(bcReceipt)
             modal.find('.modal-footer #lcButtons').html(buttonGroup)
             //modal.find('.modal-body #lcQRCode').html(qrCode)
             buttonClicks()
