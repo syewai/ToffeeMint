@@ -274,3 +274,16 @@ function getBlockchainReceipt(userId, PIN, OTP,refNum,callback) {
     });
 
 }
+
+function getAllBlockchainReceipt(userId, PIN, OTP,callback) {
+  
+    $.ajax({
+        async: false,
+        type: 'GET',
+        url: apiEvents+ 'LCCreated?refNum',
+        dataType: 'json',
+        success: callback
+
+    });
+
+}

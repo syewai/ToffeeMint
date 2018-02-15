@@ -52,6 +52,7 @@ and open the template in the editor.
         <button id="button16">get qr code</button>
         <button id="button17">leaders</button>
         <button id="button18">Get created contract</button>
+        <button id="button19">Get created contract</button>
         <div id="content"></div>
         <pre id="json"></pre>
         <!--<div id="nav">
@@ -242,6 +243,17 @@ and open the template in the editor.
                     //$("#content").html(bcReceipt);
                 }
             });
+
+            $("#button19").click(function () {
+                getAllBlockchainReceipt("toffeemint2", "123456", "999999", function (data) {
+                    if (data != null) {
+                        //bcReceipt = data[0][1];
+                        console.log(typeof (data));
+
+                    }
+                });
+            });
+
 
 
 

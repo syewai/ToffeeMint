@@ -163,7 +163,7 @@ function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
         var questionID = counter - pagesBeforeQuiz;
        
         result = $("input[name=" + counter + "]:checked").val();
-       
+        console.log(result);
         getGameAnswer("", "", "", chosenQuestions[questionID], function (callback) {
             answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
             console.log(answer);
@@ -233,20 +233,33 @@ function preQuiz(chosenQuestions, pagesBeforeQuiz) {
             gQuestion = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
             gChoices = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.choices);
 
+            
             //append to div
+            
             gAppendString += '<div class="row hide" data-step="';
             gAppendString += Number(i) + pagesBeforeQuiz + 1;
             gAppendString += '" data-title="Pre-Quiz">';
-            gAppendString += ('<div id="countdownTimer"><div class="values"></div></div>');
+            //append question header container
+            gAppendString += '<header class="panel-heading bg-default lt no-border"><div class="clearfix">';
+            
+            //append question in <div class="clear"> in header
+            gAppendString += '<div class="col-lg-8">';
+            gAppendString += '<div class="clear"><div class="h3 m-t-xs m-b-xs text-primary font-bold">';
             gAppendString += gQuestion;
-            gAppendString += '<div class="btn-group" data-toggle="buttons">';
-
-            //split choices
+            gAppendString += '</div></div>';
+            gAppendString += '</div>';
+            //append timer in header
+            gAppendString += '<div class="col-lg-4">';
+            gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h3"></div></div></button>';
+            gAppendString += '</div>';
+            gAppendString += '</div></header>';
+            
             var options = gChoices.split("&&");
-
+            
             //add labels to choices
             var labels = ["a)", "b)", "c)", "d)", "e)"];
 
+           gAppendString += '<div class="btn-group" data-toggle="buttons">';
             //iterate through all choices to display
             for (var j = 0; j < options.length; j++) {
                 var option = options[j];
@@ -260,14 +273,20 @@ function preQuiz(chosenQuestions, pagesBeforeQuiz) {
                 
                 //append to div
                 if (option !== undefined) {
-                    gAppendString += '<label class="btn btn-primary active">';
-                    gAppendString += '<input type="radio" name="';
+                    gAppendString += '<div class="row">';
+                    gAppendString += '<div class="col-lg-12">';
+                    
+                    //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
+                    gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
+                    gAppendString += '<input style="display:none" type="radio" name="';
                     gAppendString += (i) + 1;
                     gAppendString += '" value="';
                     gAppendString += option;
                     gAppendString += '">';
-                    gAppendString += answer;
-                    gAppendString += '<br>';
+                    gAppendString += '<p style="width:500px;white-space:normal;">'+answer+'</p>';
+                    gAppendString += '</label>';
+                    gAppendString += '</div></div>';
+                     //gAppendString += '</div>'
 
                 }
             }
@@ -278,8 +297,10 @@ function preQuiz(chosenQuestions, pagesBeforeQuiz) {
     gAppendString += '<div class="row hide" data-step="';
     gAppendString += gNumberOfQuestions + 1 + pagesBeforeQuiz;
     gAppendString += '" data-title="Congratulations! You have completed the Pre-Quiz">';
-    gAppendString += "Continue with the instructions on your lab sheet."
-
+         gAppendString += '<div class="list-group no-radius alt">';
+     gAppendString +=  '<div class="list-group-item">';
+    gAppendString += "Continue with the instructions on your lab sheet.";
+     gAppendString +="</div></div></div>";
     //display append
     $('#target').append(gAppendString);
 }
