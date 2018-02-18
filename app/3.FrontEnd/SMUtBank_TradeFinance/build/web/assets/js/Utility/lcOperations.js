@@ -825,6 +825,9 @@ function amendLcOps() {
         }
 
     });
+    $("#cancelButton").click(function () {
+        window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+    });
 
 
 }
@@ -980,7 +983,7 @@ function loadLcDetailsModal() {
             var closeDiv = $("<div class='col-lg-4 '></div>")
             var closeButton = $("<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>")
             var attrToChange = [];
-            if (usertype === "exporter" && action === "approve lc") {
+            if (usertype === "exporter" && action === "review lc") {
                 attrToChange = ["approveButton", "amendLc", "Approve", "Request to amend", "visible", "visible"]
 
             } else if (usertype === "importer" && action === "accept documents") {
@@ -1005,7 +1008,7 @@ function loadLcDetailsModal() {
             buttonGroup.append(cancelDiv)
             buttonGroup.append(closeDiv)
 
-            var text = "text-primary";
+            var text = "text-primary"
 
             if (action !== "view lc") {
 
