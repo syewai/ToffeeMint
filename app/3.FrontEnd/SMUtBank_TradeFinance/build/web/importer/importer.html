@@ -27,9 +27,10 @@
     </head>
 
     <body class="">
-        <div class="modal fade" id="postQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
-        <!--Login-->
-        <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false"></button>
+        <!-- <div class="modal fade" id="postQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div> -->
+        <!-- <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false"></button> -->
+        <div class="modal fade" id="postQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: 700px; overflow-wrap: break-word;word-wrap: break-word;"></div>
+        <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"></button>
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: 700px; overflow-wrap: break-word;word-wrap: break-word;"></div>
         
         <section class="vbox">
@@ -80,12 +81,12 @@
             $(document).ready(function () {
                 $("#header").load("../header.html");
                 $('#nav-bar').load("navBar.html");
-               /* $('#postQuizModal').load("../gameModal2.html", function () {
+                $('#postQuizModal').load("../gameModal2.html", function () {
                     $('#postQuizModal').modalSteps();
-                }); */
+                }); 
                 
                                 
-             /* if (sessionStorage.showQuiz == 1) {
+              if (sessionStorage.showQuiz == 1) {
                     $("#myModal").load("../gameModal.html", function () {
                         $('#myModal').modalSteps();
                         jQuery(function () {
@@ -96,7 +97,7 @@
                     });
                     
                }
-*/            });
+            });
 
 
         </script>

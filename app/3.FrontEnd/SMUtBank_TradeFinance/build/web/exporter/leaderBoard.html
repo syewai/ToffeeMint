@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<head>
+
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous"> -->
+    <!-- <script src="../assets/js/jquery.min.js"></script> -->
+    <!-- Bootstrap -->
+    <!-- <script src="../assets/js/bootstrap.js"></script> -->
+    <!-- App -->
+    <!-- <script src="../assets/js/app.js"></script> -->
+    <!-- <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
+    <!-- <script src="../asset/js/DAO/gameHandling.js"></script> -->
+
+</head>
+
+<script>
+    var totalScore = 0;
+    getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function (callback) {
+        var totalScorePre = JSON.stringify(callback.Content.ServiceResponse.ScoreDetails.total_score);
+        console.log("totalScorePre:  " + totalScorePre);
+        if (totalScorePre === "null") {
+            console.log("inside");
+            totalScore += Number(0);
+        } else {
+            totalScorePre = totalScorePre.substr(1).slice(0, -1);
+            totalScore += Number(totalScorePre);
+        }
+        console.log("Score 1 :" + totalScorePre);
+        console.log("TSCore: " + totalScore);
+        getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", function (callback) {
+            var totalScorePost = JSON.stringify(callback.Content.ServiceResponse.ScoreDetails.total_score);
+            if (totalScorePost === "null") {
+                totalScore += Number(0);
+            } else {
+                totalScorePost = totalScorePost.substr(1).slice(0, -1);
+                totalScore += Number(totalScorePost);
+            }
+            $('#tScore').html(totalScore);
+        });
+    });
+</script>
+
+<section class="vbox">
+    <section class="scrollable">
+        <div class="wrapper-lg">
+            <h2 class="m-b-xs font-bold m-t-none">Leader Board</h2>
+        </div>
+        <section class="panel panel-default">
+            <div class="row m-l-none m-r-none bg-light lter">
+                <div class="col-sm-12 col-md-6 padder-v b-r b-light">
+                    <span class="fa-stack fa-2x pull-left m-r-sm">
+                        <i class="fa fa-circle fa-stack-2x text-info"></i>
+                        <i class="fa fa-male fa-stack-1x text-white"></i>
+                    </span>
+                    <a class="clear" href="#">
+                        <span class="h3 block m-t-xs"><strong id="tScore">
+                            </strong></span>
+                        <small class="text-muted text-uc font-bold">Individual Score</small>
+                    </a>
+                </div>
+                <div class="col-sm-12 col-md-6 padder-v b-r b-light lt">
+                    <span class="fa-stack fa-2x pull-left m-r-sm">
+                        <i class="fa fa-circle fa-stack-2x text-warning"></i>
+                        <i class="fa fa-group fa-stack-1x text-white"></i>
+                        <span class="easypiechart pos-abt" data-percent="100" data-line-width="4" data-track-Color="#fff" data-scale-Color="false" data-size="50" data-line-cap='butt' data-animate="2000" data-target="#bugs" data-update="3000"></span>
+                    </span>
+                    <a class="clear" href="#">
+                        <span class="h3 block m-t-xs"><strong id="bugs">-</strong></span>
+                        <small class="text-muted text-uc font-bold">Team Score</small>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+
+        <div class="container">
+            <h1 class="display-3 text-center">TOP 10 LEADERBOARD RESULTS</h1>
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    call2Bar();
+                }
+                xhr.open('GET', true);
+                xhr.send(null);
+            });
+            //prequiz 
+            var mainArr;
+            var arrUserId = [];
+            var arrScore = [];
+            getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
+                testArr = callback;
+            });
+            mainArr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
+            console.log(mainArr);
+            console.log(mainArr.length);
+            for (i = 0; i < 10 || i < mainArr.length; i++) {
+                arrUserId[i] = mainArr[i]['user_Id'];
+                arrScore[i] = mainArr[i]['score'];
+            }
+
+            console.log(arrUserId);
+            console.log(arrScore);
+            //postquiz 
+            var pmainArr;
+            var parrUserId = [];
+            var parrScore = [];
+            getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2019-01-01 00:00:00", "Posttest", false, function (callback) {
+                ptestArr = callback;
+            });
+            pmainArr = ptestArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
+            console.log(pmainArr);
+            console.log(pmainArr.length);
+            for (i = 0; i < 10 || i < mainArr.length; i++) {
+                parrUserId[i] = pmainArr[i]['user_Id'];
+                parrScore[i] = pmainArr[i]['score'];
+            }
+
+            function call2Bar() {
+                var ctx = document.getElementById("myChart");
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: arrUserId,
+                        datasets: [
+                            {
+                                label: 'Indivdual Pre-test',
+                                data: arrScore,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)',
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)',
+                                    'rgba(255,99,132,1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(54, 162, 235, 1)'
+                                ],
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Indivdual Post-test',
+                                data: parrScore,
+                                backgroundColor: [
+                                    'red',
+                                    'green',
+                                    'blue',
+                                    'orange',
+                                    'yellow',
+                                    'purple',
+                                    'green',
+                                    'orange',
+                                    'purple',
+                                    'red'
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)',
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)'
+                                ],
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            xAxes: [{
+                                    stacked: true
+                                }],
+                            yAxes: [{
+                                    stacked: true,
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
+                        }
+                    }
+                });
+            }
+        </script>
+
+
+    </section>
+    <!--End of Scrollable-->
+</section>
+<!--End of vbox-->
+
+
+<!--<script src="../assets/js/applyLc.js"></script>
+<script src="../assets/js/retrieveRefNumList.js"></script>
+<script src="../assets/js/applyLcBc.js"></script>-->
+<!-- <script src="../assets/js/Utility/globalFunctions.js"></script>
+<script src="../assets/js/DAO/apiUrl.js"></script>
+<script src="../assets/js/DAO/lcHandling.js"></script>
+<script src="../assets/js/DAO/statusHandling.js"></script>
+<script src="../assets/js/Utility/formValidation.js"></script>
+<script src="../assets/js/Utility/lcOperations.js"></script>
+<script src="../assets/js/Utility/taskButtonAllocation.js"></script> -->

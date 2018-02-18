@@ -1,29 +1,45 @@
-<div class="modal-dialog" role="document">
+<div class="modal-dialog">
     <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="js-title-step"></h4>
-            <div id="target" class="modal-body">
-                <div class="row hide" data-step="1" data-title="Post Quiz">
-                    <div class="well">We are approaching the end of our UAT. To gauge how much our app has taught you, please kindly complete the quiz by clicking the NEXT button</div>
-                </div>
-                <div id="#target"></div>
-                <script>
-                    var chosenQuestions = [2,5,7,8,10,14,17];
-                    var pagesBeforeQuiz = 1;
-                    var answerCounter = 0;
-                    var timer = new Timer();
 
-                    postQuiz(chosenQuestions, pagesBeforeQuiz);
-                </script>
-                
-                
-            </div>
-            <div class="modal-footer">
-                <!--<button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button> -->
-                <!--<button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button> -->
-                <button type="button" class="btn btn-success js-btn-step" data-orientation="next" onclick='onNextPost(answerCounter++, pagesBeforeQuiz, chosenQuestions, timer)'></button>
-                <!---->
+        <div class="modal-header">
+
+            <h4 class="js-title-step"></h4>   
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <section class="panel panel-default">
+                    <div id="target2" class="modal-body" style="word-wrap: break-word;">            
+                        <div class="row hide" data-step="1" data-title="Post-Quiz">
+                            
+                            <div class="list-group no-radius alt">
+                                <div class="list-group-item">
+                                    <!--<span class="badge bg-success">25</span>-->
+                                   
+                                   We are coming close to the end of our UAT. We would like to gauge how much you have learnt through our app. Click on the NEXT button to continue with the Post-Test Quiz.
+                                </div>
+                            </div>
+
+                        </div>
+                        <script>
+                            var chosenQuestions = [2, 5, 7, 8, 10, 14, 17];
+                            var pagesBeforeQuiz = 1;
+                            var answerCounter = 0;
+                            var timer = new Timer();
+
+                            postQuiz(chosenQuestions, pagesBeforeQuiz);
+                        </script>
+
+                    </div>
+                </section>
             </div>
         </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button> -->
+            <!--<button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button> -->
+            <button type="button" class="btn btn-primary js-btn-step" data-orientation="next" onclick='onNextPost(answerCounter++, pagesBeforeQuiz, chosenQuestions, timer)'></button>
+            <!---->
+        </div>
+
     </div>
 </div>

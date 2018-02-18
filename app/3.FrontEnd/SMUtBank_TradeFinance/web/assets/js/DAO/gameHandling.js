@@ -158,19 +158,19 @@ function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
 
     timer.stop();
     var time = timerStart(timer);
-    
+
     if (counter >= pagesBeforeQuiz && counter <= chosenQuestions.length) {
         var questionID = counter - pagesBeforeQuiz;
-       
+
         result = $("input[name=" + counter + "]:checked").val();
-        console.log(result);
+        //console.log(result);
         getGameAnswer("", "", "", chosenQuestions[questionID], function (callback) {
             answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
-            console.log(answer);
+            //console.log(answer);
             if (result === answer) {
                 score = time * 10;
                 setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function (callback) {
-                    
+
                 });
             }
         });
@@ -183,19 +183,19 @@ function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
 
     timer.stop();
     var time = timerStart(timer);
-    
+
     if (counter >= pagesBeforeQuiz && counter <= chosenQuestions.length) {
         var questionID = counter - pagesBeforeQuiz;
-       
+
         result = $("input[name=" + counter + "]:checked").val();
-       
+        //console.log(result);
         getGameAnswer("", "", "", chosenQuestions[questionID], function (callback) {
             answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
-            console.log(answer);
+            //console.log(answer);
             if (result === answer) {
                 score = time * 10;
                 setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Posttest", 1, function (callback) {
-                    
+                    //console.log(callback);
                 });
             }
         });
@@ -233,33 +233,33 @@ function preQuiz(chosenQuestions, pagesBeforeQuiz) {
             gQuestion = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
             gChoices = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.choices);
 
-            
+
             //append to div
-            
+
             gAppendString += '<div class="row hide" data-step="';
             gAppendString += Number(i) + pagesBeforeQuiz + 1;
             gAppendString += '" data-title="Pre-Quiz">';
             //append question header container
             gAppendString += '<header class="panel-heading bg-default lt no-border"><div class="clearfix">';
-            
+
             //append question in <div class="clear"> in header
             gAppendString += '<div class="col-lg-8">';
-            gAppendString += '<div class="clear"><div class="h3 m-t-xs m-b-xs text-primary font-bold">';
+            gAppendString += '<div class="clear"><div class="h4 m-t-xs m-b-xs text-primary font-bold">';
             gAppendString += gQuestion;
             gAppendString += '</div></div>';
             gAppendString += '</div>';
             //append timer in header
             gAppendString += '<div class="col-lg-4">';
-            gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h3"></div></div></button>';
+            gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
             gAppendString += '</div>';
             gAppendString += '</div></header>';
-            
+
             var options = gChoices.split("&&");
-            
+
             //add labels to choices
             var labels = ["a)", "b)", "c)", "d)", "e)"];
 
-           gAppendString += '<div class="btn-group" data-toggle="buttons">';
+            gAppendString += '<div class="btn-group" data-toggle="buttons">';
             //iterate through all choices to display
             for (var j = 0; j < options.length; j++) {
                 var option = options[j];
@@ -270,12 +270,12 @@ function preQuiz(chosenQuestions, pagesBeforeQuiz) {
                     option = option.slice(0, -1);
                 }
                 var answer = label + " " + option;
-                
+
                 //append to div
                 if (option !== undefined) {
                     gAppendString += '<div class="row">';
                     gAppendString += '<div class="col-lg-12">';
-                    
+
                     //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
                     gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
                     gAppendString += '<input style="display:none" type="radio" name="';
@@ -283,10 +283,10 @@ function preQuiz(chosenQuestions, pagesBeforeQuiz) {
                     gAppendString += '" value="';
                     gAppendString += option;
                     gAppendString += '">';
-                    gAppendString += '<p style="width:500px;white-space:normal;">'+answer+'</p>';
+                    gAppendString += '<p style="width:500px;white-space:normal;">' + answer + '</p>';
                     gAppendString += '</label>';
                     gAppendString += '</div></div>';
-                     //gAppendString += '</div>'
+                    //gAppendString += '</div>'
 
                 }
             }
@@ -297,10 +297,10 @@ function preQuiz(chosenQuestions, pagesBeforeQuiz) {
     gAppendString += '<div class="row hide" data-step="';
     gAppendString += gNumberOfQuestions + 1 + pagesBeforeQuiz;
     gAppendString += '" data-title="Congratulations! You have completed the Pre-Quiz">';
-         gAppendString += '<div class="list-group no-radius alt">';
-     gAppendString +=  '<div class="list-group-item">';
+    gAppendString += '<div class="list-group no-radius alt">';
+    gAppendString += '<div class="list-group-item">';
     gAppendString += "Continue with the instructions on your lab sheet.";
-     gAppendString +="</div></div></div>";
+    gAppendString += "</div></div></div>";
     //display append
     $('#target').append(gAppendString);
 }
@@ -318,20 +318,33 @@ function postQuiz(chosenQuestions, pagesBeforeQuiz) {
             gQuestion = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
             gChoices = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.choices);
 
+
             //append to div
+
             gAppendString += '<div class="row hide" data-step="';
             gAppendString += Number(i) + pagesBeforeQuiz + 1;
             gAppendString += '" data-title="Post-Quiz">';
-            gAppendString += ('<div id="countdownTimer"><div class="values"></div></div>');
-            gAppendString += gQuestion;
-            gAppendString += '<form>';
+            //append question header container
+            gAppendString += '<header class="panel-heading bg-default lt no-border"><div class="clearfix">';
 
-            //split choices
+            //append question in <div class="clear"> in header
+            gAppendString += '<div class="col-lg-8">';
+            gAppendString += '<div class="clear"><div class="h4 m-t-xs m-b-xs text-primary font-bold">';
+            gAppendString += gQuestion;
+            gAppendString += '</div></div>';
+            gAppendString += '</div>';
+            //append timer in header
+            gAppendString += '<div class="col-lg-4">';
+            gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
+            gAppendString += '</div>';
+            gAppendString += '</div></header>';
+
             var options = gChoices.split("&&");
 
             //add labels to choices
             var labels = ["a)", "b)", "c)", "d)", "e)"];
 
+            gAppendString += '<div class="btn-group" data-toggle="buttons">';
             //iterate through all choices to display
             for (var j = 0; j < options.length; j++) {
                 var option = options[j];
@@ -345,28 +358,100 @@ function postQuiz(chosenQuestions, pagesBeforeQuiz) {
 
                 //append to div
                 if (option !== undefined) {
-                    gAppendString += '<input type="radio" name="';
+                    gAppendString += '<div class="row">';
+                    gAppendString += '<div class="col-lg-12">';
+
+                    //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
+                    gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
+                    gAppendString += '<input style="display:none" type="radio" name="';
                     gAppendString += (i) + 1;
                     gAppendString += '" value="';
                     gAppendString += option;
                     gAppendString += '">';
-                    gAppendString += answer;
-                    gAppendString += '<br>';
+                    gAppendString += '<p style="width:500px;white-space:normal;">' + answer + '</p>';
+                    gAppendString += '</label>';
+                    gAppendString += '</div></div>';
+                    //gAppendString += '</div>'
 
                 }
             }
             //append to div close tag
-            gAppendString += '</form></div></div>';
+            gAppendString += '</div></div></div>';
         });
     }
     gAppendString += '<div class="row hide" data-step="';
     gAppendString += gNumberOfQuestions + 1 + pagesBeforeQuiz;
-    gAppendString += '" data-title="The End">';
-    gAppendString += "We have come to the end of our UAT. Thank you for taking your time out. We hope you learnt something new today.  "
-
+    gAppendString += '" data-title="Congratulations! You have completed the Post-Quiz">';
+    gAppendString += '<div class="list-group no-radius alt">';
+    gAppendString += '<div class="list-group-item">';
+    gAppendString += "We have come to the end of the quiz. Thank you for your time.";
+    gAppendString += "</div></div></div>";
     //display append
-    $('#target').append(gAppendString);
+    $('#target2').append(gAppendString);
 }
+
+/*function postQuiz(chosenQuestions, pagesBeforeQuiz) {
+ var gQuestion;
+ var gChoices;
+ var gAppendString = "";
+ 
+ var gNumberOfQuestions = chosenQuestions.length;
+ for (var i = 0; i < gNumberOfQuestions; i++) {
+ getGameQuestion("", "", "", chosenQuestions[i], function (callback) {
+ 
+ //get respective data from json string
+ gQuestion = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
+ gChoices = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.choices);
+ 
+ //append to div
+ gAppendString += '<div class="row hide" data-step="';
+ gAppendString += Number(i) + pagesBeforeQuiz + 1;
+ gAppendString += '" data-title="Post-Quiz">';
+ gAppendString += ('<div id="countdownTimer"><div class="values"></div></div>');
+ gAppendString += gQuestion;
+ gAppendString += '<form>';
+ 
+ //split choices
+ var options = gChoices.split("&&");
+ 
+ //add labels to choices
+ var labels = ["a)", "b)", "c)", "d)", "e)"];
+ 
+ //iterate through all choices to display
+ for (var j = 0; j < options.length; j++) {
+ var option = options[j];
+ var label = labels[j];
+ if (j === 0) {
+ option = option.substr(1);
+ } else if (j === options.length - 1) {
+ option = option.slice(0, -1);
+ }
+ var answer = label + " " + option;
+ 
+ //append to div
+ if (option !== undefined) {
+ gAppendString += '<input type="radio" name="';
+ gAppendString += (i) + 1;
+ gAppendString += '" value="';
+ gAppendString += option;
+ gAppendString += '">';
+ gAppendString += answer;
+ gAppendString += '<br>';
+ 
+ }
+ }
+ //append to div close tag
+ gAppendString += '</form></div></div>';
+ });
+ }
+ gAppendString += '<div class="row hide" data-step="';
+ gAppendString += gNumberOfQuestions + 1 + pagesBeforeQuiz;
+ gAppendString += '" data-title="The End">';
+ gAppendString += "We have come to the end of our UAT. Thank you for taking your time out. We hope you learnt something new today.  "
+ 
+ //display append
+ $('#target').append(gAppendString);
+ } */
 
 //function to load total score to game modal, outdated
 /* function loadTotalScore() {

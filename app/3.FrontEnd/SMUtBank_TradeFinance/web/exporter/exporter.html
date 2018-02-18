@@ -30,9 +30,12 @@
     </head>
 
     <body class="">
-        <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false"></button>
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
-        
+        <!-- <div class="modal fade" id="postQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div> -->
+        <!-- <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false"></button> -->
+        <div class="modal fade" id="postQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: 700px; overflow-wrap: break-word;word-wrap: break-word;"></div>
+        <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"></button>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: 700px; overflow-wrap: break-word;word-wrap: break-word;"></div>
+
         <section class="vbox">
             <!--Header-->
             <header class="bg-black dk header navbar navbar-fixed-top-xs" id="header">
@@ -74,7 +77,11 @@
                             $("#header").load("../header.html");
                             $('#nav-bar').load("navBar.html");
 
-                           /* if (sessionStorage.showQuiz == 1) {
+                            $('#postQuizModal').load("../gameModal2.html", function () {
+                                $('#postQuizModal').modalSteps();
+                            });
+
+                            if (sessionStorage.showQuiz == 1) {
                                 $("#myModal").load("../gameModal.html", function () {
                                     $('#myModal').modalSteps();
                                     jQuery(function () {
@@ -84,7 +91,7 @@
 
                                 });
 
-                            }*/
+                            }
                         });
                     </script>
 
@@ -120,7 +127,7 @@
         <script src="../assets/js/file-input/bootstrap-filestyle.min.js"></script>
         <!-- select2 -->
         <script src="../assets/js/select2/select2.min.js"></script>   
-        
+
         <!-- game modal & timer -->
         <script src="../assets/js/game/jquery-bootstrap-modal-steps.min.js"></script>
         <script src="../assets/js/game/easytimer.min.js"></script>
