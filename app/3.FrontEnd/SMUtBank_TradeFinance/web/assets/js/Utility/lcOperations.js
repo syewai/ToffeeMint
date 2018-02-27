@@ -127,133 +127,152 @@ function applyLcOperation() {
 }
 
 //this function handles ui logic of homepage
-function homeOperation() {
+async function homeOperation() {
+        /*Part 1 retrieve all ref num under the user*/
+        var refNumberList = [];
+        const refNumberListValidation = await validateGetRefNumListAsync(userId, PIN, OTP);
+        
+        //console.log(refNumberList);
+        if (refNumberListValidation !== undefined) {
+            if (refNumberListValidation.hasOwnProperty("errorMsg")) {
+                var errorMsg = refNumberListValidation.errorMsg;
+                //console.log("error");
+                //console.log(errorMsg);
+                $("#authError").html(errorMsg);
+            } else if (refNumberListValidation.hasOwnProperty("success")) {
+                refNumberList = refNumberListValidation.success;
 
-    var refNumberList = [];
-    var refNumberListValidation = validateGetRefNumList(userId, PIN, OTP);
-    //console.log(refNumberList);
-    if (refNumberListValidation !== undefined) {
-        if (refNumberListValidation.hasOwnProperty("errorMsg")) {
-            var errorMsg = refNumberListValidation.errorMsg;
-            //console.log("error");
-            //console.log(errorMsg);
-            $("#authError").html(errorMsg);
-        } else if (refNumberListValidation.hasOwnProperty("success")) {
-            refNumberList = refNumberListValidation.success;
-            //console.log(refNumberList);
+            }
         }
-    }
-    //console.log(refNumberList);
-    var index1 = refNumberList.indexOf("0000001489");
+        //hard code for now to elliminate  impact of these 2 contracts
+        var index1 = refNumberList.indexOf("0000001489");
 
-    if (index1 > -1) {
-        refNumberList.splice(index1, 1);
-    }
-    var index2 = refNumberList.indexOf("0000001450");
-    if (index2 > -1) {
-        refNumberList.splice(index2, 1);
-    }
-//console.log(refNumberList);
-    //get bc receipt
-    var bcReceipt = {};
-    getAllBlockchainReceipt(userId, PIN, OTP, function (data) {
-        if (data != null) {
-            //bcReceipt = data[0][1];
-            console.log(typeof (data));//object
-            //bcReceipt = data;
-            for (var i = 0; i < data.length; i++) {
-                bcReceipt[data[i][0]] = data[i][1];
+        if (index1 > -1) {
+            refNumberList.splice(index1, 1);
+        }
+        var index2 = refNumberList.indexOf("0000001450");
+        if (index2 > -1) {
+            refNumberList.splice(index2, 1);
+        }
+
+        /*Part 2 - get all transaction hash*/
+        var bcReceipt = {};
+        const allBlockchainReceipt = await getAllBlockchainReceipt(userId, PIN, OTP);
+        if (allBlockchainReceipt != null) {
+            for (var i = 0; i < allBlockchainReceipt.length; i++) {
+                bcReceipt[allBlockchainReceipt[i][0]] = allBlockchainReceipt[i][1];
+            }
+        }
+        
+/*getAllBlockchainReceipt(userId, PIN, OTP, function (data) {
+ if (data != null) {
+ //bcReceipt = data[0][1];
+ console.log("test");//object
+ console.log(data);//object
+ //bcReceipt = data;
+ for (var i = 0; i < data.length; i++) {
+ bcReceipt[data[i][0]] = data[i][1];
+ }
+ 
+ }
+ });*/
+
+var numOfRows = refNumberList.length;
+if (refNumberList.length > 0) {
+
+
+    for (var i = 0; i < numOfRows && i < 5; i++) {
+
+        var refNum = refNumberList[i];
+        var lc = {};
+   
+        var exporterAcct = "";
+        var importerAcct = "";
+        var expiryDate = "";
+        var status = "";
+        var globalErrorId = "";
+        /*Part 3 - Get lc details*/
+        const lcDetails = await getLcDetails(userId, PIN, OTP, refNum);
+        var globalErrorId = lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+        if (globalErrorId === "010000") {
+                importerAcct = lcDetails.Content.ServiceResponse.LC_Details.LC_record.importer_account_num;
+                exporterAcct = lcDetails.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
+                expiryDate = lcDetails.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
+                status = lcDetails.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
+                lc = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
+
+        }
+        /*getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+            globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+            //console.log(globalErrorId);
+            if (globalErrorId === "010000") {
+                importerAcct = contract.Content.ServiceResponse.LC_Details.LC_record.importer_account_num;
+                exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
+                expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
+                status = contract.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
+                lc = contract.Content.ServiceResponse.LC_Details.LC_record;
+
             }
 
-        }
-    });
+        });*/
+        lc = JSON.stringify(lc);
 
-    var numOfRows = refNumberList.length;
-    if (refNumberList.length > 0) {
-        console.log("HERE");
+        var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
+        var operation = operations[0];
+        var url = operations[1];
+        var $row = $('<tr></tr>');
+        var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
 
-        for (var i = 0; i < numOfRows && i < 5; i++) {
-//call web service to get lc details for each ref number 
-            var refNum = refNumberList[i];
-            var lc = {};
-            //if (status !== "") {
-//get contract of the ref num
-            var exporterAcct = "";
-            var importerAcct = "";
-            var expiryDate = "";
-            var status = "";
-            var globalErrorId = "";
-            getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
-                globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-                //console.log(globalErrorId);
-                if (globalErrorId === "010000") {
-                    importerAcct = contract.Content.ServiceResponse.LC_Details.LC_record.importer_account_num;
-                    exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
-                    expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
-                    status = contract.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
-                    lc = contract.Content.ServiceResponse.LC_Details.LC_record;
-
-                }
-
-            });
-            lc = JSON.stringify(lc);
-
-            var operations = operationMatch(status, usertype); //calling this method from utility/operationMatch.js
-            var operation = operations[0];
-            var url = operations[1];
-            var $row = $('<tr></tr>');
-            var href = "/SMUtBank_TradeFinance/" + usertype + "/" + url + ".html?action=" + url + "&refNum=" + refNum;
-
-            var links = "";
-            getBOLUrl(userId, PIN, OTP, refNum, function (data) {
-                var globalErrorId = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-                if (globalErrorId === "010000") {
-                    links = data.Content.ServiceResponse.BOL_Details.BOL_record_output.BOL_Link;
-                }
-
-            });
-
-            var getReceipt = ""
-            if (bcReceipt != null) {
-                getReceipt = bcReceipt[refNum];
+        var links = "";
+        getBOLUrl(userId, PIN, OTP, refNum, function (data) {
+            var globalErrorId = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+            if (globalErrorId === "010000") {
+                links = data.Content.ServiceResponse.BOL_Details.BOL_record_output.BOL_Link;
             }
-            var button = "";
-            button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
-                    + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-bcreceipt='" + getReceipt + "' data-lc='"
-                    + lc + "' data-links='" + links + "' data-status='" + status + "' data-refnum='" + refNum + "'>"
+
+        });
+
+        var getReceipt = ""
+        if (bcReceipt != null) {
+            getReceipt = bcReceipt[refNum];
+        }
+        var button = "";
+        button = "<button type='button'  class='btn btn-primary lcDetails' data-action= '"
+                + operation + "' data-toggle='modal' data-target='#lcDetailsModal' data-bcreceipt='" + getReceipt + "' data-lc='"
+                + lc + "' data-links='" + links + "' data-status='" + status + "' data-refnum='" + refNum + "'>"
+                + convertToDisplay(operation, " ") + "</button>";
+
+        if (operation === "modify lc" || operation === "submit bol") {
+            button = "<button type='button'  data-refnum="
+                    + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
                     + convertToDisplay(operation, " ") + "</button>";
-
-            if (operation === "modify lc" || operation === "submit bol") {
-                button = "<button type='button'  data-refnum="
-                        + refNum + " class='btn btn-primary homeButton' id='" + url + "'>"
-                        + convertToDisplay(operation, " ") + "</button>";
-            }
-
-            var $button = $(button);
-            $button.addClass(buttonAssigned(operation)[0]);
-            var $refNumCell = $('<td></td>');
-            $refNumCell.append(refNum);
-            $row.append($refNumCell);
-
-            if (usertype === "importer") {
-                var $exporterAcctCell = $('<td>' + exporterAcct + '</td>');
-                $row.append($exporterAcctCell);
-            } else {
-                var $importerAcctCell = $('<td>' + importerAcct + '</td>');
-                $row.append($importerAcctCell);
-            }
-            var $expiryDateCell = $('<td>' + expiryDate + '</td>');
-            $row.append($expiryDateCell);
-            var $statusCell = $('<td id="status" class="font-bold">' + convertToDisplay(status, " ") + '</td>');
-            $statusCell.addClass(buttonAssigned(operation)[1]);
-            $row.append($statusCell);
-            var $buttonCell = $('<td></td>');
-            $buttonCell.append($button);
-            $row.append($buttonCell);
-            $('#latestLCs').append($row);
-            //}
-
         }
+
+        var $button = $(button);
+        $button.addClass(buttonAssigned(operation)[0]);
+        var $refNumCell = $('<td></td>');
+        $refNumCell.append(refNum);
+        $row.append($refNumCell);
+
+        if (usertype === "importer") {
+            var $exporterAcctCell = $('<td>' + exporterAcct + '</td>');
+            $row.append($exporterAcctCell);
+        } else {
+            var $importerAcctCell = $('<td>' + importerAcct + '</td>');
+            $row.append($importerAcctCell);
+        }
+        var $expiryDateCell = $('<td>' + expiryDate + '</td>');
+        $row.append($expiryDateCell);
+        var $statusCell = $('<td id="status" class="font-bold">' + convertToDisplay(status, " ") + '</td>');
+        $statusCell.addClass(buttonAssigned(operation)[1]);
+        $row.append($statusCell);
+        var $buttonCell = $('<td></td>');
+        $buttonCell.append($button);
+        $row.append($buttonCell);
+        $('#latestLCs').append($row);
+        //}
+
+    }
     }
 
 }

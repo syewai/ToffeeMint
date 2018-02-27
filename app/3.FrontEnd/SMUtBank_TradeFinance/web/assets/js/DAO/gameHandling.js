@@ -23,7 +23,7 @@ function getGameQuestion(userId, PIN, OTP, questionId, callback) {
     };
     var content = JSON.stringify(contentObj);
     $.ajax({
-        async: false,
+        //async: false,
         type: 'POST',
         url: "http://smu.tbankonline.com/SMUtBank_API/Gateway?Header=" + header + "&Content=" + content,
         dataType: 'json',

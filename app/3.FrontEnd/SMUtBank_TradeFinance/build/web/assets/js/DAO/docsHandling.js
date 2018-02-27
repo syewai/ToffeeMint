@@ -62,7 +62,7 @@ function getBOLUrl(userId, PIN, OTP, refNum, callback) {//importer
     var content = JSON.stringify(contentObj);
     
     $.ajax({
-        async: false,
+        //async: false,
         type: 'POST',
         url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
         //type: 'GET',

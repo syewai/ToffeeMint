@@ -245,16 +245,14 @@ and open the template in the editor.
             });
 
             $("#button19").click(function () {
-                getAllBlockchainReceipt("toffeemint2", "123456", "999999", function (data) {
-                    if (data != null) {
-                        //bcReceipt = data[0][1];
-                        console.log(typeof (data));
-
-                    }
-                });
+               doAsyncOp();
             });
 
-
+            async function doAsyncOp() {
+                const stuff = await getRefNumListAsync("toffeemint2", "123456", "999999");
+               console.log(stuff);
+                return stuff;
+            };
 
 
         </script>

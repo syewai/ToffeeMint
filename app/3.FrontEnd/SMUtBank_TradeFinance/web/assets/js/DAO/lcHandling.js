@@ -195,7 +195,7 @@ function modifyLc(userId, PIN, OTP, refNum, contract, callback) {//importer
     });
 }
 
-function getLcDetails(userId, PIN, OTP, refNum, callback) {
+async function getLcDetails(userId, PIN, OTP, refNum, args) {
     
     var headerObj = {
         Header: {
@@ -214,19 +214,45 @@ function getLcDetails(userId, PIN, OTP, refNum, callback) {
         }
     };
     var content = JSON.stringify(contentObj);
-    
-    $.ajax({
-        async: false,
-        type: 'POST',
-        url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
-        //url: apiUrlBC + "getContract?Header="+header+"&refNum=" + refNum,
-        //type: 'GET',
-        //url: apiUrlBC + "getContract?Header="+header+"&refNum=" + refNum,
-        dataType: 'json',
-        success: callback
+    let result;
+    try {
+        result = await $.ajax({
+            type: 'POST',
+            url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
+            data: args
+        });
 
-    });
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+   
+}
+// async function returns a promise
 
+async function getRefNumListAsync(userId, PIN, OTP,args) {
+    var headerObj = {
+        Header: {
+            serviceName: "getLetterOfCreditRefNumList",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl + '?Header=' + header + '&ConsumerID=TF',
+            type: 'GET',
+            data: args
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function getRefNumList(userId, PIN, OTP, callback) {
@@ -243,7 +269,7 @@ function getRefNumList(userId, PIN, OTP, callback) {
 
     
     $.ajax({
-        async: false,
+        //async: false,
         type: 'GET',
         url: apiUrl + '?Header=' + header + '&ConsumerID=TF',
         dataType: 'json',
@@ -275,15 +301,18 @@ function getBlockchainReceipt(userId, PIN, OTP,refNum,callback) {
 
 }
 
-function getAllBlockchainReceipt(userId, PIN, OTP,callback) {
-  
-    $.ajax({
-        async: false,
-        type: 'GET',
-        url: apiEvents+ 'LCCreated?refNum',
-        dataType: 'json',
-        success: callback
+async function getAllBlockchainReceipt(userId, PIN, OTP,callback) {
+   
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiEvents+ 'LCCreated?refNum',
+            type: 'GET',
+            data: callback
+        });
 
-    });
-
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 }
