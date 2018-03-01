@@ -76,6 +76,8 @@ and open the template in the editor.
         <script src="assets/js/DAO/apiUrl.js"></script>
         <script src="assets/js/DAO/docsHandling.js"></script>
         <script src="assets/js/DAO/lcHandling.js"></script>
+        <script src="assets/js/Utility/lcOperations.js"></script>
+        <script src="assets/js/Utility/formValidation.js"></script>
         <script src="assets/js/DAO/userHandling.js"></script>
         <script src="assets/js/DAO/statusHandling.js"></script>
         <script src="assets/js/DAO/gameHandling.js"></script>
@@ -249,9 +251,11 @@ and open the template in the editor.
             });
 
             async function doAsyncOp() {
-                const stuff = await getRefNumListAsync("toffeemint2", "123456", "999999");
-               console.log(stuff);
-                return stuff;
+                const homepageD = await getHomepageData();
+               var dataObj = JSON.parse(homepageD);
+               console.log(dataObj);
+              
+               
             };
 
 

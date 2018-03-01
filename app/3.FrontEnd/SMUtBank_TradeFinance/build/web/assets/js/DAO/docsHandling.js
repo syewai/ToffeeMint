@@ -40,7 +40,7 @@ function uploadBOL(userId, PIN, OTP, refNum, billOfLadingURL, callback) {//impor
     });
 }
 
-function getBOLUrl(userId, PIN, OTP, refNum, callback) {//importer
+/*function getBOLUrl(userId, PIN, OTP, refNum, callback) {//importer
 
     var headerObj = {
         Header: {
@@ -71,7 +71,39 @@ function getBOLUrl(userId, PIN, OTP, refNum, callback) {//importer
         success: callback
 
     });
+}*/
+
+
+async function getBOLUrl(userId, PIN, OTP, refNum, callback) {
+    var headerObj = {
+        Header: {
+            //serviceName: "modifyLetterOfCredit",
+            serviceName: "getBillOfLadingURL",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    var contentObj = {
+        Content: {
+            referenceNumber: refNum,
+            mode: "BC"
+        }
+    };
+    var content = JSON.stringify(contentObj);
+   
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
+            type: 'POST',
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 }
-
-
-

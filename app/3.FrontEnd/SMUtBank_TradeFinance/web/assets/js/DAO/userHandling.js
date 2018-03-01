@@ -22,7 +22,7 @@ function User(userID, PIN, OTP, usertype, customerID) {
     this.usertype = usertype;
     this.customerID = customerID;
 }
-function getCustomerDeatils(userId, PIN, OTP, callback) { //get address(state, country, city), get customer type(retail/corporate), get phone num, get bank id 
+async function getCustomerDeatils(userId, PIN, OTP, callback) { //get address(state, country, city), get customer type(retail/corporate), get phone num, get bank id 
 
     var headerObj = {
         Header: {
@@ -34,17 +34,23 @@ function getCustomerDeatils(userId, PIN, OTP, callback) { //get address(state, c
     };
     var header = JSON.stringify(headerObj);
 
-    $.ajax({
-        async: false,
-        type: 'POST',
-        url: apiUrl + '?Header=' + header,
-        dataType: 'json',
-        success: callback
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl + '?Header=' + header,
+            type: 'POST',
+            data: callback
+        });
 
-    });
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 
 }
-function getCustomerAccounts(userId, PIN, OTP, callback) { //get acct id, get currency
+
+
+async function getCustomerAccounts(userId, PIN, OTP, callback) { //get acct id, get currency
 
     var headerObj = {
         Header: {
@@ -55,19 +61,21 @@ function getCustomerAccounts(userId, PIN, OTP, callback) { //get acct id, get cu
         }
     };
     var header = JSON.stringify(headerObj);
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl + '?Header=' + header,
+            type: 'POST',
+            data: callback
+        });
 
-    $.ajax({
-        async: false,
-        type: 'POST',
-        url: apiUrl + '?Header=' + header,
-        dataType: 'json',
-        success: callback
-
-    });
-
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-function protectUser() {
+async function protectUser() {
     var getUserItem = sessionStorage.getItem('user');
     var user = $.parseJSON(getUserItem);
     var errorMsg = "";
@@ -84,13 +92,11 @@ function protectUser() {
     var globalErrorID = "";
     var errorMsg = "";
     //passing username, pin,otp to call login web service
-    getCustomerDeatils(userId, PIN, OTP, function (data) {
+    const customer = await getCustomerDeatils(userId, PIN, OTP);
         //get error id to check existance of the user
-        errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorDetails;
-        globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    errorMsg = customer.Content.ServiceResponse.ServiceRespHeader.ErrorDetails;
+    globalErrorID = customer.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
 
-
-    });
     if (globalErrorID === "") {
         var error = {errorMsg: "No such user"};
         sessionStorage.setItem('error', JSON.stringify(error));

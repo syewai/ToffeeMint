@@ -94,15 +94,7 @@
                 });
                 $("#showOTPBtn").click(function () {
 
-                    var generateOTP = createSMSOTP();
-                    //console.log(generateOTP);
-                    if (generateOTP !== undefined) {
-                        if (generateOTP.hasOwnProperty("errorMsg")) {
-
-                            var errorMsg = generateOTP.errorMsg;
-                            $("#authError").html(errorMsg);
-                        }
-                    }
+                  createSMSOTP();
 
 
                 });
@@ -111,7 +103,7 @@
 
 
             });
-
+            
         </script>
         <script src="assets/js/jquery.min.js"></script>
         <!-- Bootstrap -->

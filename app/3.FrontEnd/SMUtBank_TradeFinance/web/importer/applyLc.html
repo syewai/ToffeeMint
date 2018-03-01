@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
     <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
@@ -59,11 +60,13 @@
                             </div>
                             <div class="form-group">
                                 <h4>Bank</h4>
-                                <p id="bankId"></p> <!--get bank id from customerDetails-->
+                                <p id="bankId"></p>
+                                <!--get bank id from customerDetails-->
                             </div>
                             <div class="form-group">
                                 <h4>Account Number</h4>
-                                <p id="accountId"></p>   <!--getAccountNumber-->
+                                <p id="accountId"></p>
+                                <!--getAccountNumber-->
                             </div>
                         </div>
                     </section>
@@ -79,7 +82,7 @@
                         </header>
                         <div class="panel-body">
                             <div class="form-group">
-                                <input id="goodsDesc"  type="text"  class="form-control goodsDesc" name="goodsDesc" data-required="true" required>
+                                <input id="goodsDesc" type="text" class="form-control goodsDesc" name="goodsDesc" data-required="true" required>
                             </div>
                         </div>
                     </section>
@@ -115,9 +118,9 @@
                             <div class="form-group">
                                 <div class="">
                                     <label>Ship Destination</label>
-                                    <select name = 'shipDestination' id='shipDestination' class="form-control m-b ">
+                                    <select name='shipDestination' id='shipDestination' class="form-control m-b ">
                                         <option value="">--Select a ship destination below--</option>
-                                        
+
                                     </select>
                                 </div>
                             </div>
@@ -146,60 +149,69 @@
 
         </form>
         <script type="text/javascript">
-
-            //get all countries
-            var allCountries = getAllCountries();
-            var countriesHTML = "";
-            for (var i = 0; i < allCountries.length; i++) {
-                var country = allCountries[i];
-                countriesHTML += "<option value='" + allCountries[i] + "'>" + allCountries[i] + "</option>";
-            }
-            $("#shipDestination").append(countriesHTML);
- 
-            var allExporterDetails = getExporterDetails();
-            //console.log(allExporterDetails);
-            var optionHTML = "";
-            for (var i = 0; i < allExporterDetails.length; i++) {
-                var userCredential = allExporterDetails[i];
-                //console.log(userCredential["userId"]);
-                optionHTML += "<option value='" + userCredential['customerId'] + "'>" + userCredential['userId'] + "</option>";
-            }
-            $("#exporterId").append(optionHTML);
-            var elem = document.getElementById("exporterId");
-            elem.onchange = function () {
-
-                document.getElementById("printExpId").innerHTML = $('#exporterId option:selected').val();
-                var elements = document.getElementsByClassName("formHidden");
-                for (var i = 0, length = elements.length; i < length; i++) {
-                    elements[i].style.display = (elem.value == "") ? "none" : "block";
+            $(document).ready(function() {
+                //get all countries
+                var allCountries = getAllCountries();
+                var countriesHTML = "";
+                for (var i = 0; i < allCountries.length; i++) {
+                    var country = allCountries[i];
+                    countriesHTML += "<option value='" + allCountries[i] + "'>" + allCountries[i] + "</option>";
                 }
-                var exporterId = $('#exporterId option:selected').val();
-                var bankId = "";
-                var accountId = "";
+                $("#shipDestination").append(countriesHTML);
 
+                var allExporterDetails = getExporterDetails();
+                //console.log(allExporterDetails);
+                var optionHTML = "";
                 for (var i = 0; i < allExporterDetails.length; i++) {
                     var userCredential = allExporterDetails[i];
-                    if (userCredential["customerId"] === exporterId) {
-                        bankId = userCredential["bankId"];
-
-                        accountId = userCredential["accountId"];
-
-                    }
+                    //console.log(userCredential["userId"]);
+                    optionHTML += "<option value='" + userCredential['customerId'] + "'>" + userCredential['userId'] + "</option>";
                 }
-                $("#accountId").html(accountId);
-                $("#bankId").html(bankId);
-                var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
-                $("#loginForm").append(exporterAcctInput);
-                
-                //var randomCountry = countries[Math.floor(Math.random() * countries.length)];
-                //console.log(randomCountry);
-               //var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + randomCountry + "' >";
-                //$("#loginForm").append(countryInput);
+                $("#exporterId").append(optionHTML);
+                var elem = document.getElementById("exporterId");
+                elem.onchange = function() {
 
-            };
+                    document.getElementById("printExpId").innerHTML = $('#exporterId option:selected').val();
+                    var elements = document.getElementsByClassName("formHidden");
+                    for (var i = 0, length = elements.length; i < length; i++) {
+                        elements[i].style.display = (elem.value == "") ? "none" : "block";
+                    }
+                    var exporterId = $('#exporterId option:selected').val();
+                    var bankId = "";
+                    var accountId = "";
+
+                    for (var i = 0; i < allExporterDetails.length; i++) {
+                        var userCredential = allExporterDetails[i];
+                        if (userCredential["customerId"] === exporterId) {
+                            bankId = userCredential["bankId"];
+
+                            accountId = userCredential["accountId"];
+
+                        }
+                    }
+                    $("#accountId").html(accountId);
+                    $("#bankId").html(bankId);
+                    var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
+                    $("#loginForm").append(exporterAcctInput);
+
+                    //var randomCountry = countries[Math.floor(Math.random() * countries.length)];
+                    //console.log(randomCountry);
+                    //var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + randomCountry + "' >";
+                    //$("#loginForm").append(countryInput);
+
+                };
 
 
+                $("#applyLcButton").click(function() {
+                    applyLcOperation(); // calling from lcOperations.js
+                });
+                $("#cancelButton").click(function() {
 
+                    window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
+
+                });
+
+            })
         </script>
 
     </section>
@@ -210,7 +222,7 @@
 <!-- Bootstrap -->
 <script src="../assets/js/bootstrap.js"></script>
 <!-- App -->
-<script src="../assets/js/app.js"></script> 
+<script src="../assets/js/app.js"></script>
 <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
 
 <script type="text/javascript" src="../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
@@ -222,36 +234,13 @@
 
 
 <script type="text/javascript">
-            $('.form_date').datetimepicker({
-                weekStart: 1,
-                todayBtn: 1,
-                autoclose: 1,
-                todayHighlight: 1,
-                startView: 2,
-                minView: 2,
-                forceParse: 0
-            });
-</script>
-<script type="text/javascript">
-    $("#applyLcButton").click(function () {
-
-        var applyLc = applyLcOperation(); //caling this method from assets/js/Utility/lcOperations.js
-        if (applyLc !== undefined) {
-            if (applyLc.hasOwnProperty("errorMsg")) {
-
-                var errorMsg = applyLc.errorMsg;
-                $("#authError").html(errorMsg);
-            }
-        }
-
-    });
-    $("#cancelButton").click(function () {
-
-        window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
-
+    $('.form_date').datetimepicker({
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
     });
 </script>
-
-
-
-

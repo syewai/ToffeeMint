@@ -46,9 +46,10 @@ function LetterOfCredits(importerAccount,
             this.mode = mode
 }
 
-function applyLc(userId, PIN, OTP, refNum, lc, callback) {
 
-    var headerObj = {
+
+async function applyLcApi(userId, PIN, OTP, lc, callback) {
+   var headerObj = {
         Header: {
             serviceName: "applyLetterOfCredit",
             userID: userId,
@@ -62,18 +63,21 @@ function applyLc(userId, PIN, OTP, refNum, lc, callback) {
         Content: lc
     };
     var content = JSON.stringify(contentObj);
-    $.ajax({
-        async: false,
-        type: 'GET',
-        url: apiUrlBC + 'createContract?Header=' + header + '&refNum=' + refNum + '&contract=' + content,
-        dataType: 'json',
-        success: callback
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl +"?Header="+header+"&Content="+content+"&ConsumerID=TF",
+            type: 'POST',
+            data: callback
+        });
 
-    });
-
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-function applyLcApi(userId, PIN, OTP, lc, callback) {
+/*function applyLcApi(userId, PIN, OTP, lc, callback) {
 
 
     var headerObj = {
@@ -100,9 +104,9 @@ function applyLcApi(userId, PIN, OTP, lc, callback) {
         success: callback
     });
 
-}
+}*/
 
-function amendLc(userId, PIN, OTP, amendments, callback) { //exporter
+async function amendLc(userId, PIN, OTP, amendments, callback) { //exporter
 
     var headerObj = {
         Header: {
@@ -119,17 +123,19 @@ function amendLc(userId, PIN, OTP, amendments, callback) { //exporter
         Content: amendments
     };
     var content = JSON.stringify(contentObj);
+    
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl +"?Header="+header+"&Content="+content+"&ConsumerID=TF",
+            type: 'POST',
+            data: callback
+        });
 
-    $.ajax({
-        async: false,
-        type: 'POST',
-        url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
-        //type: 'GET',
-        //url: apiUrlBC + "amendLC?Header=" + header + "&refNum=" + refNum + "&amendments=" + content,
-        dataType: 'json',
-        success: callback
-
-    });
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 
 }
 

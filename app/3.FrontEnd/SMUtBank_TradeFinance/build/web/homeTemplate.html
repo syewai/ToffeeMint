@@ -1,39 +1,5 @@
 <!DOCTYPE html>
 
-<script>
-    
-
-    protectUser(); // calling from userHandling
-    var getUserItem = sessionStorage.getItem('user');
-    var user = $.parseJSON(getUserItem);
-    //console.log(user.customerID);
-    $('#username').html("Welcome back, " + user.userID);
-    var usertype = user.usertype;
-    $('#usertype').html(convertToDisplay(usertype," ")+" (Customer ID - "+user.customerID+")");
-    var colHeader = "Importer";
-    if(usertype === "importer"){
-        colHeader = "Exporter";
-    }
-    $('#roleTh').html(colHeader+" account");
-    $("#lcDetailsModal").load("../lcDetailsModal.html");
-    //e.preventDefault();
-    
-    
-</script>
-<script type="text/javascript">
-$( document ).ready(function() {
-   homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
-});
-      
-
-</script>
-
-
-
-<script>
-
-</script>
-
 <section class="vbox">
     <section class="scrollable">
 
@@ -95,7 +61,26 @@ $( document ).ready(function() {
 
 </div>
 <script>
-    loadLcDetailsModal(); //this method is called from lcOperation.js
+ $( document ).ready(function() {
+    protectUser(); // calling from userHandling
+    var getUserItem = sessionStorage.getItem('user');
+    var user = $.parseJSON(getUserItem);
+    //console.log(user.customerID);
+    $('#username').html("Welcome back, " + user.userID);
+    var usertype = user.usertype;
+    $('#usertype').html(convertToDisplay(usertype," ")+" (Customer ID - "+user.customerID+")");
+    var colHeader = "Importer";
+    if(usertype === "importer"){
+        colHeader = "Exporter";
+    }
+    $('#roleTh').html(colHeader+" account");
+    $("#lcDetailsModal").load("../lcDetailsModal.html");
+   homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
+   loadLcDetailsModal(); //this method is called from lcOperation.js
+  
+});
+      
+    
 
 </script>
 
