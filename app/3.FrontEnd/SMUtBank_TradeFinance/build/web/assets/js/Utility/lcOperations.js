@@ -1,12 +1,15 @@
-//var getUserItem = sessionStorage.getItem('user');
-//var user = $.parseJSON(getUserItem);
 var userId = sessionStorage.userID;
 var PIN = sessionStorage.PIN;
 var OTP = sessionStorage.OTP;
-//var userType = sessionStorage.usertype;
-//this function handle the ui logic of apply lc page
-async function applyLcOperation() {
 
+/*
+ * 
+ * Section 1 - Relevant functions for Apply, Amend and Modify LC
+ * 
+ * */
+
+//this function handle the ui logic of Apply lc page
+async function applyLcOperation() {
     var exporterDetails = getExporterDetails();
     if (exporterDetails.length > 0) {
         for (var i in exporterDetails) {
@@ -43,11 +46,9 @@ async function applyLcOperation() {
     var shipDate = document.getElementById("shipDate").value; // for testing purpose, Remember to change it!!
 
     var shipPeriod = document.getElementById("shipPeriod").value;
-    //console.log(shipDate);
     var goodsDescription = document.getElementById("goodsDesc").value;
     var docsRequired = "none";
     var additionalConditions = "";
-    //document.getElementById("additionalConditions").value;
     var senderToReceiverInfo = "none";
     var mode = "BC";
     if (!(exporterAccount.length > 0)) {
@@ -106,33 +107,438 @@ async function applyLcOperation() {
     errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
     globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     if (globalErrorID !== "010000") {
-        //calling this method from assets/js/DAO/lcHandling.js
-        //return {errorMsg: errorMsg};
         $("#authError").html(errorMsg);
     } else if (globalErrorID === "010041") {
         //OTP expiry error - request new otp
 
         buildSMSOTP();
     } else {
-        //submit lc application --> for now get ref num and upload lc to bc
+        //lc submission message & redirect to homepage
         $("#authError").html("lc application submitted");
 
         window.location.replace(
-            "/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html"
+            "/SMUtBank_TradeFinance/" +
+            sessionStorage.usertype +
+            "/" +
+            sessionStorage.usertype +
+            ".html"
         );
-
     }
 }
 
-/* call web service used in homepage and consolidate necessary data in homepage data object*/
+//This function handles UI logic of amend lc page
+async function amendLcOps() {
+    /*Get ref num from url */
+    var refNum = getQueryVariable("refNum");
+    var importerAccount = ""; //no change
+    var exporterAccount = ""; //no change
+    var expiryDate = "";
+    var expiryPlace = "";
+    var confirmed = "";
+    var revocable = "";
+    var availableBy = "";
+    var termDays = "";
+    var amount = "";
+    var currency = ""; //no change
+    var applicableRules = "";
+    var partialShipments = "";
+    var shipDestination = "";
+    var shipDate = "";
+    var shipPeriod = "";
+    var goodsDescription = "";
+    var docsRequired = "";
+    var additionalConditions = "";
+    var senderToReceiverInfo = "";
+    var mode = "BC"; //no change
+    
+    /*Part 1 - call getLcDetails to prefilled amendments*/
+    const lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
+    var globalErrorId =
+        lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    var fields = {};
+    if (globalErrorId === "010000") {
+        //Fetch lc details, store in fields object
+        fields = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
+        importerAccount = fields.importer_account_num; //no change
+        //console.log(fields);
+        exporterAccount = fields.exporter_account_num; //no change
+        expiryDate = fields.expiry_date; //no change
+        expiryPlace = fields.expiry_place;
+        confirmed = fields.confirmed;
+        revocable = fields.revocable;
+        availableBy = fields.available_by;
+        termDays = fields.term_days;
+        amount = fields.amount;
+        currency = fields.currency; //no change
+        applicableRules = fields.applicable_rules;
+        partialShipments = fields.partial_shipments;
+        shipDestination = fields.ship_destination;
+        shipDate = fields.ship_date;
+        shipPeriod = fields.ship_period;
+        goodsDescription = fields.goods_description;
+        docsRequired = fields.docs_required;
+        additionalConditions = fields.additional_conditions;
+        senderToReceiverInfo = fields.sender_to_receiver_info;
+        $("#goodsDescription").attr("placeholder", goodsDescription);
+        $("#amount").attr("placeholder", amount);
+        $("#expiryDate").attr("placeholder", expiryDate);
+        $("#shipPeriod").attr("placeholder", shipPeriod);
+        $('#shipPeriod option[value="' + shipPeriod + '"]').insertBefore(
+            '#shipPeriod option[value=""]'
+        );
+        $("#shipPeriod").val($("#shipPeriod option:first").val());
+    }
+    $("#amendLcButton").click(function() {
+        shipPeriod = document.getElementById("shipPeriod").value;
+        if (shipPeriod === "") {
+            shipPeriod = document.getElementById("shipPeriod").placeholder;
+        }
+        expiryDate = document.getElementById("expiryDate").value;
+        if (expiryDate === "") {
+            expiryDate = document.getElementById("expiryDate").placeholder;
+        } else {
+            if (moment(expiryDate, "YYYY-MM-DD", true).format() === "Invalid date") {
+                return {
+                    errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"
+                };
+            }
+        }
+        amount = document.getElementById("amount").value;
+        if (amount === "") {
+            amount = document.getElementById("amount").placeholder;
+        } else {
+            if (isNaN(amount)) {
+                return { errorMsg: "Amount must be numeric" };
+            }
+        }
+        goodsDescription = document.getElementById("goodsDescription").value;
+        if (goodsDescription === "") {
+            goodsDescription = document.getElementById("goodsDescription")
+                .placeholder;
+        }
+        var lc = {
+            referenceNumber: refNum,
+            importerAccount: importerAccount,
+            exporterAccount: exporterAccount,
+            expiryDate: expiryDate,
+            expiryplace: expiryPlace,
+            confirmed: confirmed,
+            revocable: revocable,
+            availableBy: availableBy,
+            termDays: termDays,
+            amount: amount,
+            currency: currency,
+            applicableRules: applicableRules,
+            partialShipments: partialShipments,
+            shipDestination: shipDestination,
+            shipDate: shipDate,
+            shipPeriod: shipPeriod,
+            goodsDescription: goodsDescription,
+            docsRequired: docsRequired,
+            additionalConditions: additionalConditions,
+            senderToReceiverInfo: senderToReceiverInfo,
+            mode: mode
+        };
+        
+        processAmendments(lc); // call amendLc Async function in another async function
+
+    });
+    $("#cancelButton").click(function() {
+        window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
+    });
+}
+
+//This function call amend lc web service and retrieve its response
+async function processAmendments(lc) {
+    const amendments = await amendLc(userId, PIN, OTP, lc);
+
+    var globalErrorID = amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    var errorMsg = amendments.Content.ServiceResponse.ServiceRespHeader.ErrorText;
+    var amendmentsDetails = {};
+    if (globalErrorID !== "010000") { //calling this method from assets/js/DAO/lcHandling.js
+        //return {errorMsg: errorMsg};
+        $("#authError").html(errorMsg);
+    } else if (globalErrorID === "010041") { //OTP expiry error - request new otp
+
+        buildSMSOTP();
+    } else { //submit lc application --> for now get ref num and upload lc to bc
+        $("#authError").html("lc application submitted");
+        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
+    }
+}
+
+//This function handle UI logic of modify lc page
+async function modifyLcOps() {
+    var refNum = getQueryVariable("refNum");
+    var importerAccount = ""; //no change
+    var exporterAccount = ""; //no change
+    var expiryDate = "";
+    var expiryPlace = "";
+    var confirmed = "";
+    var revocable = "";
+    var availableBy = "";
+    var termDays = "";
+    var amount = "";
+    var currency = ""; //no change
+    var applicableRules = "";
+    var partialShipments = "";
+    var shipDestination = "";
+    var shipDate = "";
+    var shipPeriod = "";
+    var goodsDescription = "";
+    var docsRequired = "";
+    var additionalConditions = "";
+    var senderToReceiverInfo = "";
+    var mode = "BC"; //no change
+
+    var errorMsg;
+    var globalErrorID;
+    var allNecessaryFields = [
+        "expiry_date",
+        "amount",
+        "ship_date",
+        "goods_description",
+        "additional_conditions",
+        "importer_account_num",
+        "exporter_account_num",
+        "expiry_place",
+        "confirmed",
+        "revocable",
+        "available_by",
+        "term_days",
+        "currency",
+        "applicable_rules",
+        "partial_shipments",
+        "ship_destination",
+        "ship_period",
+        "sender_to_receiver_info",
+        "docs_required"
+    ];
+    var allNecessaryFieldsName = [
+        "expiryDate",
+        "amount",
+        "shipDate",
+        "goodsDescription",
+        "additionalConditions",
+        "importerAccountNum",
+        "exporterAccountNum",
+        "expiryPlace",
+        "confirmed",
+        "revocable",
+        "availableBy",
+        "termDays",
+        "currency",
+        "applicableRules",
+        "partialShipments",
+        "shipDestination",
+        "shipPeriod",
+        "senderToReceiverInfo",
+        "docsRequired"
+    ];
+    var amendmentDetails = null;
+    var originalLc = null;
+    /*Part 1 - call getLcDetails to prefilled amendments*/
+    const lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
+    var globalErrorId =
+        lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    //console.log(globalErrorId);
+
+    if (globalErrorId === "010000") {
+        //Fetch lc details, store in fields object
+        var fields = {};
+        fields = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
+        importerAccount = fields.importer_account_num; //no change
+        //console.log(fields);
+        exporterAccount = fields.exporter_account_num; //no change
+        expiryDate = fields.expiry_date; //no change
+        expiryPlace = fields.expiry_place;
+        confirmed = fields.confirmed;
+        revocable = fields.revocable;
+        availableBy = fields.available_by;
+        termDays = fields.term_days;
+        amount = fields.amount;
+        currency = fields.currency; //no change
+        applicableRules = fields.applicable_rules;
+        partialShipments = fields.partial_shipments;
+        shipDestination = fields.ship_destination;
+        shipDate = fields.ship_date;
+        shipPeriod = fields.ship_period;
+        goodsDescription = fields.goods_description;
+        docsRequired = fields.docs_required;
+        additionalConditions = fields.additional_conditions;
+        senderToReceiverInfo = fields.sender_to_receiver_info;
+    }
+
+    var originalAmount = "";
+    var originalDesc = "";
+    var originalExpiryDate = "";
+    var originalShipPeriod = "";
+    /*Part 2 - call getLcAmendments function, fetch expiryDate, amount, shipPeriod and originalDesc from amendments */
+    const amendments = await getLcAmendments(userId, PIN, OTP, refNum);
+    var globalErrorId =
+        amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    if (globalErrorId === "010000") {
+        var fields = {};
+        fields = amendments.Content.ServiceResponse.LC_Amend.LC_Amend;
+        amendmentDetails = fields;
+        originalExpiryDate = fields.expiry_date; //no change
+        originalAmount = fields.amount;
+        originalShipPeriod = fields.shipPeriod;
+        originalDesc = fields.goods_description;
+
+    }
+
+    /*Part 3- compare original lc and amendments */
+    if (amendmentDetails !== null && originalLc !== null) {
+        for (var field in amendmentDetails) {
+            /*convert attribute format from under_score to camelCase (ship_period--> shipPeriod).
+            This is because all "write" methd(applyLc, amendLc) use camelCase parameter, 
+            all "read" method(getLcDetails) use under_score parameter*/
+            var fieldCamel = attributeMapping(field);
+            var originalValue = originalLc[field];
+            var amendedValue = amendmentDetails[field];
+            if (fieldCamel === "shipPeriod") {
+                //swap current value to be the first value in the dropdown list
+                $('#shipPeriod option[value="' + shipPeriod + '"]').insertBefore(
+                    '#shipPeriod option[value=""]'
+                );
+                //display current option in dropdown list
+                $("#shipPeriod").val($("#shipPeriod option:first").val());
+            }
+            //display the original value of each filed as a placeholder
+            $("#" + fieldCamel).attr("placeholder", originalValue);
+            //console.log(fieldCamel);
+            var suggestion = "";
+            if (originalValue !== amendedValue) {
+                /*if field has been changed, indicating the amended value below input box */
+                if (amendedValue !== null) {
+                    var p =
+                        "<p class='btn-danger'> Exporter has suggested to amend : " +
+                        amendedValue +
+                        "</p>";
+                    $("#" + fieldCamel + "-p").append(p);
+                }
+            }
+        }
+    }
+    // if user clicks modifyLc button,
+    $("#modifyLcButton").click(function() {
+        //retrieve shipPeriod, expiryDate, amount and goods description from user input.
+        shipPeriod = document.getElementById("shipPeriod").value;
+        //if user did not enter any input, retrieve placeholder as amended value
+        if (shipPeriod === "") {
+            shipPeriod = document.getElementById("shipPeriod").placeholder;
+        }
+        expiryDate = document.getElementById("expiryDate").value;
+        if (expiryDate === "") {
+            expiryDate = document.getElementById("expiryDate").placeholder;
+        } else {
+            if (moment(expiryDate, "YYYY-MM-DD", true).format() === "Invalid date") {
+                return {
+                    errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"
+                };
+            }
+        }
+        amount = document.getElementById("amount").value;
+        if (amount === "") {
+            amount = document.getElementById("amount").placeholder;
+        } else {
+            if (isNaN(amount)) {
+                return { errorMsg: "Amount must be numeric" };
+            }
+        }
+        goodsDescription = document.getElementById("goodsDescription").value;
+        if (goodsDescription === "") {
+            goodsDescription = document.getElementById("goodsDescription")
+                .placeholder;
+        }
+
+        //store all values of lc details into an object
+        var lc = {
+            referenceNumber: refNum,
+            importerAccount: importerAccount,
+            exporterAccount: exporterAccount,
+            expiryDate: expiryDate,
+            expiryplace: expiryPlace,
+            confirmed: confirmed,
+            revocable: revocable,
+            availableBy: availableBy,
+            termDays: termDays,
+            amount: amount,
+            currency: currency,
+            applicableRules: applicableRules,
+            partialShipments: partialShipments,
+            shipDestination: shipDestination,
+            shipDate: shipDate,
+            shipPeriod: shipPeriod,
+            goodsDescription: goodsDescription,
+            docsRequired: docsRequired,
+            additionalConditions: additionalConditions,
+            senderToReceiverInfo: senderToReceiverInfo,
+            mode: mode
+        };
+        /* call processModification --> as modifylc() is async function , only another async function can access its returned value.
+         $("#modifyLcButton").click(function() {} is sync function, hence get value from modifyLc directly */
+        processModification(lc);
+    });
+    $("#cancelButton").click(function() {
+        window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
+    });
+}
+//This function call modify lc web service and retrieve its response
+async function processModification(lc) {
+
+    const modification = await modifyLc(userId, PIN, OTP, lc);
+
+    var errorMsg = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.ErrorText;
+    var globalErrorID = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
+    if (globalErrorID !== "010000") { //calling this method from assets/js/DAO/lcHandling.js
+        //return {errorMsg: errorMsg};
+        $("#authError").html(errorMsg);
+    } else if (globalErrorID === "010041") { //OTP expiry error - request new otp
+
+        buildSMSOTP();
+    } else { //submit lc application --> for now get ref num and upload lc to bc
+        $("#authError").html("lc details modified");
+        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
+    }
+}
+/*
+ * End of Section 1 - relevant functions for Apply, Amend and Modify LC
+ * */
+
+/*
+ * 
+ * Section 2 - Relevant functions for Homepage
+ * 
+ * */
+
+// call web service used in homepage and consolidate necessary data in homepage data object 
+// --> Importer & Exporter (Shipper homepage data& UI is seperated)
 async function getHomepageData() {
     var homePageData = {};
     /*Part 1 retrieve all ref num under the user*/
+    /*Part 2 - get all transaction hash*/
     var refNumberList = [];
-    //call await/async function --> getRefNumListAsync. Return {errormsg}, or {refNumlist}
-    const refNumberListValidation = await getRefNumListAsync(userId, PIN, OTP);
+    console.time("time spent");
+    /*call parallel await/async function --> getRefNumListAsync & getBCReceipt(). 
+    refnum --> Return {errormsg}, or {refNumlist}, all bc receipt --> return [refnum,transactionHash], [refnum,transactionHash],[...]*/
+    const refNumAndReceipt = await Promise.all([getRefNumListAsync(userId, PIN, OTP)]);
+    //, getAllBlockchainReceipt(userId, PIN, OTP)
+    var refNumberListValidation = refNumAndReceipt[0];
+
+    var allBlockchainReceipt = refNumAndReceipt[1];
+
     if (!refNumberListValidation.hasOwnProperty("Content")) {
         refNumberList = refNumberListValidation.RefNumList.RefNum;
+    }
+    var bcReceipt = {};
+
+    //store allBcReceipts in an object {refNum:TransactionHash}
+    if (allBlockchainReceipt != null) {
+        for (var i = 0; i < allBlockchainReceipt.length; i++) {
+            bcReceipt[allBlockchainReceipt[i][0]] = allBlockchainReceipt[i][1];
+        }
     }
 
     //hard code for now to elliminate  impact of these 2 contracts
@@ -145,15 +551,7 @@ async function getHomepageData() {
         refNumberList.splice(index2, 1);
     }
 
-    /*Part 2 - get all transaction hash*/
-    var bcReceipt = {};
-    //call async/await function --> getAllBlockchainReceipt, return all blockchain receipt
-    const allBlockchainReceipt = await getAllBlockchainReceipt(userId, PIN, OTP);
-    if (allBlockchainReceipt != null) {
-        for (var i = 0; i < allBlockchainReceipt.length; i++) {
-            bcReceipt[allBlockchainReceipt[i][0]] = allBlockchainReceipt[i][1];
-        }
-    }
+
     //get number of refnum in the list
     var numOfRows = refNumberList.length;
     if (refNumberList.length > 0) {
@@ -166,11 +564,12 @@ async function getHomepageData() {
             var expiryDate = "";
             var status = "";
             var globalErrorId = "";
-            /*Part 3 - Get lc details of coresponding ref num*/
-            const lcDetails = await getLcDetails(userId, PIN, OTP, refNum);
-            var globalErrorId =
-                lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-            if (globalErrorId === "010000") {
+            const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum)]);
+            var lcDetails = results[0];
+            console.log(lcDetails);
+            var bolLinks = results[1];
+            if (lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
+                console.log("lcDetails");
                 importerAcct =
                     lcDetails.Content.ServiceResponse.LC_Details.LC_record
                     .importer_account_num;
@@ -182,173 +581,124 @@ async function getHomepageData() {
                 status = lcDetails.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
                 lc = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
                 //console.log("lcDetailsType");
-                //console.log(typeof(lc));
-            }
-            //convert lc object to a jsonString, passing jsonstring through data-variable of the modal
-            lc = JSON.stringify(lc);
-            /*Part 4 - get Links(Bol, cert of origin, and Cert of Origin) of the ref num*/
-            var links = "";
-            var linkObj = {};
-            //get bol link, insurance link, and cert of origin link by calling this method. Return
-            const bolLinks = await getBOLUrl(userId, PIN, OTP, refNum);
-            var globalErrorId =
-                bolLinks.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-            if (globalErrorId === "010000") {
-                links =
-                    bolLinks.Content.ServiceResponse.BOL_Details.BOL_record_output
-                    .BOL_Link;
-                //console.log("bol links Type");
-                //console.log(typeof(links));
-                linkObj = JSON.parse(links);
-            }
-            /*Part 5 - get receipt of each refnum in the list*/
-            var getReceipt = "";
-            if (bcReceipt != null) {
-                getReceipt = bcReceipt[refNum];
-                //console.log("receipt Type");
-                //console.log(typeof(getReceipt));
+                console.log(lc);
+
+                //convert lc object to a jsonString, passing jsonstring through data-variable of the modal
+                lc = JSON.stringify(lc);
+                var links = "";
+                var linkObj = {};
+                if (bolLinks.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
+                    links =
+                        bolLinks.Content.ServiceResponse.BOL_Details.BOL_record_output
+                        .BOL_Link;
+                    //console.log("bol links Type");
+                    //console.log(typeof(links));
+                    linkObj = JSON.parse(links);
+                }
+                /*Part 5 - get receipt of each refnum in the list*/
+                var getReceipt = "";
+                if (bcReceipt != null) {
+                    getReceipt = bcReceipt[refNum];
+                    //console.log("receipt Type");
+                    //console.log(typeof(getReceipt));
+                }
+                /*Part 6 - add each record to data object - Key: RefNum, Value: {lcDetails : lcDetails, bolLinks: bolLinks, receipt : receipt}*/
+                var contentObj = {
+                    lcDetails: lc,
+                    bolLinks: links,
+                    receipt: getReceipt
+                };
+                homePageData[refNum] = contentObj;
+
             }
 
-            /*Part 6 - add each record to data object - Key: RefNum, Value: {lcDetails : lcDetails, bolLinks: bolLinks, receipt : receipt}*/
-            var contentObj = {
-                lcDetails: lc,
-                bolLinks: links,
-                receipt: getReceipt
-            };
-            homePageData[refNum] = contentObj;
         }
     }
+    console.log(homePageData);
     var homepageDataString = JSON.stringify(homePageData);
+    console.timeEnd("time spent");
     return homepageDataString;
 }
 
 //this function handles ui logic of homepage
 async function homeOperation() {
-    /*Part 1 retrieve all ref num under the user*/
-    var refNumberList = [];
-    //call await/async function --> getRefNumListAsync. Return {errormsg}, or {refNumlist}
-    const refNumberListValidation = await getRefNumListAsync(userId, PIN, OTP);
-    if (!refNumberListValidation.hasOwnProperty("Content")) {
-        refNumberList = refNumberListValidation.RefNumList.RefNum;
-    }
 
-    //hard code for now to elliminate  impact of these 2 contracts
-    var index1 = refNumberList.indexOf("0000001489");
-    if (index1 > -1) {
-        refNumberList.splice(index1, 1);
-    }
-    var index2 = refNumberList.indexOf("0000001450");
-    if (index2 > -1) {
-        refNumberList.splice(index2, 1);
-    }
 
-    /*Part 2 - get all transaction hash*/
-    var bcReceipt = {};
-    //call async/await function --> getAllBlockchainReceipt, return all blockchain receipt
-    const allBlockchainReceipt = await getAllBlockchainReceipt(userId, PIN, OTP);
-    if (allBlockchainReceipt != null) {
-        for (var i = 0; i < allBlockchainReceipt.length; i++) {
-            bcReceipt[allBlockchainReceipt[i][0]] = allBlockchainReceipt[i][1];
-        }
-    }
-    //get number of refnum in the list
-    var numOfRows = refNumberList.length;
-    if (refNumberList.length > 0) {
-        //iterate through up to 5 latest refnum in the list
-        for (var i = 0; i < numOfRows && i < 5; i++) {
-            var refNum = refNumberList[i]; //key of homepageData
-            var lc = {};
-            var exporterAcct = "";
-            var importerAcct = "";
-            var expiryDate = "";
-            var status = "";
-            var globalErrorId = "";
-            /*Part 3 - Get lc details of coresponding ref num*/
-            const lcDetails = await getLcDetails(userId, PIN, OTP, refNum);
-            var globalErrorId =
-                lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-            if (globalErrorId === "010000") {
-                importerAcct =
-                    lcDetails.Content.ServiceResponse.LC_Details.LC_record
-                    .importer_account_num;
-                exporterAcct =
-                    lcDetails.Content.ServiceResponse.LC_Details.LC_record
-                    .exporter_account_num;
-                expiryDate =
-                    lcDetails.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
-                status = lcDetails.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
-                lc = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
-                //console.log("lcDetailsType");
-                //console.log(typeof(lc));
-            }
-            //convert lc object to a jsonString, passing jsonstring through data-variable of the modal
-            lc = JSON.stringify(lc);
-            /*Part 4 - get Links(Bol, cert of origin, and Cert of Origin) of the ref num*/
-            var links = "";
-            var linkObj = {};
-            //get bol link, insurance link, and cert of origin link by calling this method. Return
-            const bolLinks = await getBOLUrl(userId, PIN, OTP, refNum);
-            var globalErrorId =
-                bolLinks.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-            if (globalErrorId === "010000") {
-                links =
-                    bolLinks.Content.ServiceResponse.BOL_Details.BOL_record_output
-                    .BOL_Link;
-                //console.log("bol links Type");
-                //console.log(typeof(links));
-            }
-            /*Part 5 - get receipt of each refnum in the list*/
-            var getReceipt = "";
-            if (bcReceipt != null) {
-                getReceipt = bcReceipt[refNum];
-                //console.log("receipt Type");
-                //console.log(typeof(getReceipt));
-            }
+    /*Method 2 - call async/await function --> getHomepageData, (seperate ui and data retriever)*/
+    const homepageData = await getHomepageData();
 
-            /*Method 2 - call async/await function --> getHomepageData, (seperate ui and data retriever)*/
-            /*const homepageData = await getHomepageData();
- 
- var dataObj = JSON.parse(homepageData);
- //console.log(dataObj);
- var dataSize = Object.keys(dataObj).length;
- if(dataSize >0){
- //    console.log(">0");
- 
- for (var i = 0; i < dataSize; i++) { 
- //get refnum
- var refNum = Object.keys(dataObj)[i];
- 
- //get lc 
- var lc = dataObj[refNum].lcDetails;
- var lcObj = JSON.parse(lc);
- //get status
- var status = lcObj.status;
- console.log(status);
- //get exporter acct
- var exporterAcct = lcObj.exporter_account_num;
- console.log(exporterAcct);
- //get importer acct
- var importerAcct = lcObj.importer_account_num;
- console.log(importerAcct);
- //get expiry date
- var expiryDate = lcObj.expiry_date;
- console.log(expiryDate);
- 
- //get links
- var links = dataObj[refNum].bolLinks;
- console.log(links);
- //get receipt
- var getReceipt = dataObj[refNum].receipt;
- 
- */
+    var dataObj = JSON.parse(homepageData);
+    console.log(dataObj);
+    var dataSize = Object.keys(dataObj).length;
+    if (dataSize > 0) {
+        //    console.log(">0");
+
+        for (var i = 0; i < dataSize; i++) {
+            //get refnum
+            var refNum = Object.keys(dataObj)[i];
+
+            //get lc 
+            var lc = dataObj[refNum].lcDetails;
+            var lcObj = JSON.parse(lc);
+            //get status
+            var status = lcObj.status;
+
+            //get exporter acct
+            var exporterAcct = lcObj.exporter_account_num;
+
+            //get importer acct
+            var importerAcct = lcObj.importer_account_num;
+
+            //get expiry date
+            var expiryDate = lcObj.expiry_date;
+
+
+            //get links
+            var links = dataObj[refNum].bolLinks;
+
+            //get receipt
+            var getReceipt = dataObj[refNum].receipt;
+
+
             /*End of Method 2*/
 
             //Get operation - Call operationMatch method,  returns [action, url] based on user type (e.g.["view lc", "viewLc.html"])
             var operations = operationMatch(status); //calling this method from utility/operationMatch.js
             var operation = operations[0]; //get action to take
             var url = operations[1];
+
+            //Initialize an empty table row
             var $row = $("<tr></tr>");
+            //1st Cell - Initialize an empty table cell to store refNum
+            var $refNumCell = $("<td></td>");
+            //append refnum value in ref num cell
+            $refNumCell.append(refNum);
+            //append ref num cell into table row
+            $row.append($refNumCell);
+            //2nd cell - initialize the second table cell - importer --> exporterAccount, exporter --> importerAccount
+            if (sessionStorage.usertype === "importer") {
+                var $exporterAcctCell = $("<td>" + exporterAcct + "</td>");
+                $row.append($exporterAcctCell);
+            } else {
+                var $importerAcctCell = $("<td>" + importerAcct + "</td>");
+                $row.append($importerAcctCell);
+            }
+            //3rd cell - initialize expiry date cell
+            var $expiryDateCell = $("<td>" + expiryDate + "</td>");
+            $row.append($expiryDateCell);
+            //4th cell - initialize status cell
+            var $statusCell = $(
+                '<td id="status" class="font-bold">' +
+                convertToDisplay(status, " ") +
+                "</td>"
+            );
+            $statusCell.addClass(buttonAssigned(operation)[1]); //change status text color to red if action is to be taken(Rather than "View lc").
+            $row.append($statusCell);
+            //5th cell - initialize button cell
+            var $buttonCell = $("<td></td>");
             var button = "";
+            /*Button triggers lcDetails modal by default, 
+            lcDetails, operation,refNum,receipt,link,status are all stored in the modal data variable*/
             button =
                 "<button type='button'  class='btn btn-primary lcDetails' data-action= '" +
                 operation +
@@ -365,6 +715,8 @@ async function homeOperation() {
                 "'>" +
                 convertToDisplay(operation, " ") +
                 "</button>";
+
+            //Button triggers modifyLc page or submitBol page, do not store any data, redirection purpose only
             if (operation === "modify lc" || operation === "submit bol") {
                 button =
                     "<button type='button'  data-refnum=" +
@@ -377,78 +729,16 @@ async function homeOperation() {
             }
 
             var $button = $(button);
-            $button.addClass(buttonAssigned(operation)[0]);
-            var $refNumCell = $("<td></td>");
-            $refNumCell.append(refNum);
-            $row.append($refNumCell);
-            if (sessionStorage.usertype === "importer") {
-                var $exporterAcctCell = $("<td>" + exporterAcct + "</td>");
-                $row.append($exporterAcctCell);
-            } else {
-                var $importerAcctCell = $("<td>" + importerAcct + "</td>");
-                $row.append($importerAcctCell);
-            }
-            var $expiryDateCell = $("<td>" + expiryDate + "</td>");
-            $row.append($expiryDateCell);
-            var $statusCell = $(
-                '<td id="status" class="font-bold">' +
-                convertToDisplay(status, " ") +
-                "</td>"
-            );
-            $statusCell.addClass(buttonAssigned(operation)[1]);
-            $row.append($statusCell);
-            var $buttonCell = $("<td></td>");
+            $button.addClass(buttonAssigned(operation)[0]); //change button color to red if action is to be taken(Rather than "View lc").
             $buttonCell.append($button);
             $row.append($buttonCell);
+            //append tablle row into the table container(id = latestLCs)
             $("#latestLCs").append($row);
         }
     }
 }
 
-function getAllLcDetails() {
-    var refNumberList = [];
-    var refNumberListValidation = validateGetRefNumList(userId, PIN, OTP);
-    //console.log(refNumberList);
-    if (refNumberListValidation !== undefined) {
-        if (refNumberListValidation.hasOwnProperty("success")) {
-            refNumberList = refNumberListValidation.success;
-            //console.log(refNumberList);
-        }
-    }
-    var numOfRows = refNumberList.length;
-    var allLcDetails = [];
-    for (var i = 0; i < numOfRows; i++) {
-        //call web service to get lc details for each ref number
-        var refNum = refNumberList[i];
-        //var refNumInt = parseInt(refNum);
-        //get status of the ref num
-        //getStatus(userId, PIN, OTP, refNum, callback)
-        var status = "";
-        getStatus(userId, PIN, OTP, refNum, function(data) {
-            status = data;
-        });
-        //get contract of the ref num
-        var country = "";
-        var exporterAcct = "";
-        var shipDate = "";
-        var lcDetails = {};
-        getLcDetails(userId, PIN, OTP, refNum, function(contract) {
-            //calling this method from  assets/js/DAO/lcHandling.js
-            if (contract !== "") {
-                lcDetails = contract.Content;
-            }
-        });
-        var lcObject = {
-            refNum: refNum,
-            lcDetails: lcDetails,
-            status: status
-        };
-        allLcDetails[i] = lcObject;
-    }
-    return allLcDetails;
-}
-
-//this function handles ui logic of homepage
+//this function handles ui logic of Shipper homepage
 function shipperHomeOperation(lcToBePrinted) {
     if (lcToBePrinted.length > 0) {
         for (var i in lcToBePrinted) {
@@ -502,11 +792,12 @@ function shipperHomeOperation(lcToBePrinted) {
         );
     }
 }
-
+//This function clear contents of lc table container
 function emptyShipperHome() {
     $("#latestLCs").empty();
 }
 
+//This function fetches all lc details of the shipper
 function getAllLcDetailsShipper() {
     var refNumberList = [];
     var refNumberListValidation = validateGetRefNumList(userId, PIN, OTP);
@@ -587,393 +878,14 @@ function getAllLcDetailsShipper() {
     return allLcDetails;
 }
 
-function modifyLcOps() {
-    var refNum = getQueryVariable("refNum");
-    var importerAccount = ""; //no change
-    var exporterAccount = ""; //no change
-    var expiryDate = "";
-    var expiryPlace = "";
-    var confirmed = "";
-    var revocable = "";
-    var availableBy = "";
-    var termDays = "";
-    var amount = "";
-    var currency = ""; //no change
-    var applicableRules = "";
-    var partialShipments = "";
-    var shipDestination = "";
-    var shipDate = "";
-    var shipPeriod = "";
-    var goodsDescription = "";
-    var docsRequired = "";
-    var additionalConditions = "";
-    var senderToReceiverInfo = "";
-    var mode = "BC"; //no change
-
-    var errorMsg;
-    var globalErrorID;
-    var allNecessaryFields = [
-        "expiry_date",
-        "amount",
-        "ship_date",
-        "goods_description",
-        "additional_conditions",
-        "importer_account_num",
-        "exporter_account_num",
-        "expiry_place",
-        "confirmed",
-        "revocable",
-        "available_by",
-        "term_days",
-        "currency",
-        "applicable_rules",
-        "partial_shipments",
-        "ship_destination",
-        "ship_period",
-        "sender_to_receiver_info",
-        "docs_required"
-    ];
-    var allNecessaryFieldsName = [
-        "expiryDate",
-        "amount",
-        "shipDate",
-        "goodsDescription",
-        "additionalConditions",
-        "importerAccountNum",
-        "exporterAccountNum",
-        "expiryPlace",
-        "confirmed",
-        "revocable",
-        "availableBy",
-        "termDays",
-        "currency",
-        "applicableRules",
-        "partialShipments",
-        "shipDestination",
-        "shipPeriod",
-        "senderToReceiverInfo",
-        "docsRequired"
-    ];
-    var amendmentDetails = null;
-    var originalLc = null;
-    //get original contract, store in amendments variable
-    getLcDetails(userId, PIN, OTP, refNum, function(contract) {
-        //calling this method from  assets/js/DAO/lcHandling.js
-        var globalErrorId =
-            contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-        //console.log(globalErrorId);
-        var fields = {};
-        if (globalErrorId === "010000") {
-            fields = contract.Content.ServiceResponse.LC_Details.LC_record;
-            originalLc = fields;
-            importerAccount = fields.importer_account_num; //no change
-            //console.log(importerAccount);
-            exporterAccount = fields.exporter_account_num; //no change
-            expiryDate = fields.expiry_date; //no change
-            expiryPlace = fields.expiry_place;
-            confirmed = fields.confirmed;
-            revocable = fields.revocable;
-            availableBy = fields.available_by;
-            termDays = fields.term_days;
-            amount = fields.amount;
-            currency = fields.currency; //no change
-            applicableRules = fields.applicable_rules;
-            partialShipments = fields.partial_shipments;
-            shipDestination = fields.ship_destination;
-            shipDate = fields.ship_date;
-            shipPeriod = fields.ship_period;
-            goodsDescription = fields.goods_description;
-            docsRequired = fields.docs_required;
-            additionalConditions = fields.additional_conditions;
-            senderToReceiverInfo = fields.sender_to_receiver_info;
-        }
-    });
-    var originalAmount = "";
-    var originalDesc = "";
-    var originalExpiryDate = "";
-    var originalShipPeriod = "";
-    getLcAmendments(userId, PIN, OTP, refNum, function(amendments) {
-        //calling this method from  assets/js/DAO/lcHandling.js
-        var globalErrorId =
-            amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-        //console.log(globalErrorId);
-        var fields = {};
-        if (globalErrorId === "010000") {
-            fields = amendments.Content.ServiceResponse.LC_Amend.LC_Amend;
-            //console.log(fields);
-            amendmentDetails = fields;
-            //importerAccount = fields.importer_account_num; //no change
-            //exporterAccount = fields.exporter_account_num; //no change
-            originalExpiryDate = fields.expiry_date; //no change
-            //expiryPlace = fields.expiry_place;
-            //confirmed = fields.confirmed;
-            //revocable = fields.revocable;
-            //availableBy = fields.available_by;
-            //termDays = fields.term_days;
-            originalAmount = fields.amount;
-            originalShipPeriod = fields.shipPeriod;
-            //currency = fields.currency; //no change
-            //applicableRules = fields.applicable_rules;
-            //partialShipments = fields.partial_shipments;
-            //shipDestination = fields.ship_destination;
-            // shipDate = fields.ship_date;
-            //shipPeriod = fields.ship_period;
-            originalDesc = fields.goods_description;
-            //docsRequired = fields.docs_required;
-            //additionalConditions = fields.additional_conditions;
-            //senderToReceiverInfo = fields.sender_to_receiver_info;
-            /*$("#goodsDescription").attr("placeholder", goodsDescription);
-                       $("#amount").attr("placeholder", amount);
-                       $("#expiryDate").attr("placeholder", expiryDate);*/
-        }
-    });
-    if (amendmentDetails !== null && originalLc !== null) {
-        for (var field in amendmentDetails) {
-            var fieldCamel = attributeMapping(field);
-            var originalValue = originalLc[field];
-            var amendedValue = amendmentDetails[field];
-            if (fieldCamel === "shipPeriod") {
-                $('#shipPeriod option[value="' + shipPeriod + '"]').insertBefore(
-                    '#shipPeriod option[value=""]'
-                );
-                $("#shipPeriod").val($("#shipPeriod option:first").val());
-            }
-            $("#" + fieldCamel).attr("placeholder", originalValue);
-            //console.log(fieldCamel);
-            var suggestion = "";
-            if (originalValue !== amendedValue) {
-                if (amendedValue !== null) {
-                    var p =
-                        "<p class='btn-danger'> Exporter has suggested to amend : " +
-                        amendedValue +
-                        "</p>";
-                    $("#" + fieldCamel + "-p").append(p);
-                }
-            }
-        }
-    }
-
-    $("#modifyLcButton").click(function() {
-        shipPeriod = document.getElementById("shipPeriod").value;
-        if (shipPeriod === "") {
-            shipPeriod = document.getElementById("shipPeriod").placeholder;
-        }
-        expiryDate = document.getElementById("expiryDate").value;
-        if (expiryDate === "") {
-            expiryDate = document.getElementById("expiryDate").placeholder;
-        } else {
-            if (moment(expiryDate, "YYYY-MM-DD", true).format() === "Invalid date") {
-                return {
-                    errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"
-                };
-            }
-        }
-        amount = document.getElementById("amount").value;
-        if (amount === "") {
-            amount = document.getElementById("amount").placeholder;
-        } else {
-            if (isNaN(amount)) {
-                return { errorMsg: "Amount must be numeric" };
-            }
-        }
-        goodsDescription = document.getElementById("goodsDescription").value;
-        if (goodsDescription === "") {
-            goodsDescription = document.getElementById("goodsDescription")
-                .placeholder;
-        }
-        //console.log(importerAccount);
-
-        var lc = {
-            referenceNumber: refNum,
-            importerAccount: importerAccount,
-            exporterAccount: exporterAccount,
-            expiryDate: expiryDate,
-            expiryplace: expiryPlace,
-            confirmed: confirmed,
-            revocable: revocable,
-            availableBy: availableBy,
-            termDays: termDays,
-            amount: amount,
-            currency: currency,
-            applicableRules: applicableRules,
-            partialShipments: partialShipments,
-            shipDestination: shipDestination,
-            shipDate: shipDate,
-            shipPeriod: shipPeriod,
-            goodsDescription: goodsDescription,
-            docsRequired: docsRequired,
-            additionalConditions: additionalConditions,
-            senderToReceiverInfo: senderToReceiverInfo,
-            mode: mode
-        };
-        //console.log(lc);
-        //amend lc
-        var validateLcApplication = lcModificationForm(userId, PIN, OTP, lc);
-        //console.log(validateLcApplication);
-        if (validateLcApplication !== undefined) {
-            if (validateLcApplication.hasOwnProperty("errorMsg")) {
-                var errorMsg = validateLcApplication.errorMsg;
-                //console.log("error");
-                //console.log(errorMsg);
-                $("#authError").html(errorMsg);
-            } else if (validateLcApplication.hasOwnProperty("success")) {
-                $("#authError").html("submitted");
-                //console.log("success");
-                //console.log(validateLcApplication);
-                //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
-                window.location.replace(
-                    "/SMUtBank_TradeFinance/importer/importer.html"
-                );
-            }
-        }
-    });
-    $("#cancelButton").click(function() {
-        window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
-    });
-}
-
-/*async function amendLcOps() {
-var refNum = getQueryVariable("refNum");
-        var importerAccount = ""; //no change
-        var exporterAccount = ""; //no change
-        var expiryDate = "";
-        var expiryPlace = "";
-        var confirmed = "";
-        var revocable = "";
-        var availableBy = "";
-        var termDays = "";
-        var amount = "";
-        var currency = ""; //no change
-        var applicableRules = "";
-        var partialShipments = "";
-        var shipDestination = "";
-        var shipDate = "";
-        var shipPeriod = "";
-        var goodsDescription = "";
-        var docsRequired = "";
-        var additionalConditions = "";
-        var senderToReceiverInfo = "";
-        var mode = "BC"; //no change
-
-        var errorMsg;
-        var globalErrorID;
-        const lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
-        var globalErrorId = lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-        //console.log(globalErrorId);
-        var fields = {};
-        if (globalErrorId === "010000") {
-fields = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
-        importerAccount = fields.importer_account_num; //no change
-        //console.log(fields);
-        exporterAccount = fields.exporter_account_num; //no change
-        expiryDate = fields.expiry_date; //no change
-        expiryPlace = fields.expiry_place;
-        confirmed = fields.confirmed;
-        revocable = fields.revocable;
-        availableBy = fields.available_by;
-        termDays = fields.term_days;
-        amount = fields.amount;
-        currency = fields.currency; //no change
-        applicableRules = fields.applicable_rules;
-        partialShipments = fields.partial_shipments;
-        shipDestination = fields.ship_destination;
-        shipDate = fields.ship_date;
-        shipPeriod = fields.ship_period;
-        goodsDescription = fields.goods_description;
-        docsRequired = fields.docs_required;
-        additionalConditions = fields.additional_conditions;
-        senderToReceiverInfo = fields.sender_to_receiver_info;
-        $("#goodsDescription").attr("placeholder", goodsDescription);
-        $("#amount").attr("placeholder", amount);
-        $("#expiryDate").attr("placeholder", expiryDate);
-        $("#shipPeriod").attr("placeholder", shipPeriod);
-        $('#shipPeriod option[value="' + shipPeriod + '"]').insertBefore('#shipPeriod option[value=""]');
-        $("#shipPeriod").val($("#shipPeriod option:first").val());
-}
-
-$("#amendLcButton").click(function () {
-shipPeriod = document.getElementById("shipPeriod").value;
-        if (shipPeriod === "") {
-shipPeriod = document.getElementById("shipPeriod").placeholder;
-}
-expiryDate = document.getElementById("expiryDate").value;
-        if (expiryDate === "") {
-expiryDate = document.getElementById("expiryDate").placeholder;
-} else {
-if (moment(expiryDate, 'YYYY-MM-DD', true).format() === "Invalid date") {
-return {errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"};
-}
-}
-amount = document.getElementById("amount").value;
-        if (amount === "") {
-amount = document.getElementById("amount").placeholder;
-} else {
-if (isNaN(amount)) {
-return {errorMsg: "Amount must be numeric"};
-}
-}
-goodsDescription = document.getElementById("goodsDescription").value;
-        if (goodsDescription === "") {
-goodsDescription = document.getElementById("goodsDescription").placeholder;
-}
-
-var lc = {
-referenceNumber: refNum,
-        importerAccount: importerAccount,
-        exporterAccount: exporterAccount,
-        expiryDate: expiryDate,
-        expiryplace: expiryPlace,
-        confirmed: confirmed,
-        revocable: revocable,
-        availableBy: availableBy,
-        termDays: termDays,
-        amount: amount,
-        currency: currency,
-        applicableRules: applicableRules,
-        partialShipments: partialShipments,
-        shipDestination: shipDestination,
-        shipDate: shipDate,
-        shipPeriod: shipPeriod,
-        goodsDescription: goodsDescription,
-        docsRequired: docsRequired,
-        additionalConditions: additionalConditions,
-        senderToReceiverInfo: senderToReceiverInfo,
-        mode: mode
-};
-        //console.log("lc to be amended");
-        //console.log(lc);
-        //amend lc
-        const amendments = await amendLc(userId, PIN, OTP, lc);
-        var globalErrorID = amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-        var errorMsg = amendments.Content.ServiceResponse.ServiceRespHeader.ErrorText;
-        var amendmentsDetails = {};
-        if (globalErrorID !== "010000") {//calling this method from assets/js/DAO/lcHandling.js
-//return {errorMsg: errorMsg};
-$("#authError").html(errorMsg);
-} else if (globalErrorID === "010041") {//OTP expiry error - request new otp
-
-buildSMSOTP();
-}
-else {//submit lc application --> for now get ref num and upload lc to bc
-$("#authError").html("lc application submitted");
-        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
-}
-
-});
-        $("#cancelButton").click(function () {
-window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
-});
-}*/
 
 function totalLcs() {}
 
+//This function assigns button color (by adding class name to the button element) based on action --> view lc(green), other actions(red)
 function buttonAssigned(action) {
-    // this method is to assign button color (by adding class name to the button element) based on action
-    //var element, name, arr;
-    //element = document.getElementById("lcDetails");
+
     var name = "btn-primary";
     var text = "text-primary";
-    //if (status === "rejected" || status === "amendments requested") {
     if (action !== "view lc") {
         name = "btn-danger";
         text = "text-danger";
@@ -981,8 +893,9 @@ function buttonAssigned(action) {
     return [name, text];
 }
 
+//This function matches status of a usertype with coresponding action
 function operationMatch(status) {
-    //var lowerStatus = status.toLowerCase();
+
     var operation = "view lc";
     var url = "lcDetails";
     if (sessionStorage.usertype === "importer") {
@@ -1001,8 +914,6 @@ function operationMatch(status) {
             url = "reviewLc";
             operation = "review lc";
         } else if (status.toLowerCase() === "acknowledged") {
-            //url = "shipGoods";
-            //operation = "ship goods";
             url = "submitBol";
             operation = "submit bol";
         }
@@ -1050,18 +961,6 @@ function loadLcDetailsModal() {
                 "importer_account_num"
             ];
             var allLcHTML = "";
-            /*Call getBCreceipt after user clicks */
-            //get bc receipt
-            //var bcReceipt = "";
-            /*getBlockchainReceipt(userId, PIN, OTP, refNum, function (data) {
-               //(data)
-               if (data != null) {
-               bcReceipt = data[0][1]
-               //(bcReceipt)
-               }
-               });*/
-
-            //(typeof(bcReceipt))
 
             if (links !== "") {
                 var bolLink = "http://bit.ly/2BPThUM"; //links["bolLink"]
@@ -1158,7 +1057,10 @@ function loadLcDetailsModal() {
                     "visible",
                     "visible"
                 ];
-            } else if (sessionStorage.usertype === "importer" && action === "accept documents") {
+            } else if (
+                sessionStorage.usertype === "importer" &&
+                action === "accept documents"
+            ) {
                 attrToChange = [
                     "acceptDocs",
                     "cancel",
@@ -1167,7 +1069,10 @@ function loadLcDetailsModal() {
                     "visible",
                     "visible"
                 ];
-            } else if (sessionStorage.usertype === "importer" && action === "collect goods") {
+            } else if (
+                sessionStorage.usertype === "importer" &&
+                action === "collect goods"
+            ) {
                 attrToChange = [
                     "collectGoods",
                     "",
@@ -1199,16 +1104,6 @@ function loadLcDetailsModal() {
             }
             statusP.addClass(text);
 
-            /*var buttons = ""
-               if (sessionStorage.usertype === "exporter" && action === "approve lc") {
-               $("#amendLcContainer").css("display", "block")
-               
-               } else if (sessionStorage.usertype === "importer" && action === "accept documents") {
-               $("#acceptDocsContainer").css("display", "block")
-               
-               } else {
-               $("#viewLcContainer").css("display", "block")
-               }*/
 
             var refNumHTML = "<div value='" + refNum + "' id='returnedRef'></div>";
             // Update the modal's content.
@@ -1233,28 +1128,18 @@ function loadLcDetailsModal() {
             $("#statusValue").attr("class", "h3 font-bold m-t");
         });
         /*$(".modal").on("hidden.bs.modal", function () {
-             $(".modal-body").html("");
-             $(".modal-footer").html("");
-             });*/
+                 $(".modal-body").html("");
+                 $(".modal-footer").html("");
+                 });*/
     });
 }
+
 
 function buttonClicks() {
     $("#approveButton").click(function() {
         var refNum = $("#returnedRef").attr("value");
-        //console.log(refNum);
         var status = "acknowledged";
-        updateStatus(userId, PIN, OTP, refNum, status, "", function(data) {
-            //console.log(data);
-            var globalErrorID =
-                data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader
-                .GlobalErrorID;
-            if (globalErrorID === "010000") {
-                window.location.replace(
-                    "/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html"
-                );
-            }
-        });
+        processUpdateStatus(userId, PIN, OTP, refNum, status, "");
     });
     $("#amendLc").click(function() {
         var refNum = $("#returnedRef").attr("value");
@@ -1271,40 +1156,34 @@ function buttonClicks() {
             ".html?refNum=" +
             refNum
         );
-        //window.location.replace("/SMUtBank_TradeFinance/exporter/amendLcDetails.html?refNum=" + refNum);
     });
     $("#acceptDocs").click(function() {
         var refNum = $("#returnedRef").attr("value");
         //console.log(refNum);
         var status = "documents accepted";
-        updateStatus(userId, PIN, OTP, refNum, status, "", function(data) {
-            //console.log(data);
-            var globalErrorID =
-                data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader
-                .GlobalErrorID;
-            if (globalErrorID === "010000") {
-                window.location.replace(
-                    "/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html"
-                );
-            }
-        });
+        processUpdateStatus(userId, PIN, OTP, refNum, status, "");
     });
     $("#collectGoods").click(function() {
         var refNum = $("#returnedRef").attr("value");
         //console.log(refNum);
         var status = "goods collected";
-        updateStatus(userId, PIN, OTP, refNum, status, "", function(data) {
-            //console.log(data);
-            var globalErrorID =
-                data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader
-                .GlobalErrorID;
-            if (globalErrorID === "010000") {
-                window.location.replace(
-                    "/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html"
-                );
-            }
-        });
+        processUpdateStatus(userId, PIN, OTP, refNum, status, "");
     });
+}
+async function processUpdateStatus(userId, PIN, OTP, refNum, status, statusDetails) {
+    const processUpdateStatus = await updateStatus(userId, PIN, OTP, refNum, status, statusDetails);
+    var globalErrorID =
+        processUpdateStatus.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader
+        .GlobalErrorID;
+    if (globalErrorID === "010000") {
+        window.location.replace(
+            "/SMUtBank_TradeFinance/" +
+            sessionStorage.usertype +
+            "/" +
+            sessionStorage.usertype +
+            ".html"
+        );
+    }
 }
 
 function getExporterDetails() {

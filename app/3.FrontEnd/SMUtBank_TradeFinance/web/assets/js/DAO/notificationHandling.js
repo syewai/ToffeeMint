@@ -67,6 +67,7 @@ function sendSMSOTP() {
     //ribOTPAuth.action to authenticate otp
 }
 
+/*
 function getQRCode(length,height,bolLink,callback) {
  
     $.ajax({
@@ -76,4 +77,4 @@ function getQRCode(length,height,bolLink,callback) {
         success: callback  //fatal error!!
     });
     
-}
+}*/

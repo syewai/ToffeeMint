@@ -6,56 +6,61 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <html>
-    <head>
 
-        <script>
-            /*$(document).ready(function(){
-             $("button").click(function(){
-             var refNumList = [1039,1038,1037,1036,1035];
-             for (var i in refNumList){
-             var getContractLink = "http://localhost:9001/lc/getContract?refNum="+refNumList[i];
-             $.getJSON(getContractLink).done(function (data) {
-             var items = [];
-             $.each( data.Content, function( key, val ) {
-             items.push( "<li id='" + key + "'>" + val + "</li>" );
-             });
-             
-             $("body").append(items);
-             
-             
-             //console.log(data.Content);
-             });
-             
-             }
-             
-             });
-             });*/
-        </script>
-    </head>
-    <body>
+<head>
 
-        <button id="button1">Get customer details</button>
-        <button id="button2">Get customer accounts</button>
-        <button id="button3">Get all types</button>
-        <button id="button4">Get all types</button>
-        <button id="button5">Get ref num list</button>
-        <button id="button6">Get game question</button>
-        <button id="button7">Get game answer</button>
-        <button id="button8">Set question score</button>
-        <button id="button9">Get game score</button>
-        <button id="button10">Get game leaders</button>
-        <button id="button11">update Status</button>
-        <button id="button12">get amendments</button>
-        <button id="button13">uploadBOL</button>
-        <button id="button14">update status</button>
-        <button id="button15">get bol links</button>
-        <button id="button16">get qr code</button>
-        <button id="button17">leaders</button>
-        <button id="button18">Get created contract</button>
-        <button id="button19">Get created contract</button>
-        <div id="content"></div>
-        <pre id="json"></pre>
-        <!--<div id="nav">
+    <script>
+        /*$(document).ready(function(){
+                                                                                                                                                                                                                     $("button").click(function(){
+                                                                                                                                                                                                                     var refNumList = [1039,1038,1037,1036,1035];
+                                                                                                                                                                                                                     for (var i in refNumList){
+                                                                                                                                                                                                                     var getContractLink = "http://localhost:9001/lc/getContract?refNum="+refNumList[i];
+                                                                                                                                                                                                                     $.getJSON(getContractLink).done(function (data) {
+                                                                                                                                                                                                                     var items = [];
+                                                                                                                                                                                                                     $.each( data.Content, function( key, val ) {
+                                                                                                                                                                                                                     items.push( "<li id='" + key + "'>" + val + "</li>" );
+                                                                                                                                                                                                                     });
+                                                                                                                                                                                                                     
+                                                                                                                                                                                                                     $("body").append(items);
+                                                                                                                                                                                                                     
+                                                                                                                                                                                                                     
+                                                                                                                                                                                                                     //console.log(data.Content);
+                                                                                                                                                                                                                     });
+                                                                                                                                                                                                                     
+                                                                                                                                                                                                                     }
+                                                                                                                                                                                                                     
+                                                                                                                                                                                                                     });
+                                                                                                                                                                                                                     });*/
+    </script>
+</head>
+
+<body>
+
+    <button id="button1">Get customer details</button>
+    <button id="button2">Get customer accounts</button>
+    <button id="button3">Get all types</button>
+    <button id="button4">Get all types</button>
+    <button id="button5">Get ref num list</button>
+    <button id="button6">Get game question</button>
+    <button id="button7">Get game answer</button>
+    <button id="button8">Set question score</button>
+    <button id="button9">Get game score</button>
+    <button id="button10">Get game leaders</button>
+    <button id="button11">update Status</button>
+    <button id="button12">get amendments</button>
+    <button id="button13">uploadBOL</button>
+    <button id="button14">update status</button>
+    <button id="button15">get bol links</button>
+    <button id="button16">get qr code</button>
+    <button id="button17">leaders</button>
+    <button id="button18">Get created contract</button>
+    <button id="button19">Get created contract</button>
+    <button id="button20">Test async amend lc</button>
+    <button id="button21">Timer - purely retrieving</button>
+    <button id="button22">Timer</button>
+    <div id="content"></div>
+    <pre id="json"></pre>
+    <!--<div id="nav">
         </div>
         <div id="content"></div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -66,201 +71,233 @@ and open the template in the editor.
 
 
 
-        <!--<input id="text" type="text" value="http://jindo.dev.naver.com/collie" style="width:80%" /><br />-->
-        <div id="qrcode" style="width:100px; height:100px; margin-top:15px;"></div>
+    <!--<input id="text" type="text" value="http://jindo.dev.naver.com/collie" style="width:80%" /><br />-->
+    <div id="qrcode" style="width:100px; height:100px; margin-top:15px;"></div>
 
 
 
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="assets/js/DAO/apiUrl.js"></script>
-        <script src="assets/js/DAO/docsHandling.js"></script>
-        <script src="assets/js/DAO/lcHandling.js"></script>
-        <script src="assets/js/Utility/lcOperations.js"></script>
-        <script src="assets/js/Utility/formValidation.js"></script>
-        <script src="assets/js/DAO/userHandling.js"></script>
-        <script src="assets/js/DAO/statusHandling.js"></script>
-        <script src="assets/js/DAO/gameHandling.js"></script>
-        <script src="assets/js/DAO/notificationHandling.js"></script>
-        <script src="assets/js/qrcode/qrcode.js"></script>
-        <script>
-            $("#button1").click(function () {
-                var account
-                getCustomerAccounts("toffeemint4", "123456", "999999", function (accounts) { //get currency and importer account
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="assets/js/DAO/apiUrl.js"></script>
+    <script src="assets/js/DAO/docsHandling.js"></script>
+    <script src="assets/js/DAO/lcHandling.js"></script>
 
-                    account = accounts.Content.ServiceResponse.AccountList.account[0];
-                    if (account == null) {
-                        account = accounts.Content.ServiceResponse.AccountList.account;
-                    }
-                    //console.log(account);
+    <script src="assets/js/Utility/formValidation.js"></script>
+    <script src="assets/js/DAO/userHandling.js"></script>
+    <script src="assets/js/DAO/statusHandling.js"></script>
+    <script src="assets/js/DAO/gameHandling.js"></script>
+    <script src="assets/js/DAO/notificationHandling.js"></script>
+    <script src="assets/js/qrcode/qrcode.js"></script>
+    <script src="assets/js/Utility/lcOperations.js"></script>
+    <script>
+        $("#button1").click(function() {
+            var account
+            getCustomerAccounts("toffeemint4", "123456", "999999", function(accounts) { //get currency and importer account
 
-                });
-
-            });
-
-            $("#button2").click(function () {
-                var account;
-                getCustomerDeatils("toffeemint4", "123456", "999999", function (accounts) { //get currency and importer account
-
-
-                    console.log(account);
-
-                });
+                account = accounts.Content.ServiceResponse.AccountList.account[0];
+                if (account == null) {
+                    account = accounts.Content.ServiceResponse.AccountList.account;
+                }
+                //console.log(account);
 
             });
 
-            $("#button4").click(function () {//
+        });
 
-                ////console.log(getRefNumListAjax());
-                //var numList = getRefNumListAjax();
+        $("#button2").click(function() {
+            var account;
+            getCustomerDeatils("toffeemint4", "123456", "999999", function(accounts) { //get currency and importer account
 
 
-                var refNum;
-                getRefNumListAjax(function (refNumList) {
-                    refNum = refNumList.RefNumList.RefNum;
-                });
-                //console.log(refNum[0]);
+                console.log(account);
 
             });
 
-            $("#button5").click(function () {//
+        });
 
-                ////console.log(getRefNumListAjax());
-                //var numList = getRefNumListAjax();
+        $("#button4").click(function() { //
 
-
-                ////console.log(getRefNumList("kinetic1", refNumList));
-
-                var userId = "toffeemint1";
-                var PIN = "929780";
-                var OTP = "999999";
+            ////console.log(getRefNumListAjax());
+            //var numList = getRefNumListAjax();
 
 
-                var refNum;
-                getCustomerDeatils(userId, PIN, OTP, function (data) {
-                    //console.log(data);
-                });
+            var refNum;
+            getRefNumListAjax(function(refNumList) {
+                refNum = refNumList.RefNumList.RefNum;
+            });
+            //console.log(refNum[0]);
+
+        });
+
+        $("#button5").click(function() { //
+
+            ////console.log(getRefNumListAjax());
+            //var numList = getRefNumListAjax();
 
 
+            ////console.log(getRefNumList("kinetic1", refNumList));
 
+            var userId = "toffeemint1";
+            var PIN = "929780";
+            var OTP = "999999";
+
+
+            var refNum;
+            getCustomerDeatils(userId, PIN, OTP, function(data) {
+                //console.log(data);
             });
 
-            //game test
-            $("#button6").click(function () {
-                getGameQuestion("", "", "", 1, function (callback) {
-                    //console.log(callback);
-                });
+
+
+        });
+
+        //game test
+        $("#button6").click(function() {
+            getGameQuestion("", "", "", 1, function(callback) {
+                //console.log(callback);
             });
+        });
 
-            $("#button7").click(function () {
-                getGameAnswer("", "", "", 1, function (callback) {
-                    //console.log(callback);
-                });
+        $("#button7").click(function() {
+            getGameAnswer("", "", "", 1, function(callback) {
+                //console.log(callback);
             });
+        });
 
-            $("#button8").click(function () {
-                setQuestionScore("kinetic1", "123456", "999999", 2, 103, 10, "Pretest", 1, function (callback) {
-                    console.log(callback);
-                });
+        $("#button8").click(function() {
+            setQuestionScore("kinetic1", "123456", "999999", 2, 103, 10, "Pretest", 1, function(callback) {
+                console.log(callback);
             });
+        });
 
-            $("#button9").click(function () {
-                getGameScore("toffeemint4", "123456", "999999", 104, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function (callback) {
-                    console.log(callback);
-                });
+        $("#button9").click(function() {
+            getGameScore("toffeemint4", "123456", "999999", 104, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function(callback) {
+                console.log(callback);
             });
+        });
 
-            $("#button10").click(function () {
-                getLcDetails("toffeemint2", "123456", "999999", "0000001121", function (contract) {
-                    //console.log(contract);
+        $("#button10").click(function() {
+            getLcDetails("toffeemint2", "123456", "999999", "0000001121", function(contract) {
+                //console.log(contract);
 
-                    var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-                    //console.log(globalErrorId);
-                    if (globalErrorId === "010000") {
-                        exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
-                        //console.log(exporterAcct);
-                        expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
-                        //console.log(expiryDate);
-                        status = contract.Content.ServiceResponse.LC_Details.LC_record.status;
-                        //console.log(status);
-                        lc = contract.Content.ServiceResponse.LC_Details.LC_record;
-                        //console.log(lc);
+                var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+                //console.log(globalErrorId);
+                if (globalErrorId === "010000") {
+                    exporterAcct = contract.Content.ServiceResponse.LC_Details.LC_record.exporter_account_num;
+                    //console.log(exporterAcct);
+                    expiryDate = contract.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
+                    //console.log(expiryDate);
+                    status = contract.Content.ServiceResponse.LC_Details.LC_record.status;
+                    //console.log(status);
+                    lc = contract.Content.ServiceResponse.LC_Details.LC_record;
+                    //console.log(lc);
 
-                    }
-                });
-            });
-
-            $("#button11").click(function () {
-                modifyLc("toffeemint2", "123456", "999999", "0000001121", function (data) {
-                    //console.log(data);
-
-
-                });
-            });
-            $("#button12").click(function () {
-                getLcAmendments("toffeemint2", "123456", "999999", "0000001133", function (amendments) {
-                    //console.log(amendments);
-                });
-            });
-
-            $("#button13").click(function () {
-                uploadBOL("kinetic1", "123456", "999999", "0000001081", "http://bit.ly/2BPThUM", function (data) {
-                    //console.log(data);
-                });
-            });
-            $("#button14").click(function () {
-                updateStatus("kinetic1", "123456", "999999", "0000001160", "documents Uploaded", "", function (data) {
-                    //console.log(data);
-
-
-                });
-            });
-
-            $("#button15").click(function () {
-                getBOLUrl("toffeemint2", "123456", "999999", "0000001195", function (data) {
-                    //console.log(data);
-                });
-            });
-            $("#button16").click(function () {
-                getQRCode(100, 100, 'http://bit.ly/2BPThUM', function (data) {
-                    console.log(data)
-                });
-            });
-
-            $("#button17").click(function () {
-                getGameLeaders("kinetic1", "123456", "999999", 104, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", false, function (callback) {
-                    console.log(callback)
-                });
-            });
-            $("#button18").click(function () {
-                var bcReceipt = ""
-                getBlockchainReceipt("kinetic1", "123456", "999999", "0000001450", function (data) {
-                    if (data !== null) {
-                        bcReceipt = data[0][1]
-                    }
-                });
-                if (bcReceipt !== "") {
-                    bcReceipt = JSON.parse(bcReceipt);
-                    $("#json").html(JSON.stringify(bcReceipt, undefined, 2));
-                    //$("#content").html(bcReceipt);
                 }
             });
+        });
 
-            $("#button19").click(function () {
-               doAsyncOp();
+        $("#button11").click(function() {
+            modifyLc("toffeemint2", "123456", "999999", "0000001121", function(data) {
+                //console.log(data);
+
+
             });
+        });
+        $("#button12").click(function() {
+            getLcAmendments("toffeemint2", "123456", "999999", "0000001133", function(amendments) {
+                //console.log(amendments);
+            });
+        });
 
-            async function doAsyncOp() {
-                const homepageD = await getHomepageData();
-               var dataObj = JSON.parse(homepageD);
-               console.log(dataObj);
-              
-               
-            };
+        $("#button13").click(function() {
+            uploadBOL("kinetic1", "123456", "999999", "0000001081", "http://bit.ly/2BPThUM", function(data) {
+                //console.log(data);
+            });
+        });
+        $("#button14").click(function() {
+
+            doAsyncUpdates();
+        });
 
 
-        </script>
+        async function doAsyncUpdates() {
+            const updates = await updateStatus("toffeemint2", "123456", "999999", "0000001808", "acknowledged", "");
+            console.log(updates);
+        }
+
+        $("#button15").click(function() {
+            getBOLUrl("toffeemint2", "123456", "999999", "0000001195", function(data) {
+                //console.log(data);
+            });
+        });
+        $("#button16").click(function() {
+            getQRCode(100, 100, 'http://bit.ly/2BPThUM', function(data) {
+                console.log(data)
+            });
+        });
+
+        $("#button17").click(function() {
+            getGameLeaders("kinetic1", "123456", "999999", 104, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", false, function(callback) {
+                console.log(callback)
+            });
+        });
+        $("#button18").click(function() {
+            var bcReceipt = ""
+            getBlockchainReceipt("kinetic1", "123456", "999999", "0000001450", function(data) {
+                if (data !== null) {
+                    bcReceipt = data[0][1]
+                }
+            });
+            if (bcReceipt !== "") {
+                bcReceipt = JSON.parse(bcReceipt);
+                $("#json").html(JSON.stringify(bcReceipt, undefined, 2));
+                //$("#content").html(bcReceipt);
+            }
+        });
+
+        $("#button19").click(function() {
+            doAsyncOp();
+        });
+
+        async function doAsyncOp() {
+            const homepageD = await getHomepageData();
+            var dataObj = JSON.parse(homepageD);
+            console.log(dataObj);
 
 
-    </body>
+        };
+
+        $("#button20").click(function() {
+            doAsyncAm();
+        });
+
+        async function doAsyncAm() {
+
+
+            const amendments = await getLcAmendments("toffeemint2", "123456", "999999", "0000001807");
+            console.log(amendments);
+
+
+        };
+
+        $("#button21").click(function() {
+            processData();
+        });
+        async function processData() {
+            const data = await getData();
+            console.log(data);
+        }
+        $("#button22").click(function() {
+            processHData();
+
+        });
+        async function processHData() {
+            const data = await getHomepageData();
+            console.log(data);
+        }
+    </script>
+
+
+</body>
+
 </html>

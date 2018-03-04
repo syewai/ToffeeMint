@@ -148,7 +148,7 @@
             </div>
 
         </form>
-        <script type="text/javascript">
+        <script>
             $(document).ready(function() {
                 //get all countries
                 var allCountries = getAllCountries();
@@ -193,11 +193,6 @@
                     $("#bankId").html(bankId);
                     var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
                     $("#loginForm").append(exporterAcctInput);
-
-                    //var randomCountry = countries[Math.floor(Math.random() * countries.length)];
-                    //console.log(randomCountry);
-                    //var countryInput = "<input type ='hidden' name = 'country' id='country' value='" + randomCountry + "' >";
-                    //$("#loginForm").append(countryInput);
 
                 };
 

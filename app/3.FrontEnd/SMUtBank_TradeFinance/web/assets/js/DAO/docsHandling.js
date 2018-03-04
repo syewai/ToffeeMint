@@ -6,7 +6,8 @@
 var apiUrl = getApiUrl();
 var apiUrlBC = getApiUrlBC();
 var apiEvents = getApiEvents();
-function uploadBOL(userId, PIN, OTP, refNum, billOfLadingURL, callback) {//importer
+
+async function uploadBOL(userId, PIN, OTP, refNum, billOfLadingURL, callback) {//importer
 
     var headerObj = {
         Header: {
@@ -28,16 +29,25 @@ function uploadBOL(userId, PIN, OTP, refNum, billOfLadingURL, callback) {//impor
     };
     var content = JSON.stringify(contentObj);
     
-    $.ajax({
-        async: false,
-        type: 'POST',
-        url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
-        //type: 'GET',
-        //url: apiUrlBC + "modifyContract?Header="+header+"&refNum=" + refNum + "&contract=" + content,
-        dataType: 'json',
-        success: callback
+    let result;
+    try {
+        result = await $.ajax({
+            type: "POST",
+            url: apiUrl +
+                "?Header=" +
+                header +
+                "&" +
+                "Content=" +
+                content +
+                "&" +
+                "ConsumerID=TF",
+            data: callback
+        });
 
-    });
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /*function getBOLUrl(userId, PIN, OTP, refNum, callback) {//importer

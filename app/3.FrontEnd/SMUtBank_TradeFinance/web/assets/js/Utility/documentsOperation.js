@@ -10,7 +10,7 @@ var PIN = user.PIN;
 var OTP = user.OTP;
 var usertype = user.usertype;
 
-function uploadBol() {
+async function uploadBol() {
     // get lc details, prefilled 4 lc fields
     var refNum = getQueryVariable("refNum");
     var importerAccount = ""; //no change
@@ -36,9 +36,45 @@ function uploadBol() {
 
     var errorMsg;
     var globalErrorID;
+    /*Part 1 - call getLcDetails to prefilled amendments*/
+    const lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
+    var globalErrorId =
+        lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    var fields = {};
+    if (globalErrorId === "010000") {
+        fields = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
 
+            for (var field in fields) {
+                var fieldCamel = attributeMapping(field);
+                var fieldValue = fields[field];
+                $("#" + fieldCamel).attr("placeholder", fieldValue);
 
-    getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+            }
+
+            importerAccount = fields.importer_account_num; //no change
+            //console.log(importerAccount);
+            exporterAccount = fields.exporter_account_num; //no change
+            expiryDate = fields.expiry_date; //no change
+            expiryPlace = fields.expiry_place;
+            confirmed = fields.confirmed;
+            revocable = fields.revocable;
+            availableBy = fields.available_by;
+            termDays = fields.term_days;
+            amount = fields.amount;
+            currency = fields.currency; //no change
+            applicableRules = fields.applicable_rules;
+            partialShipments = fields.partial_shipments;
+            shipDestination = fields.ship_destination;
+            shipDate = fields.ship_date;
+            shipPeriod = fields.ship_period;
+            goodsDescription = fields.goods_description;
+            docsRequired = fields.docs_required;
+            additionalConditions = fields.additional_conditions;
+            senderToReceiverInfo = fields.sender_to_receiver_info;
+
+    }
+
+   /* getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
         var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
         //console.log(globalErrorId);
         var fields = {};
@@ -74,7 +110,7 @@ function uploadBol() {
             senderToReceiverInfo = fields.sender_to_receiver_info;
 
         }
-    });
+    });*/
     var bolLink = "http://bit.ly/2BPThUM";
     var cooLink = "http://bit.ly/2smTvi9";
     var insuranceLink = "http://bit.ly/2CaYEcP";
@@ -106,91 +142,27 @@ function uploadBol() {
         }
 
         var links = {
-            bolLink: bolLink,
-            cooLink: cooLink,
-            insuranceLink: insuranceLink
+            BillOfLading: bolLink,
+            CertOfOrigin: cooLink,
+            Insurance: insuranceLink
 
         };
 
         var linksJson = JSON.stringify(links);
-
-        uploadBOL(userId, PIN, OTP, refNum, linksJson, function (data) {
-            //console.log(data);
-            globalErrorId = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-            //console.log(globalErrorId);
-        });
-        if (globalErrorId === "010000") {
-
-            //update status to documents uploaded
-            updateStatus(userId, PIN, OTP, refNum, "documents uploaded", "", function (data) {
-                var globalErrorID = data.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
-                if (globalErrorID === "010000") {
-                    //console.log("docs uploaded");
-                    //console.log(data);
-                    //After ,page will be redirected to homepage.
-                    window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
-                }
-            });
-
-
-
-            /*docsRequired = "Cert of Origin" + "\n" + cooLink + "\n\n"
-             + "Insurance" + "\n" + insuranceLink;
-             
-             var lc = {
-             referenceNumber: refNum,
-             importerAccount: importerAccount,
-             exporterAccount: exporterAccount,
-             expiryDate: expiryDate,
-             expiryplace: expiryPlace,
-             confirmed: confirmed,
-             revocable: revocable,
-             availableBy: availableBy,
-             termDays: termDays,
-             amount: amount,
-             currency: currency,
-             applicableRules: applicableRules,
-             partialShipments: partialShipments,
-             shipDestination: shipDestination,
-             shipDate: shipDate,
-             shipPeriod: shipPeriod,
-             goodsDescription: goodsDescription,
-             docsRequired: docsRequired,
-             additionalConditions: additionalConditions,
-             senderToReceiverInfo: senderToReceiverInfo,
-             mode: mode
-             };
-             //console.log(lc);
-             
-             var validateLcApplication = lcModificationForm(userId, PIN, OTP, lc);
-             //console.log(validateLcApplication);
-             if (validateLcApplication !== undefined) {
-             if (validateLcApplication.hasOwnProperty("errorMsg")) {
-             var errorMsg = validateLcApplication.errorMsg;
-             //console.log("error");
-             //console.log(errorMsg);
-             $("#authError").html(errorMsg);
-             
-             } else if (validateLcApplication.hasOwnProperty("success")) {
-             //update status to "docuements uploaded"
-             updateStatus(userId, PIN, OTP, refNum, "documents uploaded", "", function (data) {
-             if (globalErrorID === "010000") {
-             //console.log("docs uploaded");
-             //console.log(data);
-             //After completing both applying lc from Alan's API and bc, page will be redirected to homepage.
-             // window.location.replace("/SMUtBank_TradeFinance/"+usertype+"/"+usertype+".html");
-             }
-             });
-             
-             
-             }
-             }*/
-
-        }
+        processUploadBol(userId, PIN, OTP, refNum, linksJson);
+        
 
     });
     $("#cancelButton").click(function () {
         window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
     });
     //
+}
+
+async function processUploadBol(userId, PIN, OTP, refNum, linksJson){
+    const uploadBol = await uploadBOL(userId, PIN, OTP, refNum, linksJson);
+    var globalErrorId = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    if (globalErrorId === "010000") {
+        processUpdateStatus(userId, PIN, OTP, refNum, "documents uploaded", "");
+    } 
 }

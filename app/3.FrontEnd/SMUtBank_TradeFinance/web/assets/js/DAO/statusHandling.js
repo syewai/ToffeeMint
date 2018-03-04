@@ -63,7 +63,7 @@ function setStatus(userId, PIN, OTP, refNum, status, callback) {
     });
 }
 
-function updateStatus(userId, PIN, OTP, refNum, status, statusDetails, callback) {
+async function updateStatus(userId, PIN, OTP, refNum, status, statusDetails, callback) {
 
     var headerObj = {
         Header: {
@@ -84,13 +84,23 @@ function updateStatus(userId, PIN, OTP, refNum, status, statusDetails, callback)
     };
     var content = JSON.stringify(contentObj);
     //update new status to bc
-    $.ajax({
-       // type: 'GET',
-        //url: apiUrlBC + 'setStatus?refNum=' + refNum + '&status=' + status,
-        type: "POST",
-        url: apiUrl+"?Header="+header+"&"+ "Content="+content+"&"+ "ConsumerID=TF",
-        dataType: 'json',
-        success: callback
+    let result;
+    try {
+        result = await $.ajax({
+            type: "POST",
+            url: apiUrl +
+                "?Header=" +
+                header +
+                "&" +
+                "Content=" +
+                content +
+                "&" +
+                "ConsumerID=TF",
+            data: callback
+        });
 
-    });
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 }

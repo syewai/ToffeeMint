@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
     <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
@@ -24,7 +25,7 @@
                         </header>
                         <div class="panel-body">
                             <div class="form-group">
-                                <input id="goodsDescription"  type="text"  class="form-control goodsDesc" name="goodsDescription">
+                                <input id="goodsDescription" type="text" class="form-control goodsDesc" name="goodsDescription">
                             </div>
                             <div id="goodsDescription-p"></div>
                         </div>
@@ -52,24 +53,15 @@
                             </div>
                             <div class="form-group">
                                 <label>Amount</label>
-                                <input id="amount" type="text" class="form-control" data-type="digits" >
+                                <input id="amount" type="text" class="form-control" data-type="digits">
                                 <div id="amount-p"></div>
                             </div>
 
                             <div class="form-group">
                                 <label for="expiryDate">Ship Date</label>
-                                <input type='text' class="form-control form_date" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" >
+                                <input type='text' class="form-control form_date" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate">
                                 <div id="expiryDate-p"></div>
                             </div>
-                            <!--<div class="form-group">
-                                <label>Additional Conditions</label>
-                                <textarea id="additionalConditions"  class="form-control" rows="6" placeholder="Additional Conditions" name="additonalConditions" readonly></textarea>
-                            </div>
-                            <div id="additionalConditions-p"></div>-->
-                            <!--<div class="form-group">
-                                <label>Upload Bill of Exchange</label>
-                                <input type="file" class="filestyle" data-icon="false" data-classButton="btn btn-default" data-classInput="form-control inline input-s">
-                            </div>-->
                             <div id="authError"></div>
                             <footer class="text-center bg-light lter">
                                 <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-primary btn-lg' id="modifyLcButton">Modify</button></div>
@@ -93,7 +85,7 @@
 <!-- Bootstrap -->
 <script src="../assets/js/bootstrap.js"></script>
 <!-- App -->
-<script src="../assets/js/app.js"></script> 
+<script src="../assets/js/app.js"></script>
 <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
 
 <script type="text/javascript" src="../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
@@ -121,6 +113,8 @@
         forceParse: 0
     });
 </script>
-<script type="text/javascript">
-    modifyLcOps();
+<script>
+    $(document).ready(function() {
+        modifyLcOps();
+    })
 </script>
