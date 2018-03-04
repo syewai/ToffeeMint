@@ -95,17 +95,5 @@
         window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
     });
 
-    $(".homeButton").click(function() {
-        var refNum = $(this).attr('data-refnum');
-        var page = $(this).attr('id');
-        console.log("TEST!!!!!!!!!!!!!!!!");
-        var pageToLoad = {
-            page: page
-        };
-        if (refNum != undefined) {
-            pageToLoad.refNum = refNum;
-        }
-        sessionStorage.setItem('page', JSON.stringify(pageToLoad));
-        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html?refNum=" + refNum);
-    });
+
 </script>

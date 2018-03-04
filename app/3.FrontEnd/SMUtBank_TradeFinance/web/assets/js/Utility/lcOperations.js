@@ -150,7 +150,7 @@ async function amendLcOps() {
     var additionalConditions = "";
     var senderToReceiverInfo = "";
     var mode = "BC"; //no change
-    
+
     /*Part 1 - call getLcDetails to prefilled amendments*/
     const lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
     var globalErrorId =
@@ -239,7 +239,7 @@ async function amendLcOps() {
             senderToReceiverInfo: senderToReceiverInfo,
             mode: mode
         };
-        
+
         processAmendments(lc); // call amendLc Async function in another async function
 
     });
@@ -523,7 +523,7 @@ async function getHomepageData() {
     console.time("time spent");
     /*call parallel await/async function --> getRefNumListAsync & getBCReceipt(). 
     refnum --> Return {errormsg}, or {refNumlist}, all bc receipt --> return [refnum,transactionHash], [refnum,transactionHash],[...]*/
-    const refNumAndReceipt = await Promise.all([getRefNumListAsync(userId, PIN, OTP)]);
+    const refNumAndReceipt = await Promise.all([getRefNumListAsync(userId, PIN, OTP), getAllBlockchainReceipt(userId, PIN, OTP)]);
     //, getAllBlockchainReceipt(userId, PIN, OTP)
     var refNumberListValidation = refNumAndReceipt[0];
 
@@ -1136,6 +1136,19 @@ function loadLcDetailsModal() {
 
 
 function buttonClicks() {
+        $(".homeButton").click(function() {
+        var refNum = $(this).attr('data-refnum');
+        var page = $(this).attr('id');
+        console.log("TEST!!!!!!!!!!!!!!!!");
+        var pageToLoad = {
+            page: page
+        };
+        if (refNum != undefined) {
+            pageToLoad.refNum = refNum;
+        }
+        sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html?refNum=" + refNum);
+    });
     $("#approveButton").click(function() {
         var refNum = $("#returnedRef").attr("value");
         var status = "acknowledged";
