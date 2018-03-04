@@ -270,6 +270,7 @@ async function processAmendments(lc) {
 //This function handle UI logic of modify lc page
 async function modifyLcOps() {
     var refNum = getQueryVariable("refNum");
+
     var importerAccount = ""; //no change
     var exporterAccount = ""; //no change
     var expiryDate = "";
@@ -339,6 +340,7 @@ async function modifyLcOps() {
     var originalLc = null;
     /*Part 1 - call getLcDetails to prefilled amendments*/
     const lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
+
     var globalErrorId =
         lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     //console.log(globalErrorId);
@@ -347,6 +349,7 @@ async function modifyLcOps() {
         //Fetch lc details, store in fields object
         var fields = {};
         fields = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
+        originalLc = fields;
         importerAccount = fields.importer_account_num; //no change
         //console.log(fields);
         exporterAccount = fields.exporter_account_num; //no change
@@ -368,7 +371,7 @@ async function modifyLcOps() {
         additionalConditions = fields.additional_conditions;
         senderToReceiverInfo = fields.sender_to_receiver_info;
     }
-
+    console.log(originalLc);
     var originalAmount = "";
     var originalDesc = "";
     var originalExpiryDate = "";
@@ -729,6 +732,7 @@ async function homeOperation() {
             }
 
             var $button = $(button);
+            //$button.css("visibility","hidden");
             $button.addClass(buttonAssigned(operation)[0]); //change button color to red if action is to be taken(Rather than "View lc").
             $buttonCell.append($button);
             $row.append($buttonCell);
@@ -1063,11 +1067,11 @@ function loadLcDetailsModal() {
             ) {
                 attrToChange = [
                     "acceptDocs",
-                    "cancel",
+                    "",
                     "Accept Documents",
-                    "Cancel",
+                    "",
                     "visible",
-                    "visible"
+                    "hidden"
                 ];
             } else if (
                 sessionStorage.usertype === "importer" &&
@@ -1136,7 +1140,7 @@ function loadLcDetailsModal() {
 
 
 function buttonClicks() {
-        $(".homeButton").click(function() {
+    $(".homeButton").click(function() {
         var refNum = $(this).attr('data-refnum');
         var page = $(this).attr('id');
         console.log("TEST!!!!!!!!!!!!!!!!");

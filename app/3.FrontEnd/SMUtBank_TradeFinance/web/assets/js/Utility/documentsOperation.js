@@ -44,73 +44,73 @@ async function uploadBol() {
     if (globalErrorId === "010000") {
         fields = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
 
-            for (var field in fields) {
-                var fieldCamel = attributeMapping(field);
-                var fieldValue = fields[field];
-                $("#" + fieldCamel).attr("placeholder", fieldValue);
+        for (var field in fields) {
+            var fieldCamel = attributeMapping(field);
+            var fieldValue = fields[field];
+            $("#" + fieldCamel).attr("placeholder", fieldValue);
 
-            }
+        }
 
-            importerAccount = fields.importer_account_num; //no change
-            //console.log(importerAccount);
-            exporterAccount = fields.exporter_account_num; //no change
-            expiryDate = fields.expiry_date; //no change
-            expiryPlace = fields.expiry_place;
-            confirmed = fields.confirmed;
-            revocable = fields.revocable;
-            availableBy = fields.available_by;
-            termDays = fields.term_days;
-            amount = fields.amount;
-            currency = fields.currency; //no change
-            applicableRules = fields.applicable_rules;
-            partialShipments = fields.partial_shipments;
-            shipDestination = fields.ship_destination;
-            shipDate = fields.ship_date;
-            shipPeriod = fields.ship_period;
-            goodsDescription = fields.goods_description;
-            docsRequired = fields.docs_required;
-            additionalConditions = fields.additional_conditions;
-            senderToReceiverInfo = fields.sender_to_receiver_info;
+        importerAccount = fields.importer_account_num; //no change
+        //console.log(importerAccount);
+        exporterAccount = fields.exporter_account_num; //no change
+        expiryDate = fields.expiry_date; //no change
+        expiryPlace = fields.expiry_place;
+        confirmed = fields.confirmed;
+        revocable = fields.revocable;
+        availableBy = fields.available_by;
+        termDays = fields.term_days;
+        amount = fields.amount;
+        currency = fields.currency; //no change
+        applicableRules = fields.applicable_rules;
+        partialShipments = fields.partial_shipments;
+        shipDestination = fields.ship_destination;
+        shipDate = fields.ship_date;
+        shipPeriod = fields.ship_period;
+        goodsDescription = fields.goods_description;
+        docsRequired = fields.docs_required;
+        additionalConditions = fields.additional_conditions;
+        senderToReceiverInfo = fields.sender_to_receiver_info;
 
     }
 
-   /* getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
-        var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-        //console.log(globalErrorId);
-        var fields = {};
-        if (globalErrorId === "010000") {
-            fields = contract.Content.ServiceResponse.LC_Details.LC_record;
+    /* getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
+         var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+         //console.log(globalErrorId);
+         var fields = {};
+         if (globalErrorId === "010000") {
+             fields = contract.Content.ServiceResponse.LC_Details.LC_record;
 
-            for (var field in fields) {
-                var fieldCamel = attributeMapping(field);
-                var fieldValue = fields[field];
-                $("#" + fieldCamel).attr("placeholder", fieldValue);
+             for (var field in fields) {
+                 var fieldCamel = attributeMapping(field);
+                 var fieldValue = fields[field];
+                 $("#" + fieldCamel).attr("placeholder", fieldValue);
 
-            }
+             }
 
-            importerAccount = fields.importer_account_num; //no change
-            //console.log(importerAccount);
-            exporterAccount = fields.exporter_account_num; //no change
-            expiryDate = fields.expiry_date; //no change
-            expiryPlace = fields.expiry_place;
-            confirmed = fields.confirmed;
-            revocable = fields.revocable;
-            availableBy = fields.available_by;
-            termDays = fields.term_days;
-            amount = fields.amount;
-            currency = fields.currency; //no change
-            applicableRules = fields.applicable_rules;
-            partialShipments = fields.partial_shipments;
-            shipDestination = fields.ship_destination;
-            shipDate = fields.ship_date;
-            shipPeriod = fields.ship_period;
-            goodsDescription = fields.goods_description;
-            docsRequired = fields.docs_required;
-            additionalConditions = fields.additional_conditions;
-            senderToReceiverInfo = fields.sender_to_receiver_info;
+             importerAccount = fields.importer_account_num; //no change
+             //console.log(importerAccount);
+             exporterAccount = fields.exporter_account_num; //no change
+             expiryDate = fields.expiry_date; //no change
+             expiryPlace = fields.expiry_place;
+             confirmed = fields.confirmed;
+             revocable = fields.revocable;
+             availableBy = fields.available_by;
+             termDays = fields.term_days;
+             amount = fields.amount;
+             currency = fields.currency; //no change
+             applicableRules = fields.applicable_rules;
+             partialShipments = fields.partial_shipments;
+             shipDestination = fields.ship_destination;
+             shipDate = fields.ship_date;
+             shipPeriod = fields.ship_period;
+             goodsDescription = fields.goods_description;
+             docsRequired = fields.docs_required;
+             additionalConditions = fields.additional_conditions;
+             senderToReceiverInfo = fields.sender_to_receiver_info;
 
-        }
-    });*/
+         }
+     });*/
     var bolLink = "http://bit.ly/2BPThUM";
     var cooLink = "http://bit.ly/2smTvi9";
     var insuranceLink = "http://bit.ly/2CaYEcP";
@@ -125,7 +125,7 @@ async function uploadBol() {
      $("#cooLink").html(cooText);
      $("#insuranceLink").html(insuranceText);*/
 
-    $("#uploadDocsButton").click(function () {
+    $("#uploadDocsButton").click(function() {
         //upload bol
         var globalErrorId = "";
         var bolLink = document.getElementById("bolLink").value;
@@ -150,19 +150,19 @@ async function uploadBol() {
 
         var linksJson = JSON.stringify(links);
         processUploadBol(userId, PIN, OTP, refNum, linksJson);
-        
+
 
     });
-    $("#cancelButton").click(function () {
+    $("#cancelButton").click(function() {
         window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
     });
     //
 }
 
-async function processUploadBol(userId, PIN, OTP, refNum, linksJson){
+async function processUploadBol(userId, PIN, OTP, refNum, linksJson) {
     const uploadBol = await uploadBOL(userId, PIN, OTP, refNum, linksJson);
-    var globalErrorId = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    var globalErrorId = uploadBol.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     if (globalErrorId === "010000") {
         processUpdateStatus(userId, PIN, OTP, refNum, "documents uploaded", "");
-    } 
+    }
 }
