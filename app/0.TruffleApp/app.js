@@ -3,6 +3,7 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 9001;
 const cors = require('cors');
+const log = require('simple-node-logger').createSimpleFileLogger('bc_log.log');
 
 //Use CORS for cross-origin access
 
@@ -43,7 +44,9 @@ app.get('/lc/createContract/', function(req, res) {
 
     createLetterOfCredit(lcID, contract).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Create Contract, Value: " + JSON.stringify(result));
         console.log(result);
+       
     });
 })
 
@@ -52,6 +55,7 @@ app.get('/lc/getContract/', function(req, res) {
 
     getLetterOfCredit(lcID).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Get Contract, Value: " + JSON.stringify(result));
         console.log(result);
     });
 
@@ -63,6 +67,7 @@ app.get('/lc/modifyContract', function(req, res) {
 
     modifyLetterOfCredit(lcID, contract).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Modify Contract, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -72,6 +77,7 @@ app.get('/lc/getStatus', function(req, res) {
 
     getLCStatus(lcID).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Get Status, Value: " + JSON.stringify(result));
         console.log(result);
     })
 })
@@ -82,6 +88,7 @@ app.get('/lc/setStatus', function(req, res) {
 
     setLCStatus(lcID, stat).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Set Status, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -91,6 +98,7 @@ app.get('/lc/getBOE', function(req, res) {
 
     getBOE(lcID).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Get BOE, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -101,6 +109,7 @@ app.get('/lc/setBOE', function(req, res) {
 
     setBOE(lcID, boeHash).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Set BOE, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -110,6 +119,7 @@ app.get('/lc/getBOL', function(req, res) {
 
     getBOE(lcID).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Get BOL, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -120,6 +130,7 @@ app.get('/lc/setBOL', function(req, res) {
 
     setBOE(lcID, boeHash).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Set BOL, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -130,6 +141,7 @@ app.get('/lc/amendLC', function(req, res) {
 
     amendContract(refNum, amendments).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Amend LC, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -139,6 +151,7 @@ app.get('/lc/getAmendments', function(req, res) {
 
     getAmendments(refNum).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Get Amendments, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -148,6 +161,7 @@ app.get('/lc/getInsurance', function(req, res) {
 
     getInsurance(lcID).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Get Insurance, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -158,6 +172,7 @@ app.get('/lc/setInsurance', function(req, res) {
 
     setInsurance(lcID, insuranceString).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Set Insurance, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -167,6 +182,7 @@ app.get('/lc/getTrustReceipt', function(req, res) {
 
     getTrustReceipt(lcID).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Get TrustReceipt, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -177,6 +193,7 @@ app.get('/lc/setTrustReceipt', function(req, res) {
 
     setTrustReceipt(lcID, hasReceipt).then(function(result) {
         res.status(200).send(result);
+        log.info("Function: Set TrustReceipt, Value: " + JSON.stringify(result));
         console.log(result);
     });
 })
@@ -400,21 +417,21 @@ function setTrustReceipt(refNum, hasReceipt) {
 //////////////EVENTS//////////////
 
 //endpoints
-app.get('/events/status', function(req, res) {
-    const refNum = req.param("refNum");
-    const stat = req.param("status");
-
-
-    statusChangeListener(refNum, stat).then(function(event) {
-        res.status(200).send(event);
-    })
-})
-
 app.get('/events/LCCreated', function(req, res) {
     const refNum = req.param("refNum");
 
     LCCreationListener(refNum).then(function(event) {
         res.status(200).send(event);
+        log.info("Function: LC Created Event, Value: " + JSON.stringify(event));
+    })
+})
+
+app.get('/events/LCCreatedHash', function(req, res) {
+    const refNum = req.param("refNum");
+
+    LCCreationHashListener(refNum).then(function(event) {
+        res.status(200).send(event);
+        log.info("Function: LC Created Hash Event, Value: " + JSON.stringify(event));
     })
 })
 
@@ -423,14 +440,29 @@ app.get('/events/LCModified', function(req, res) {
 
     LCModifyListener(refNum).then(function(event) {
         res.status(200).send(event);
+        log.info("Function: LC Modified Event, Value: " + JSON.stringify(event));
     })
 })
+
+
+app.get('/events/status', function(req, res) {
+    const refNum = req.param("refNum");
+    const stat = req.param("status");
+
+
+    statusChangeListener(refNum, stat).then(function(event) {
+        res.status(200).send(event);
+        log.info("Function: Status Changed Event, Value: " + JSON.stringify(event));
+    })
+})
+
 
 app.get('/events/documentsModified', function(req, res) {
     const refNum = req.param("refNum");
 
     documentsModifiedListener(refNum).then(function(event) {
         res.status(200).send(event);
+        log.info("Function: Documents Modified Event, Value: " + JSON.stringify(event));
     })
 })
 
@@ -439,21 +471,20 @@ app.get('/events/amendments', function(req, res) {
 
     amendmentsMadeListener(refNum).then(function(event) {
         res.status(200).send(event);
+        log.info("Function: Amendments Event, Value: " + JSON.stringify(event));
     })
 })
 
 
 
 //event endpoints exposed
-function statusChangeListener(refNum, status) {
+function LCCreationListener(refNum) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
             var arr = [];
-            instance.StatusChanged({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
+            instance.LCCreated({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
                 if (refNum == "" || refNum == event.args.refNum) {
-                    if (status == "" || status == event.args.contractStatus) {
-                        arr.push([event.args.refNum, event.args.contractStatus]);
-                    }
+                    arr.push([event.args.refNum, event.args.contractValues]);
                 }
                 console.log(arr);
                 resolve(arr);
@@ -462,16 +493,16 @@ function statusChangeListener(refNum, status) {
     })
 }
 
-function LCCreationListener(refNum) {
+function LCCreationHashListener(refNum) {
     return new Promise(function(resolve, reject) {
         LetterOfCredit.deployed().then(function(instance) {
             var arr = [];
-            instance.LCCreated({}, { fromBlock: 0, toBlock: 'latest' }).get(function(error, event) {
-                //if (refNum == "" || refNum == event.args.refNum) {
-                //    arr.push([event.args.refNum, event.args.contractValues]);
-                //}
-                console.log(event);
-                resolve(event);
+            instance.LCCreated({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum) {
+                    arr.push([event.args.refNum, event.transactionHash]);
+                }
+                console.log(arr);
+                resolve(arr);
             })
         });
     })
@@ -484,6 +515,23 @@ function LCModifyListener(refNum) {
             instance.LCModified({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
                 if (refNum == "" || refNum == event.args.refNum) {
                     arr.push([event.args.refNum, event.args.contractValues]);
+                }
+                console.log(arr);
+                resolve(arr);
+            })
+        });
+    })
+}
+
+function statusChangeListener(refNum, status) {
+    return new Promise(function(resolve, reject) {
+        LetterOfCredit.deployed().then(function(instance) {
+            var arr = [];
+            instance.StatusChanged({}, { fromBlock: 0, toBlock: 'latest' }).watch(function(error, event) {
+                if (refNum == "" || refNum == event.args.refNum) {
+                    if (status == "" || status == event.args.contractStatus) {
+                        arr.push([event.args.refNum, event.args.contractStatus]);
+                    }
                 }
                 console.log(arr);
                 resolve(arr);
