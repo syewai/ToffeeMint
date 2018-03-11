@@ -1,12 +1,19 @@
 <!DOCTYPE html>
-<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+
 <script src="../assets/js/Utility/logout.js"></script>
 <script type="text/javascript">
-    protectUser();
+    //protectUser();
 </script>
 <script>
-    
-        var temp = sessionStorage.getItem('user');
+        var user = sessionStorage.getItem('user');
+        var admin = sessionStorage.getItem('admin');
+        var temp;
+        if (user !== null){
+            temp = user;
+        }
+        if (admin !== null){
+            temp = admin;
+        }
         var viewName = $.parseJSON(temp);
         var div = "<span class='thumb-sm avatar pull-left'>";
         div += "<img src='../assets/images/avatar.jpg'>";

@@ -533,7 +533,10 @@ async function getHomepageData() {
     var allBlockchainReceipt = refNumAndReceipt[1];
 
     if (!refNumberListValidation.hasOwnProperty("Content")) {
-        refNumberList = refNumberListValidation.RefNumList.RefNum;
+        if (refNumberListValidation.RefNumList !== null) {
+            refNumberList = refNumberListValidation.RefNumList.RefNum;
+        }
+
     }
     var bcReceipt = {};
 
@@ -562,10 +565,6 @@ async function getHomepageData() {
         for (var i = 0; i < numOfRows && i < 5; i++) {
             var refNum = refNumberList[i]; //key of homepageData
             var lc = {};
-            var exporterAcct = "";
-            var importerAcct = "";
-            var expiryDate = "";
-            var status = "";
             var globalErrorId = "";
             const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum)]);
             var lcDetails = results[0];
@@ -573,15 +572,6 @@ async function getHomepageData() {
             var bolLinks = results[1];
             if (lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
                 console.log("lcDetails");
-                importerAcct =
-                    lcDetails.Content.ServiceResponse.LC_Details.LC_record
-                    .importer_account_num;
-                exporterAcct =
-                    lcDetails.Content.ServiceResponse.LC_Details.LC_record
-                    .exporter_account_num;
-                expiryDate =
-                    lcDetails.Content.ServiceResponse.LC_Details.LC_record.expiry_date;
-                status = lcDetails.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
                 lc = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
                 //console.log("lcDetailsType");
                 console.log(lc);
@@ -626,10 +616,15 @@ async function getHomepageData() {
 //this function handles ui logic of homepage
 async function homeOperation() {
 
-
     /*Method 2 - call async/await function --> getHomepageData, (seperate ui and data retriever)*/
-    const homepageData = await getHomepageData();
+    let homePageData;
+    if (sessionStorage.usertype === "shipper") {
+        homepageData = await getAllLcsShipper();
 
+        // Preparation for data table 
+    } else {
+        homepageData = await getHomepageData();
+    }
     var dataObj = JSON.parse(homepageData);
     console.log(dataObj);
     var dataSize = Object.keys(dataObj).length;
@@ -642,9 +637,22 @@ async function homeOperation() {
 
             //get lc 
             var lc = dataObj[refNum].lcDetails;
-            var lcObj = JSON.parse(lc);
+            var lcObj;
+            if (typeof(lc) === "object") {
+                lcObj = lc;
+            } else {
+                lcObj = JSON.parse(lc);
+            };
+
+
             //get status
-            var status = lcObj.status;
+            var status = lcObj.status.toLowerCase();
+
+            //get destination
+            var shipDestination = lcObj.ship_destination;
+
+            //get shipDate 
+            var shipDate = lcObj.ship_date;
 
             //get exporter acct
             var exporterAcct = lcObj.exporter_account_num;
@@ -678,17 +686,27 @@ async function homeOperation() {
             $refNumCell.append(refNum);
             //append ref num cell into table row
             $row.append($refNumCell);
-            //2nd cell - initialize the second table cell - importer --> exporterAccount, exporter --> importerAccount
+
+            //2nd cell - initialize the second table cell - importer --> exporterAccount, exporter --> importerAccount, shipper --> country
             if (sessionStorage.usertype === "importer") {
                 var $exporterAcctCell = $("<td>" + exporterAcct + "</td>");
                 $row.append($exporterAcctCell);
-            } else {
+            } else if (sessionStorage.usertype === "exporter") {
                 var $importerAcctCell = $("<td>" + importerAcct + "</td>");
                 $row.append($importerAcctCell);
+            } else {
+                var $countryCell = $("<td>" + shipDestination + "</td>");
+                $row.append($countryCell);
             }
-            //3rd cell - initialize expiry date cell
-            var $expiryDateCell = $("<td>" + expiryDate + "</td>");
-            $row.append($expiryDateCell);
+            //3rd cell - initialize expiry date cell, importer/exporter --> expiryDate, shipper --> ship date
+            if (sessionStorage.usertype === "shipper") {
+                var $shipDateCell = $("<td>" + shipDate + "</td>");
+                $row.append($shipDateCell);
+            } else {
+                var $expiryDateCell = $("<td>" + expiryDate + "</td>");
+                $row.append($expiryDateCell);
+            }
+
             //4th cell - initialize status cell
             var $statusCell = $(
                 '<td id="status" class="font-bold">' +
@@ -737,153 +755,90 @@ async function homeOperation() {
             $buttonCell.append($button);
             $row.append($buttonCell);
             //append tablle row into the table container(id = latestLCs)
+
             $("#latestLCs").append($row);
         }
     }
+
+    /*DataTables instantiation.*/
+    $('#first-datatable-output table').datatable({
+        pageSize: 10,
+        pagingNumberOfPages: 5,
+        sort: [true, true, true, true, false],
+        filters: [false, 'select', true, false, false],
+        filterEmptySelect: 'Filter by Country',
+        filterText: 'Filter by date',
+        pagingDivSelector: "#paging-first-datatable"
+    });
 }
 
-//this function handles ui logic of Shipper homepage
-function shipperHomeOperation(lcToBePrinted) {
-    if (lcToBePrinted.length > 0) {
-        for (var i in lcToBePrinted) {
-            var url = lcToBePrinted[i]["url"];
-            var operation = lcToBePrinted[i]["operation"];
-            var refNum = lcToBePrinted[i]["refNum"];
-            var status = lcToBePrinted[i]["status"];
-            var country = lcToBePrinted[i]["country"];
-            var shipDate = lcToBePrinted[i]["shipDate"];
-            var exporterAcct = lcToBePrinted[i]["exporter"];
-            var $row = $("<tr></tr>");
-            var href =
-                "/SMUtBank_TradeFinance/" +
-                sessionStorage.usertype +
-                "/" +
-                url +
-                ".html?action=" +
-                url +
-                "&refNum=" +
-                refNum;
-            var $button = $(
-                "<a type='button' id='lcDetails' class='btn btn-s-md' href='" +
-                href +
-                "'>" +
-                operation +
-                "</a> "
-            );
-            $button.addClass(buttonAssigned(status)[0]);
-            var $refNumCell = $("<td></td>");
-            $refNumCell.append(refNum);
-            $row.append($refNumCell);
-            var $countryCell = $("<td>" + country + "</td>");
-            $row.append($countryCell);
-            var $exporterAcctCell = $("<td>" + exporterAcct + "</td>");
-            $row.append($exporterAcctCell);
-            var $shipDateCell = $("<td>" + shipDate + "</td>");
-            $row.append($shipDateCell);
-            var $statusCell = $(
-                '<td id="status" class="font-bold">' + status + "</td>"
-            );
-            $statusCell.addClass(buttonAssigned(status)[1]);
-            $row.append($statusCell);
-            var $buttonCell = $("<td></td>");
-            $buttonCell.append($button);
-            $row.append($buttonCell);
-            $("#latestLCs").append($row);
-        }
-    } else {
-        $("#latestLCs").append(
-            "<tr><td class='font-bold' style='text-align:center' colspan='6'>No Results found</td></tr>"
-        );
-    }
-}
+
 //This function clear contents of lc table container
 function emptyShipperHome() {
     $("#latestLCs").empty();
 }
 
-//This function fetches all lc details of the shipper
-function getAllLcDetailsShipper() {
-    var refNumberList = [];
-    var refNumberListValidation = validateGetRefNumList(userId, PIN, OTP);
-    //console.log(refNumberList);
-    if (refNumberListValidation !== undefined) {
-        if (refNumberListValidation.hasOwnProperty("errorMsg")) {
-            var errorMsg = refNumberListValidation.errorMsg;
-            //console.log("error");
-            //console.log(errorMsg);
-            $("#authError").html(errorMsg);
-        } else if (refNumberListValidation.hasOwnProperty("success")) {
-            refNumberList = refNumberListValidation.success;
-            //console.log(refNumberList);
+async function getAllLcsShipper() {
+    //call lcCreated listener to get all modified!!! lcs --> change format of json
+    //call lcCreatedHash to get all hashes
+    var homePageData = {};
+    const results = await Promise.all([getAllBlockchainReceipt(userId, PIN, OTP), getAllBlockchainReceiptHash(userId, PIN, OTP)]);
+    var lcDetails = results[0];
+    var receipt = results[1];
+    //store allBcReceipts in an object {refNum:TransactionHash}
+    var lcs = {};
+    var bcReceipt = {}
+    if (lcDetails != null) {
+        for (var i = 0; i < lcDetails.length; i++) {
+            if (!(lcDetails[i][0] in lcs)) {
+                lcs[lcDetails[i][0]] = trimLcDetails(lcDetails[i][1]);
+            }
         }
     }
-
-    var numOfRows = refNumberList.length;
-    var allLcDetails = [];
-    if (refNumberList.length > 0) {
-        for (var i = 0; i < numOfRows; i++) {
-            //call web service to get lc details for each ref number
-
-            var refNum = refNumberList[i];
-            var availableStatus = [
-                "acknowledged",
-                "relevant documents uploaded",
-                "documents accepted by importer",
-                "item colleccted"
-            ];
-            //acknowledged = Awaiting Document Presentation
-
-            //get contract of the ref num
-            var exporterAcct = "";
-            var importerAcct = "";
-            var shipDate = "";
-            var status = "";
-            var globalErrorId = "";
-            var country = "";
-            getLcDetails(userId, PIN, OTP, refNum, function(contract) {
-                //calling this method from  assets/js/DAO/lcHandling.js
-                globalErrorId =
-                    contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-                //console.log(globalErrorId);
-                if (globalErrorId === "010000") {
-                    status = contract.Content.ServiceResponse.LC_Details.LC_record.status.toLowerCase();
-                    var statusIncluded = $.inArray(status, availableStatus);
-                    if (status !== "" && statusIncluded !== -1) {
-                        importerAcct =
-                            contract.Content.ServiceResponse.LC_Details.LC_record
-                            .importer_account_num;
-                        exporterAcct =
-                            contract.Content.ServiceResponse.LC_Details.LC_record
-                            .exporter_account_num;
-                        shipDate =
-                            contract.Content.ServiceResponse.LC_Details.LC_record.ship_date;
-                        country =
-                            contract.Content.ServiceResponse.LC_Details.LC_record
-                            .ship_destination;
-                        var operations = operationMatch(status); //calling this method from utility/operationMatch.js
-                        var operation = operations[0];
-                        var url = operations[1];
-                        var lcObject = {
-                            refNum: refNum,
-                            country: country,
-                            exporter: exporterAcct,
-                            shipDate: shipDate,
-                            status: status,
-                            operation: operation,
-                            url: url
-                        };
-                        allLcDetails[i] = lcObject;
-                    }
+    if (receipt != null) {
+        for (var i = 0; i < receipt.length; i++) {
+            bcReceipt[receipt[i][0]] = receipt[i][1];
+        }
+    }
+    //trim extra property of lc details
+    console.log(lcs);
+    console.log(bcReceipt);
+    //get status,only store lc with listed status - acknowledged --> submit bol, documents uploaded --> accept documents, documents accpeted,goods collected
+    var listedStatus = ["acknowledged", "documents uploaded", "documents accepted", "goods collected"];
+    if (Object.keys(lcs).length > 0) {
+        for (var refNum in lcs) {
+            console.log(refNum);
+            var lc = lcs[refNum];
+            lc = JSON.parse(lc);
+            lc = lc["Trade_LC_Create"]["LC_record"];
+            console.log(lc);
+            var status = lc.status.toLowerCase();
+            var statusIncluded = $.inArray(status, listedStatus);
+            if (status !== "" && statusIncluded !== -1) {
+                // if status correct, call get bol links
+                const bolLinks = await getBOLUrl(userId, PIN, OTP, refNum);
+                var links = "";
+                if (bolLinks.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
+                    links =
+                        bolLinks.Content.ServiceResponse.BOL_Details.BOL_record_output
+                        .BOL_Link;
                 }
-            });
+                //store lc, bcreceipt and bol links in homepageData
+                var getReceipt = bcReceipt[refNum];
+                var contentObj = {
+                    lcDetails: lc,
+                    bolLinks: links,
+                    receipt: getReceipt
+                };
+                homePageData[refNum] = contentObj;
+            }
         }
     }
-
-    return allLcDetails;
+    console.log(homePageData);
+    var homepageDataString = JSON.stringify(homePageData);
+    return homepageDataString;
 }
 
-
-function totalLcs() {}
 
 //This function assigns button color (by adding class name to the button element) based on action --> view lc(green), other actions(red)
 function buttonAssigned(action) {
@@ -964,6 +919,9 @@ function loadLcDetailsModal() {
                 "ship_destination",
                 "importer_account_num"
             ];
+            if (usertype === "shipper") {
+                allNecessaryFields = fields;
+            }
             var allLcHTML = "";
 
             if (links !== "") {

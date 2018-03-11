@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-var getUserItem = sessionStorage.getItem('user');
+/*var getUserItem = sessionStorage.getItem('user');
 var user = $.parseJSON(getUserItem);
 var userId = user.userID;
 var PIN = user.PIN;
 var OTP = user.OTP;
-var usertype = user.usertype;
+var usertype = user.usertype;*/
+var userId = sessionStorage.userID;
+var PIN = sessionStorage.PIN;
+var OTP = sessionStorage.OTP;
 
 async function uploadBol() {
     // get lc details, prefilled 4 lc fields
@@ -154,7 +157,7 @@ async function uploadBol() {
 
     });
     $("#cancelButton").click(function() {
-        window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
+        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
     });
     //
 }

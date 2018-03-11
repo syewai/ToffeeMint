@@ -93,15 +93,16 @@ async function authenticateSMSOTP() {
                 sessionStorage.setItem('admin', JSON.stringify(user)); // change attributes 
             } else {
                 sessionStorage.setItem('user', JSON.stringify(user));
-                sessionStorage.userID = userId;
+                sessionStorage.gameID = 104;
+                sessionStorage.showQuiz = 1;
+            }
+            sessionStorage.userID = userId;
                 sessionStorage.PIN = PIN;
                 sessionStorage.OTP = OTP;
                 sessionStorage.usertype = usertype;
                 sessionStorage.customerID = customerID;
-                sessionStorage.gameID = 104;
-                sessionStorage.showQuiz = 1;
-            }
-            console.log(usertype);
+            console.log(sessionStorage.usertype);
+            console.log(sessionStorage.userID);
             window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
 
         }

@@ -260,7 +260,37 @@ async function getAllBlockchainReceipt(userId, PIN, OTP, callback) {
     let result;
     try {
         result = await $.ajax({
-            url: apiEvents + "LCCreated?refNum",
+            url: apiEvents + "LCModified?refNum",
+            type: "GET",
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getAllBlockchainReceiptHash(userId, PIN, OTP, callback) {
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiEvents + "LCCreatedHash?refNum",
+            type: "GET",
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getLcsShipper(callback) {
+    let result;
+    try {
+        result = await $.ajax({
+            url: '../assets/js/data/datagrid.json',
             type: "GET",
             data: callback
         });

@@ -34,7 +34,8 @@ function capitalizeFirstLetter(word) {
 }
 
 function seperateWords(word) {
-    var count = 0, len = word.length;
+    var count = 0,
+        len = word.length;
     for (var i = 0; i < len; i++) {
         if (/[A-Z]/.test(word.charAt(i)))
             word.charAt(i - 1);
@@ -42,7 +43,8 @@ function seperateWords(word) {
 }
 
 function countUpperCaseChars(str) {
-    var count = 0, len = str.length;
+    var count = 0,
+        len = str.length;
     for (var i = 0; i < len; i++) {
         if (/[A-Z]/.test(str.charAt(i)))
             count++;
@@ -55,10 +57,10 @@ function attributeMapping(underscore) {
         "ship_date", "goods_description",
         "additional_conditions", "importer_account_num",
         "exporter_account_num", "expiry_place", "confirmed",
-        "revocable", "available_by", "term_days", "currency"
-                , "applicable_rules", "partial_shipments", "ship_destination",
+        "revocable", "available_by", "term_days", "currency", "applicable_rules", "partial_shipments", "ship_destination",
         "ship_period", "sender_to_receiver_info",
-        "docs_required"];
+        "docs_required"
+    ];
     var allNecessaryFieldsName = ["expiryDate", "amount",
         "shipDate", "goodsDescription", "additionalConditions",
         "importerAccountNum", "exporterAccountNum", "expiryPlace",
@@ -66,7 +68,8 @@ function attributeMapping(underscore) {
         "termDays", "currency", "applicableRules",
         "partialShipments", "shipDestination",
         "shipPeriod", "senderToReceiverInfo",
-        "docsRequired"];
+        "docsRequired"
+    ];
 
     var map = {};
     for (var i = 0; i < allNecessaryFields.length; i++) {
@@ -76,7 +79,7 @@ function attributeMapping(underscore) {
 
 }
 
-function convertToDisplay(underscore,symbol) {
+function convertToDisplay(underscore, symbol) {
 
     var arr = underscore.trim().split(symbol);
     var newWord = "";
@@ -93,3 +96,9 @@ function convertToDisplay(underscore,symbol) {
     return newWord;
 }
 
+function trimLcDetails(lcString) {
+    //find all "ns0:" and replace with ""
+    var newString = lcString.replace(/ns0:/g, '');
+    newString = newString.replace("-Request", '')
+    return newString;
+}

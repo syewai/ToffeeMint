@@ -1,10 +1,10 @@
 function pageLoad() {
-    $(document).ready(function (e) {
+    $(document).ready(function(e) {
 
-        var getUserItem = sessionStorage.getItem('user');
-        var user = $.parseJSON(getUserItem);
-        var usertype = user.usertype;
-        if (usertype === "importer" || usertype === "exporter") {
+        //var getUserItem = sessionStorage.getItem('user');
+        //var user = $.parseJSON(getUserItem);
+        //var usertype = user.usertype;
+        if (sessionStorage.usertype === "importer" || sessionStorage.usertype === "exporter") {
             var getPageItem = sessionStorage.getItem('page');
             if (getPageItem !== null) {
                 var newPageJSON = $.parseJSON(getPageItem);
@@ -24,7 +24,7 @@ function pageLoad() {
             }
 
 
-            $('.pages').click(function () {
+            $('.pages').click(function() {
                 $('#content').empty();
                 var page = $(this).attr('href');
                 //var page = this.id;
@@ -37,11 +37,11 @@ function pageLoad() {
                 return false;
             });
 
-        } else if (usertype === "shipper") {
+        } else if (sessionStorage.usertype === "shipper") {
             $('#content').empty();
-            $('#content').load('home.html');
+            $('#content').load('home_1.1.html');
             //e.defaultPrevented();
-            $('.pages').click(function () {
+            $('.pages').click(function() {
                 var page = $(this).attr('href');
                 //var page = this.id;
                 //console.log(page);

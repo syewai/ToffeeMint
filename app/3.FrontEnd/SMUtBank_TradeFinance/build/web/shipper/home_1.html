@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<script>
+
+    //protectUser(); // calling from userHandling
+    var getUserItem = sessionStorage.getItem('admin');
+    var user = $.parseJSON(getUserItem);
+    //console.log(user.customerID);
+    $('#username').html("Welcome back, " + user.userID);
+    var usertype = user.usertype;
+    $('#usertype').html(usertype+" (Customer ID - "+user.customerID+")");
+
+    $("#lcDetailsModal").load("../lcDetailsModal.html");
+    //e.preventDefault();
+</script>
+<script type="text/javascript">
+    //homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
+    var countries = ["Norway", "China", "UK"];
+    var $optionCell = $("<option value=''>All</option>");
+    var option = "<option value=''>All</option>";
+    for (var i in countries) {
+        option += "<option value='" + countries[i] + "'>" + countries[i] + "</option>";
+    }
+    $('#country').append(option);
+
+</script>
+
+<section class="vbox">
+    <section class="scrollable">
+
+        <div class="wrapper-lg" id="welcomeDetails">
+
+        </div>
+        <!--LC Table-->
+        <section class="panel panel-default">
+            <header class="panel-heading">
+                <h4 class="font-bold">Latest Shipments</h4>
+            </header>
+            <header class="panel-heading">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class=" ">
+                            <p class="font-bold">Filter by Country</p>
+                            <div class="btn-default" style="">
+
+                                <div class="">
+                                    <!--get exporter id, account no and name from alan's database-->
+                                    <select id="country" name="country" class="form-control m-b ">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+
+                            //get all ref num
+                            //get all contract details
+                            //get all status
+
+                            var allLcs = getAllLcDetailsShipper();  // this method is calleed from Utility/lcOperations.js
+                            //print all 
+                            //console.log(allLcs);
+
+                            shipperHomeOperation(allLcs);
+                            var country = document.getElementById("country");
+
+                            var filters = {"country": '', "shipDate": ''};
+                            
+                            country.onchange = function () {
+                                emptyShipperHome();
+                                var lcs = [];
+                                country = $('#country option:selected').val();
+                                filters["country"] = country;
+                                for (var i in allLcs) {
+                                    var countryCondition = allLcs[i]["country"] === filters["country"];
+                                    var shipDateCondition = allLcs[i]["shipDate"] === filters["shipDate"];
+                                    if(filters["shipDate"] === ''){
+                                        shipDateCondition = true;
+                                    }
+                                    if(filters["country"] === ''){
+                                        countryCondition = true;
+                                    }
+                                    if(countryCondition && shipDateCondition){
+                                        lcs.unshift(allLcs[i]);
+                                    }
+                                }
+                                shipperHomeOperation(lcs);
+                                //console.log(filters);
+                                //console.log(lcs);
+
+
+
+                            };
+
+                            var shipDate = document.getElementById("shipDate");
+                            shipDate.onchange = function () {
+                                emptyShipperHome();
+                                var lcs = [];
+                                shipDate = $('#shipDate').val();
+                                //console.log(shipDate);
+                                filters["shipDate"] = shipDate;
+                                for (var i in allLcs) {
+                                    var countryCondition = allLcs[i]["country"] === filters["country"];
+                                    var shipDateCondition = allLcs[i]["shipDate"] === filters["shipDate"];
+                                    if(filters["shipDate"] === ''){
+                                        shipDateCondition = true;
+                                    }
+                                    if(filters["country"] === ''){
+                                        countryCondition = true;
+                                    }
+                                    if(countryCondition && shipDateCondition){
+                                        lcs.unshift(allLcs[i]);
+                                    }
+                                }
+                                shipperHomeOperation(lcs);
+                                //console.log(filters);
+                                //console.log(lcs);
+
+
+                            };
+                            ////console.log(filter);
+
+                        </script>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class=" ">
+                            <p class="font-bold">Filter by Ship Date</p>
+                            <div class="btn-default" style="">
+
+                                <div class="">
+                                    <input type='text' class="form-control form_date" id='shipDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="shipDate" data-link-format="yyyy-mm-dd" name="shipDate" data-required="true" required/>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-sm-4">
+
+
+
+                    </div>
+
+                </div>
+
+            </header>
+            <div class="table-responsive">
+                <table class="table table-striped b-t b-light" id="lcTable">
+
+                    <thead>
+
+                        <tr>
+                            <th>Reference Number</th>
+                            <th>Country</th>
+                            <th>Exporter</th>
+                            <th>Ship Date</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="latestLCs">
+
+                    </tbody>
+                </table>
+            </div>
+            <footer class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-4 hidden-xs">
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        
+                    </div>
+                    <div class="col-sm-4 text-right text-center-xs">
+
+                    </div>
+
+                </div>
+            </footer>
+        </section>
+        <!--End of LC Table-->
+
+
+
+
+    </section>
+    <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen, open" data-target="#nav,html"></a>
+</section>
+<aside class="bg-light lter b-l aside-md hide" id="notes">
+    <div class="wrapper">Notification</div>
+</aside>
+<!-- Modal -->
+<div class="modal fade" id="lcDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+</div>
+<script>
+    loadLcDetailsModal(); //this method is called from lcOperation.js
+
+</script>
+<script type="text/javascript">
+    $('.form_date').datetimepicker({
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+</script>
+<script>
+    //once page button clicked, the user is redirected to importer/exporter.html, together with a html page name for loading (stored in a session)
+    
+
+    
+    $(".pagesButton").click(function(){
+            var page = $(this).attr('id');
+            var pageToLoad = {page: page} ;
+            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+            window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");  
+    });
+    
+    $(".homeButton").click(function(){
+            var refNum = $(this).attr('data-refnum');
+            var page = $(this).attr('id');
+            
+            var pageToLoad = {page: page} ;
+            if(refNum != undefined){
+                pageToLoad.refNum = refNum;
+            }
+            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+            window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html?refNum="+refNum);  
+    });
+    
+</script>
