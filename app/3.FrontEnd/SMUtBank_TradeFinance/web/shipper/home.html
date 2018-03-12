@@ -7,18 +7,11 @@
     <link rel="stylesheet" href="../assets/css/font.css" type="text/css" />
     <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
     <link rel="stylesheet" href="../assets/css/bootstrap-datetimepicker.min.css">
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../assets/js/datatable/css/datatable-bootstrap.min.css" media="screen">
+
+    <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>-->
 </head>
-<script type="text/javascript">
-    //homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
-    var countries = getAllCountries();
-    var $optionCell = $("<option value=''>All</option>");
-    var option = "<option value=''>All</option>";
-    for (var i in countries) {
-        option += "<option value='" + countries[i] + "'>" + countries[i] + "</option>";
-    }
-    $('#country').append(option);
-</script>
+
 <section class="vbox">
     <section class="scrollable">
 
@@ -31,53 +24,9 @@
             <header class="panel-heading">
                 <h4 class="font-bold">Letter of Credit</h4>
             </header>
-            <header class="panel-heading">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class=" ">
-                            <p class="font-bold">Filter by Country</p>
-                            <div class="btn-default" style="">
-
-                                <div class="">
-                                    <!--get exporter id, account no and name from alan's database-->
-                                    <select id="country" name="country" class="form-control m-b ">
-
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <script>
-                            //get all ref num
-
-                            ////console.log(filter);
-                        </script>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class=" ">
-                            <p class="font-bold">Filter by Ship Date</p>
-                            <div class="btn-default" style="">
-
-                                <div class="">
-                                    <input type='text' class="form-control form_date" id='shipDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="shipDate" data-link-format="yyyy-mm-dd" name="shipDate" data-required="true" required/>
-                                </div>
-                            </div>
-                        </div>
 
 
-                    </div>
-
-                    <div class="col-sm-4">
-
-
-
-                    </div>
-
-                </div>
-
-            </header>
-
-            <div class="table-responsive">
+            <div class="table-responsive" id="first-datatable-output">
                 <table class="table table-striped b-t b-light" id="lcTable">
                     <thead>
 
@@ -93,24 +42,13 @@
 
                     </tbody>
                 </table>
+
             </div>
-            <footer class="panel-footer">
-                <div class="row">
-                    <div class="col-sm-4 hidden-xs">
-                    </div>
-                    <div class="col-sm-4 text-center">
-                        <a id="viewLcLogTemplate" class="pagesButton btn btn-s-md btn-dark">View All LC</a>
-                    </div>
-                    <div class="col-sm-4 text-right text-center-xs">
 
-                    </div>
-
-                </div>
-            </footer>
         </section>
         <!--End of LC Table-->
 
-
+        <div id='paging-first-datatable' class='dataTables_paginate paging_full_numbers'></div>
     </section>
     <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen, open" data-target="#nav,html"></a>
 </section>
@@ -127,30 +65,39 @@
 <script>
     $(document).ready(function() {
         //protectAdmin(); // calling from userHandling
-        // var getUserItem = sessionStorage.getItem('admin');
-        //var user = $.parseJSON(getUserItem);
+        var getUserItem = sessionStorage.getItem('admin');
+        var user = $.parseJSON(getUserItem);
         //console.log(user.customerID);
-        //$('#username').html("Welcome back, " + user.userID);
-        //var usertype = user.usertype;
-        //$('#usertype').html(convertToDisplay(usertype, " ") + " (Customer ID - " + user.customerID + ")");
+        $('#username').html("Welcome back, " + user.userID);
+        var usertype = user.usertype;
+        $('#usertype').html(convertToDisplay(usertype, " ") + " (Customer ID - " + user.customerID + ")");
 
         $("#lcDetailsModal").load("../lcDetailsModal.html");
-        //homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
+
+        homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
         //shipperTest();
         loadLcDetailsModal(); //this method is called from lcOperation.js
 
 
     });
 </script>
-<script src="../assets/js/jquery.min.js"></script>
+
+
+
+<!--<script src="../assets/js/jquery.min.js"></script>
+
 <!-- Bootstrap -->
-<script src="../assets/js/bootstrap.js"></script>
+<!--<script src="../assets/js/bootstrap.js"></script>-->
 <!-- App -->
 <script src="../assets/js/app.js"></script>
 <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
 
+
+
 <script type="text/javascript" src="../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>
+<!-- data table js files -->
+<script type="text/javascript" src="../assets/js/datatable/js/datatable.jquery.min.js"></script>
 
 <script type="text/javascript">
     $('.form_date').datetimepicker({
@@ -161,6 +108,11 @@
         startView: 2,
         minView: 2,
         forceParse: 0
+    });
+</script>
+<script>
+    $(document).ready(function() {
+
     });
 </script>
 <script>

@@ -526,11 +526,11 @@ async function getHomepageData() {
     console.time("time spent");
     /*call parallel await/async function --> getRefNumListAsync & getBCReceipt(). 
     refnum --> Return {errormsg}, or {refNumlist}, all bc receipt --> return [refnum,transactionHash], [refnum,transactionHash],[...]*/
-    const refNumAndReceipt = await Promise.all([getRefNumListAsync(userId, PIN, OTP), getAllBlockchainReceipt(userId, PIN, OTP)]);
+    const refNumAndReceipt = await Promise.all([getRefNumListAsync(userId, PIN, OTP)]);
     //, getAllBlockchainReceipt(userId, PIN, OTP)
     var refNumberListValidation = refNumAndReceipt[0];
 
-    var allBlockchainReceipt = refNumAndReceipt[1];
+    //var allBlockchainReceipt = refNumAndReceipt[1];
 
     if (!refNumberListValidation.hasOwnProperty("Content")) {
         if (refNumberListValidation.RefNumList !== null) {
@@ -538,14 +538,14 @@ async function getHomepageData() {
         }
 
     }
-    var bcReceipt = {};
+    //var bcReceipt = {};
 
     //store allBcReceipts in an object {refNum:TransactionHash}
-    if (allBlockchainReceipt != null) {
+    /*if (allBlockchainReceipt != null) {
         for (var i = 0; i < allBlockchainReceipt.length; i++) {
             bcReceipt[allBlockchainReceipt[i][0]] = allBlockchainReceipt[i][1];
         }
-    }
+    }*/
 
     //hard code for now to elliminate  impact of these 2 contracts
     var index1 = refNumberList.indexOf("0000001489");
@@ -566,10 +566,17 @@ async function getHomepageData() {
             var refNum = refNumberList[i]; //key of homepageData
             var lc = {};
             var globalErrorId = "";
+            // const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum), getBlockchainReceiptHash(userId, PIN, OTP, refNum)]);
             const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum)]);
             var lcDetails = results[0];
             console.log(lcDetails);
             var bolLinks = results[1];
+            /* var getReceipt = "";
+             console.log(results[2][0]);
+             if (results[2].length > 0) {
+                 getReceipt = results[2][0][1];
+             };*/
+            //console.log(getReceipt);
             if (lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
                 console.log("lcDetails");
                 lc = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
@@ -590,11 +597,11 @@ async function getHomepageData() {
                 }
                 /*Part 5 - get receipt of each refnum in the list*/
                 var getReceipt = "";
-                if (bcReceipt != null) {
+                /*if (bcReceipt != null) {
                     getReceipt = bcReceipt[refNum];
                     //console.log("receipt Type");
                     //console.log(typeof(getReceipt));
-                }
+                }*/
                 /*Part 6 - add each record to data object - Key: RefNum, Value: {lcDetails : lcDetails, bolLinks: bolLinks, receipt : receipt}*/
                 var contentObj = {
                     lcDetails: lc,
@@ -637,12 +644,7 @@ async function homeOperation() {
 
             //get lc 
             var lc = dataObj[refNum].lcDetails;
-            var lcObj;
-            if (typeof(lc) === "object") {
-                lcObj = lc;
-            } else {
-                lcObj = JSON.parse(lc);
-            };
+            var lcObj = JSON.parse(lc);
 
 
             //get status
@@ -760,16 +762,18 @@ async function homeOperation() {
         }
     }
 
-    /*DataTables instantiation.*/
-    $('#first-datatable-output table').datatable({
-        pageSize: 10,
-        pagingNumberOfPages: 5,
-        sort: [true, true, true, true, false],
-        filters: [false, 'select', true, false, false],
-        filterEmptySelect: 'Filter by Country',
-        filterText: 'Filter by date',
-        pagingDivSelector: "#paging-first-datatable"
-    });
+    //DataTables instantiation for shipper homepage.
+    if (sessionStorage.usertype === "shipper") {
+        $('#first-datatable-output table').datatable({
+            pageSize: 5,
+            pagingNumberOfPages: 5,
+            sort: [true, true, true, true, false],
+            filters: [false, 'select', true, false, false],
+            filterEmptySelect: 'Filter by Country',
+            filterText: 'Filter by date',
+            pagingDivSelector: "#paging-first-datatable"
+        });
+    }
 }
 
 
@@ -790,9 +794,9 @@ async function getAllLcsShipper() {
     var bcReceipt = {}
     if (lcDetails != null) {
         for (var i = 0; i < lcDetails.length; i++) {
-            if (!(lcDetails[i][0] in lcs)) {
-                lcs[lcDetails[i][0]] = trimLcDetails(lcDetails[i][1]);
-            }
+            //if (!(lcDetails[i][0] in lcs)) {
+            lcs[lcDetails[i][0]] = trimLcDetails(lcDetails[i][1]);
+            //}
         }
     }
     if (receipt != null) {
@@ -826,7 +830,7 @@ async function getAllLcsShipper() {
                 //store lc, bcreceipt and bol links in homepageData
                 var getReceipt = bcReceipt[refNum];
                 var contentObj = {
-                    lcDetails: lc,
+                    lcDetails: JSON.stringify(lc),
                     bolLinks: links,
                     receipt: getReceipt
                 };
@@ -872,14 +876,18 @@ function operationMatch(status) {
         if (status.toLowerCase() === "pending") {
             url = "reviewLc";
             operation = "review lc";
-        } else if (status.toLowerCase() === "acknowledged") {
+        }
+        /*else if (status.toLowerCase() === "acknowledged") {
             url = "submitBol";
             operation = "submit bol";
-        }
+        }*/
     } else if (sessionStorage.usertype === "shipper") {
         if (status.toLowerCase() === "acknowledged") {
             url = "submitBol";
             operation = "submit bol";
+        } else if (status.toLowerCase() === "documents accepted") {
+            url = "collectGoods";
+            operation = "collect goods";
         } else {
             url = "view contract";
             operation = "view contract";
@@ -927,7 +935,7 @@ function loadLcDetailsModal() {
             if (links !== "") {
                 var bolLink = "http://bit.ly/2BPThUM"; //links["bolLink"]
                 //new QRCode( document.getElementById"), bolLink);
-                if (status === "documents accepted" || status === "goods collected") {
+                if (sessionStorage.usertype !== "shipper" && (status === "documents accepted" || status === "goods collected")) {
                     new QRCode(document.getElementById("qrcode"), {
                         width: 150,
                         height: 150,
@@ -1032,7 +1040,7 @@ function loadLcDetailsModal() {
                     "hidden"
                 ];
             } else if (
-                sessionStorage.usertype === "importer" &&
+                sessionStorage.usertype === "shipper" &&
                 action === "collect goods"
             ) {
                 attrToChange = [

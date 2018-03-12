@@ -246,14 +246,19 @@ function getAllCountries() {
     return countries;
 }
 
-function getBlockchainReceipt(userId, PIN, OTP, refNum, callback) {
-    $.ajax({
-        async: false,
-        type: "GET",
-        url: apiEvents + "LCCreated?refNum=" + refNum,
-        dataType: "json",
-        success: callback
-    });
+async function getBlockchainReceipt(userId, PIN, OTP, refNum, callback) {
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiEvents + "LCCreated?refNum=" + refNum,
+            type: "GET",
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 async function getAllBlockchainReceipt(userId, PIN, OTP, callback) {
@@ -276,6 +281,21 @@ async function getAllBlockchainReceiptHash(userId, PIN, OTP, callback) {
     try {
         result = await $.ajax({
             url: apiEvents + "LCCreatedHash?refNum",
+            type: "GET",
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getBlockchainReceiptHash(userId, PIN, OTP, refNum, callback) {
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiEvents + "LCCreatedHash?refNum=" + refNum,
             type: "GET",
             data: callback
         });

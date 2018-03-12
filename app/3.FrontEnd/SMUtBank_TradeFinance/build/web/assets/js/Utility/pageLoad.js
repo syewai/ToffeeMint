@@ -38,10 +38,24 @@ function pageLoad() {
             });
 
         } else if (sessionStorage.usertype === "shipper") {
-            $('#content').empty();
-            $('#content').load('home_1.1.html');
-            //e.defaultPrevented();
+            var getPageItem = sessionStorage.getItem('page');
+            if (getPageItem !== null) {
+                var newPageJSON = $.parseJSON(getPageItem);
+                //var refNum = newPageJSON.refNum;
+                var newPage = newPageJSON.page;
+
+                //console.log(newPage);
+                //empty content
+                $('#content').load(newPage + ".html");
+                sessionStorage.removeItem('page');
+            } else {
+                $('#content').empty();
+                $('#content').load('home.html');
+                //e.defaultPrevented(); 
+            }
+
             $('.pages').click(function() {
+                $('#content').empty();
                 var page = $(this).attr('href');
                 //var page = this.id;
                 //console.log(page);
