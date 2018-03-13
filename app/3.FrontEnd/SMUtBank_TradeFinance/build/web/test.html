@@ -239,10 +239,15 @@ and open the template in the editor.
         });
 
         $("#button17").click(function() {
-            getGameLeaders("kinetic1", "123456", "999999", 104, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", false, function(callback) {
-                console.log(callback)
-            });
+            //getGameLeaders("kinetic1", "123456", "999999", 104, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", false, function(callback) {
+              //  console.log(callback)
+            //});
+            getGameData();
         });
+        async function getGameData() {
+            const leaders = getGameLeaders("kinetic1", "123456", "999999", 104, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", false);
+            console.log(leaders);
+        }
         $("#button18").click(function() {
             var bcReceipt = ""
             getBlockchainReceipt("kinetic1", "123456", "999999", "0000001450", function(data) {

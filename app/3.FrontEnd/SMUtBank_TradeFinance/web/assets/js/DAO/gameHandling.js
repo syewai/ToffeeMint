@@ -1,10 +1,179 @@
-
 //game session stored upon login
 
 
 
 //web service calls for game 
-function getGameQuestion(userId, PIN, OTP, questionId, callback) {
+async function getGameQuestion(userId, PIN, OTP, questionId, callback) {
+    var headerObj = {
+        Header: {
+            serviceName: "getGameQuestion",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    var contentObj = {
+        Content: {
+            questionID: questionId
+        }
+    };
+    var content = JSON.stringify(contentObj);
+
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl + "?Header=" + header + "&" + "Content=" + content,
+            type: 'POST',
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getGameAnswer(userId, PIN, OTP, questionId, callback) {
+
+    var headerObj = {
+        Header: {
+            serviceName: "getGameAnswer",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    var contentObj = {
+        Content: {
+            questionID: questionId
+        }
+    };
+    var content = JSON.stringify(contentObj);
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl + "?Header=" + header + "&" + "Content=" + content,
+            type: 'POST',
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+async function setQuestionScore(userId, PIN, OTP, questionId, gameId, score, mode, groupId, callback) {
+
+    var headerObj = {
+        Header: {
+            serviceName: "setQuestionScore",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    var contentObj = {
+        Content: {
+            questionID: questionId,
+            gameID: gameId,
+            score: score,
+            mode: mode,
+            groupID: groupId
+        }
+    };
+    var content = JSON.stringify(contentObj);
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl + "?Header=" + header + "&" + "Content=" + content,
+            type: 'POST',
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getGameScore(userId, PIN, OTP, gameId, startTime, endTime, mode, callback) {
+
+    var headerObj = {
+        Header: {
+            serviceName: "getGameScore",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    var contentObj = {
+        Content: {
+            gameID: gameId,
+            start: startTime,
+            end: endTime,
+            mode: mode
+        }
+    };
+    var content = JSON.stringify(contentObj);
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl + "?Header=" + header + "&" + "Content=" + content,
+            type: 'POST',
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getGameLeaders(userId, PIN, OTP, gameId, startTime, endTime, mode, byGroup, callback) {
+
+    var headerObj = {
+        Header: {
+            serviceName: "getGameLeaders",
+            userID: userId,
+            PIN: PIN,
+            OTP: OTP
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    var contentObj = {
+        Content: {
+            gameID: gameId,
+            start: startTime,
+            end: endTime,
+            mode: mode,
+            byGroup: byGroup
+        }
+    };
+    var content = JSON.stringify(contentObj);
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl + "?Header=" + header + "&" + "Content=" + content,
+            type: 'POST',
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+/*async function getGameQuestion(userId, PIN, OTP, questionId, callback) {
 
     var headerObj = {
         Header: {
@@ -29,9 +198,9 @@ function getGameQuestion(userId, PIN, OTP, questionId, callback) {
         dataType: 'json',
         success: callback
     });
-}
+}*/
 
-function getGameAnswer(userId, PIN, OTP, questionId, callback) {
+/*function getGameAnswer(userId, PIN, OTP, questionId, callback) {
 
     var headerObj = {
         Header: {
@@ -56,103 +225,11 @@ function getGameAnswer(userId, PIN, OTP, questionId, callback) {
         dataType: 'json',
         success: callback
     });
-}
-
-function setQuestionScore(userId, PIN, OTP, questionId, gameId, score, mode, groupId, callback) {
-
-    var headerObj = {
-        Header: {
-            serviceName: "setQuestionScore",
-            userID: userId,
-            PIN: PIN,
-            OTP: OTP
-        }
-    };
-    var header = JSON.stringify(headerObj);
-
-    var contentObj = {
-        Content: {
-            questionID: questionId,
-            gameID: gameId,
-            score: score,
-            mode: mode,
-            groupID: groupId
-        }
-    };
-    var content = JSON.stringify(contentObj);
-    $.ajax({
-        async: false,
-        type: 'POST',
-        url: "http://smu.tbankonline.com/SMUtBank_API/Gateway?Header=" + header + "&Content=" + content,
-        dataType: 'json',
-        success: callback
-    });
-}
-
-function getGameScore(userId, PIN, OTP, gameId, startTime, endTime, mode, callback) {
-
-    var headerObj = {
-        Header: {
-            serviceName: "getGameScore",
-            userID: userId,
-            PIN: PIN,
-            OTP: OTP
-        }
-    };
-    var header = JSON.stringify(headerObj);
-
-    var contentObj = {
-        Content: {
-            gameID: gameId,
-            start: startTime,
-            end: endTime,
-            mode: mode
-        }
-    };
-    var content = JSON.stringify(contentObj);
-    $.ajax({
-        async: false,
-        type: 'POST',
-        url: "http://smu.tbankonline.com/SMUtBank_API/Gateway?Header=" + header + "&Content=" + content,
-        dataType: 'json',
-        success: callback
-    });
-}
-
-function getGameLeaders(userId, PIN, OTP, gameId, startTime, endTime, mode, byGroup, callback) {
-
-    var headerObj = {
-        Header: {
-            serviceName: "getGameLeaders",
-            userID: userId,
-            PIN: PIN,
-            OTP: OTP
-        }
-    };
-    var header = JSON.stringify(headerObj);
-
-    var contentObj = {
-        Content: {
-            gameID: gameId,
-            start: startTime,
-            end: endTime,
-            mode: mode,
-            byGroup: byGroup
-        }
-    };
-    var content = JSON.stringify(contentObj);
-    $.ajax({
-        async: false,
-        type: 'POST',
-        url: "http://smu.tbankonline.com/SMUtBank_API/Gateway?Header=" + header + "&Content=" + content,
-        dataType: 'json',
-        success: callback
-    });
-}
+}*/
 
 
 //function to get game score upon next button
-function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
+async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
     var score;
 
@@ -164,20 +241,33 @@ function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
 
         result = $("input[name=" + counter + "]:checked").val();
         //console.log(result);
-        getGameAnswer("", "", "", chosenQuestions[questionID], function (callback) {
-            answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
-            //console.log(answer);
-            if (result === answer) {
-                score = time * 10;
-                setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function (callback) {
+        const getGameAnswerPre = await getGameAnswer("", "", "", chosenQuestions[questionID]);
+        answer = JSON.stringify(getGameAnswerPre.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
+        //console.log(answer);
+        if (result === answer) {
+            console.log("Correct");
+            score = time * 10;
+            const qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1);
+            console.log(qScore);
+            //getQuestionScore(sessionStorage.userID, sessionStoreage.PIN)
+            /*setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function(callback) {
 
-                });
-            }
-        });
+             });*/
+        }
+        /* getGameAnswer("", "", "", chosenQuestions[questionID], function(callback) {
+             answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
+             //console.log(answer);
+             if (result === answer) {
+                 score = time * 10;
+                 setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function(callback) {
+
+                 });
+             }
+         });*/
     }
 }
 
-function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
+async function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
     var score;
 
@@ -189,28 +279,39 @@ function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
 
         result = $("input[name=" + counter + "]:checked").val();
         //console.log(result);
-        getGameAnswer("", "", "", chosenQuestions[questionID], function (callback) {
-            answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
-            //console.log(answer);
-            if (result === answer) {
-                score = time * 10;
-                setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Posttest", 1, function (callback) {
-                    //console.log(callback);
-                });
-            }
-        });
+        const getGameAnswerPost = await getGameAnswer("", "", "", chosenQuestions[questionID]);
+        answer = JSON.stringify(getGameAnswerPost.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
+        //console.log(answer);
+        if (result === answer) {
+            console.log("Correct");
+            score = time * 10;
+            setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1);
+            /*setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function(callback) {
+
+             });*/
+        }
+        /*getGameAnswer("", "", "", chosenQuestions[questionID], function(callback) {
+             answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
+             //console.log(answer);
+             if (result === answer) {
+                 score = time * 10;
+                 setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Posttest", 1, function(callback) {
+                     //console.log(callback);
+                 });
+             }
+         });*/
     }
 }
 
 
 //timer function to calculate score
 function timerStart(timer) {
-    timer.start({countdown: true, startValues: {seconds: 59}});
+    timer.start({ countdown: true, startValues: { seconds: 59 } });
     $('#countdownTimer .values').html(timer.getTimeValues().toString(['seconds']));
-    timer.addEventListener('secondsUpdated', function (e) {
+    timer.addEventListener('secondsUpdated', function(e) {
         $('#countdownTimer .values').html(timer.getTimeValues().toString(['seconds']));
     });
-    timer.addEventListener('targetAchieved', function (e) {
+    timer.addEventListener('targetAchieved', function(e) {
         $('#countdownTimer .values').html('No points awarded');
     });
 
@@ -220,79 +321,80 @@ function timerStart(timer) {
 
 
 //fill prequiz game modal
-function preQuiz(chosenQuestions, pagesBeforeQuiz) {
+async function preQuiz(chosenQuestions, pagesBeforeQuiz) {
     var gQuestion;
     var gChoices;
     var gAppendString = "";
 
     var gNumberOfQuestions = chosenQuestions.length;
     for (var i = 0; i < gNumberOfQuestions; i++) {
-        getGameQuestion("", "", "", chosenQuestions[i], function (callback) {
+        const getGameQuestionPre = await getGameQuestion("", "", "", chosenQuestions[i]);
+        // getGameQuestion("", "", "", chosenQuestions[i], function(callback) {
 
-            //get respective data from json string
-            gQuestion = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
-            gChoices = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.choices);
+        //get respective data from json string
+        gQuestion = JSON.stringify(getGameQuestionPre.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
+        gChoices = JSON.stringify(getGameQuestionPre.Content.ServiceResponse.QuestionDetails.choices);
 
+
+        //append to div
+
+        gAppendString += '<div class="row hide" data-step="';
+        gAppendString += Number(i) + pagesBeforeQuiz + 1;
+        gAppendString += '" data-title="Pre-Quiz">';
+        //append question header container
+        gAppendString += '<header class="panel-heading bg-default lt no-border"><div class="clearfix">';
+
+        //append question in <div class="clear"> in header
+        gAppendString += '<div class="col-lg-8">';
+        gAppendString += '<div class="clear"><div class="h4 m-t-xs m-b-xs text-primary font-bold">';
+        gAppendString += gQuestion;
+        gAppendString += '</div></div>';
+        gAppendString += '</div>';
+        //append timer in header
+        gAppendString += '<div class="col-lg-4">';
+        gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
+        gAppendString += '</div>';
+        gAppendString += '</div></header>';
+
+        var options = gChoices.split("&&");
+
+        //add labels to choices
+        var labels = ["a)", "b)", "c)", "d)", "e)"];
+
+        gAppendString += '<div class="btn-group" data-toggle="buttons">';
+        //iterate through all choices to display
+        for (var j = 0; j < options.length; j++) {
+            var option = options[j];
+            var label = labels[j];
+            if (j === 0) {
+                option = option.substr(1);
+            } else if (j === options.length - 1) {
+                option = option.slice(0, -1);
+            }
+            var answer = label + " " + option;
 
             //append to div
+            if (option !== undefined) {
+                gAppendString += '<div class="row">';
+                gAppendString += '<div class="col-lg-12">';
 
-            gAppendString += '<div class="row hide" data-step="';
-            gAppendString += Number(i) + pagesBeforeQuiz + 1;
-            gAppendString += '" data-title="Pre-Quiz">';
-            //append question header container
-            gAppendString += '<header class="panel-heading bg-default lt no-border"><div class="clearfix">';
+                //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
+                gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
+                gAppendString += '<input style="display:none" type="radio" name="';
+                gAppendString += (i) + 1;
+                gAppendString += '" value="';
+                gAppendString += option;
+                gAppendString += '">';
+                gAppendString += '<p style="width:500px;white-space:normal;">' + answer + '</p>';
+                gAppendString += '</label>';
+                gAppendString += '</div></div>';
+                //gAppendString += '</div>'
 
-            //append question in <div class="clear"> in header
-            gAppendString += '<div class="col-lg-8">';
-            gAppendString += '<div class="clear"><div class="h4 m-t-xs m-b-xs text-primary font-bold">';
-            gAppendString += gQuestion;
-            gAppendString += '</div></div>';
-            gAppendString += '</div>';
-            //append timer in header
-            gAppendString += '<div class="col-lg-4">';
-            gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
-            gAppendString += '</div>';
-            gAppendString += '</div></header>';
-
-            var options = gChoices.split("&&");
-
-            //add labels to choices
-            var labels = ["a)", "b)", "c)", "d)", "e)"];
-
-            gAppendString += '<div class="btn-group" data-toggle="buttons">';
-            //iterate through all choices to display
-            for (var j = 0; j < options.length; j++) {
-                var option = options[j];
-                var label = labels[j];
-                if (j === 0) {
-                    option = option.substr(1);
-                } else if (j === options.length - 1) {
-                    option = option.slice(0, -1);
-                }
-                var answer = label + " " + option;
-
-                //append to div
-                if (option !== undefined) {
-                    gAppendString += '<div class="row">';
-                    gAppendString += '<div class="col-lg-12">';
-
-                    //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
-                    gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
-                    gAppendString += '<input style="display:none" type="radio" name="';
-                    gAppendString += (i) + 1;
-                    gAppendString += '" value="';
-                    gAppendString += option;
-                    gAppendString += '">';
-                    gAppendString += '<p style="width:500px;white-space:normal;">' + answer + '</p>';
-                    gAppendString += '</label>';
-                    gAppendString += '</div></div>';
-                    //gAppendString += '</div>'
-
-                }
             }
-            //append to div close tag
-            gAppendString += '</div></div></div>';
-        });
+        }
+        //append to div close tag
+        gAppendString += '</div></div></div>';
+        // });
     }
     gAppendString += '<div class="row hide" data-step="';
     gAppendString += gNumberOfQuestions + 1 + pagesBeforeQuiz;
@@ -305,79 +407,79 @@ function preQuiz(chosenQuestions, pagesBeforeQuiz) {
     $('#target').append(gAppendString);
 }
 
-function postQuiz(chosenQuestions, pagesBeforeQuiz) {
+async function postQuiz(chosenQuestions, pagesBeforeQuiz) {
     var gQuestion;
     var gChoices;
     var gAppendString = "";
 
     var gNumberOfQuestions = chosenQuestions.length;
     for (var i = 0; i < gNumberOfQuestions; i++) {
-        getGameQuestion("", "", "", chosenQuestions[i], function (callback) {
+        //getGameQuestion("", "", "", chosenQuestions[i], function(callback) {
+        const getGameQuestion = await getGameQuestion("", "", "", chosenQuestions[i]);
+        //get respective data from json string
+        gQuestion = JSON.stringify(getGameQuestion.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
+        gChoices = JSON.stringify(getGameQuestion.Content.ServiceResponse.QuestionDetails.choices);
 
-            //get respective data from json string
-            gQuestion = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
-            gChoices = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.choices);
 
+        //append to div
+
+        gAppendString += '<div class="row hide" data-step="';
+        gAppendString += Number(i) + pagesBeforeQuiz + 1;
+        gAppendString += '" data-title="Post-Quiz">';
+        //append question header container
+        gAppendString += '<header class="panel-heading bg-default lt no-border"><div class="clearfix">';
+
+        //append question in <div class="clear"> in header
+        gAppendString += '<div class="col-lg-8">';
+        gAppendString += '<div class="clear"><div class="h4 m-t-xs m-b-xs text-primary font-bold">';
+        gAppendString += gQuestion;
+        gAppendString += '</div></div>';
+        gAppendString += '</div>';
+        //append timer in header
+        gAppendString += '<div class="col-lg-4">';
+        gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
+        gAppendString += '</div>';
+        gAppendString += '</div></header>';
+
+        var options = gChoices.split("&&");
+
+        //add labels to choices
+        var labels = ["a)", "b)", "c)", "d)", "e)"];
+
+        gAppendString += '<div class="btn-group" data-toggle="buttons">';
+        //iterate through all choices to display
+        for (var j = 0; j < options.length; j++) {
+            var option = options[j];
+            var label = labels[j];
+            if (j === 0) {
+                option = option.substr(1);
+            } else if (j === options.length - 1) {
+                option = option.slice(0, -1);
+            }
+            var answer = label + " " + option;
 
             //append to div
+            if (option !== undefined) {
+                gAppendString += '<div class="row">';
+                gAppendString += '<div class="col-lg-12">';
 
-            gAppendString += '<div class="row hide" data-step="';
-            gAppendString += Number(i) + pagesBeforeQuiz + 1;
-            gAppendString += '" data-title="Post-Quiz">';
-            //append question header container
-            gAppendString += '<header class="panel-heading bg-default lt no-border"><div class="clearfix">';
+                //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
+                gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
+                gAppendString += '<input style="display:none" type="radio" name="';
+                gAppendString += (i) + 1;
+                gAppendString += '" value="';
+                gAppendString += option;
+                gAppendString += '">';
+                gAppendString += '<p style="width:500px;white-space:normal;">' + answer + '</p>';
+                gAppendString += '</label>';
+                gAppendString += '</div></div>';
+                //gAppendString += '</div>'
 
-            //append question in <div class="clear"> in header
-            gAppendString += '<div class="col-lg-8">';
-            gAppendString += '<div class="clear"><div class="h4 m-t-xs m-b-xs text-primary font-bold">';
-            gAppendString += gQuestion;
-            gAppendString += '</div></div>';
-            gAppendString += '</div>';
-            //append timer in header
-            gAppendString += '<div class="col-lg-4">';
-            gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
-            gAppendString += '</div>';
-            gAppendString += '</div></header>';
-
-            var options = gChoices.split("&&");
-
-            //add labels to choices
-            var labels = ["a)", "b)", "c)", "d)", "e)"];
-
-            gAppendString += '<div class="btn-group" data-toggle="buttons">';
-            //iterate through all choices to display
-            for (var j = 0; j < options.length; j++) {
-                var option = options[j];
-                var label = labels[j];
-                if (j === 0) {
-                    option = option.substr(1);
-                } else if (j === options.length - 1) {
-                    option = option.slice(0, -1);
-                }
-                var answer = label + " " + option;
-
-                //append to div
-                if (option !== undefined) {
-                    gAppendString += '<div class="row">';
-                    gAppendString += '<div class="col-lg-12">';
-
-                    //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
-                    gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
-                    gAppendString += '<input style="display:none" type="radio" name="';
-                    gAppendString += (i) + 1;
-                    gAppendString += '" value="';
-                    gAppendString += option;
-                    gAppendString += '">';
-                    gAppendString += '<p style="width:500px;white-space:normal;">' + answer + '</p>';
-                    gAppendString += '</label>';
-                    gAppendString += '</div></div>';
-                    //gAppendString += '</div>'
-
-                }
             }
-            //append to div close tag
-            gAppendString += '</div></div></div>';
-        });
+        }
+        //append to div close tag
+        gAppendString += '</div></div></div>';
+        //});
     }
     gAppendString += '<div class="row hide" data-step="';
     gAppendString += gNumberOfQuestions + 1 + pagesBeforeQuiz;
@@ -471,5 +573,3 @@ function postQuiz(chosenQuestions, pagesBeforeQuiz) {
  
  $('#target').append(gAppendString);
  } */
-
-

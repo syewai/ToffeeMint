@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
 
     <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous"> -->
@@ -6,18 +7,22 @@
     <!-- Bootstrap -->
     <!-- <script src="../assets/js/bootstrap.js"></script> -->
     <!-- App -->
-    <script src="../assets/js/app.js"></script> 
+    <script src="../assets/js/app.js"></script>
     <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
-    <!-- <script src="../asset/js/DAO/gameHandling.js"></script> -->
+    <script src="../assets/js/DAO/gameHandling.js"></script>
 
 </head>
 
 <script>
-    var totalScore = 0;
-    getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", function (callback) {
-        var totalScorePre = JSON.stringify(callback.Content.ServiceResponse.ScoreDetails.total_score);
+    $(document).ready(function() {
+        totalScores();
+    });
+    async function totalScores() {
+        var totalScore = 0;
+        const getGameScore1 = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest");
+        var totalScorePre = JSON.stringify(getGameScore1.Content.ServiceResponse.ScoreDetails.total_score);
         console.log("totalScorePre:  " + totalScorePre);
         if (totalScorePre === "null") {
             console.log("inside");
@@ -28,17 +33,17 @@
         }
         console.log("Score 1 :" + totalScorePre);
         console.log("TSCore: " + totalScore);
-        getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", function (callback) {
-            var totalScorePost = JSON.stringify(callback.Content.ServiceResponse.ScoreDetails.total_score);
-            if (totalScorePost === "null") {
-                totalScore += Number(0);
-            } else {
-                totalScorePost = totalScorePost.substr(1).slice(0, -1);
-                totalScore += Number(totalScorePost);
-            }
-            $('#tScore').html(totalScore);
-        });
-    });
+        const getGameScorePost = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest");
+        var totalScorePost = JSON.stringify(getGameScorePost.Content.ServiceResponse.ScoreDetails.total_score);
+        if (totalScorePost === "null") {
+            totalScore += Number(0);
+        } else {
+            totalScorePost = totalScorePost.substr(1).slice(0, -1);
+            totalScore += Number(totalScorePost);
+        }
+        $('#tScore').html(totalScore);
+
+    }
 </script>
 
 <section class="vbox">
@@ -79,129 +84,147 @@
             <canvas id="myChart"></canvas>
         </div>
 
+
+
         <script>
-            $(document).ready(function () {
+            $(document).ready(function() {
 
                 var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function () {
+                xhr.onreadystatechange = function() {
                     call2Bar();
                 }
                 xhr.open('GET', true);
                 xhr.send(null);
             });
-            //prequiz 
-            var mainArr;
-            var arrUserId = [];
-            var arrScore = [];
-            getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
-                testArr = callback;
-            });
-            mainArr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
-            console.log(mainArr);
-            console.log(mainArr.length);
-            for (i = 0; i < 10 || i < mainArr.length; i++) {
-                arrUserId[i] = mainArr[i]['user_Id'];
-                arrScore[i] = mainArr[i]['score'];
-            }
 
-            console.log(arrUserId);
-            console.log(arrScore);
-            //postquiz 
-            var pmainArr;
-            var parrUserId = [];
-            var parrScore = [];
-            getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2019-01-01 00:00:00", "Posttest", false, function (callback) {
-                ptestArr = callback;
-            });
-            pmainArr = ptestArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
-            console.log(pmainArr);
-            console.log(pmainArr.length);
-            for (i = 0; i < 10 || i < mainArr.length; i++) {
-                parrUserId[i] = pmainArr[i]['user_Id'];
-                parrScore[i] = pmainArr[i]['score'];
-            }
+            async function call2Bar() {
+                const arrScoreAndUserId = await preArray();
+                var arrUserId = arrScoreAndUserId[0];
+                var arrScore = arrScoreAndUserId[1];
+                const parrScore = await postArray();
 
-            function call2Bar() {
                 var ctx = document.getElementById("myChart");
                 var chart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: arrUserId,
-                        datasets: [
-                            {
-                                label: 'Indivdual Pre-test',
-                                data: arrScore,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)',
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255,99,132,1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)',
-                                    'rgba(255,99,132,1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(54, 162, 235, 1)'
-                                ],
-                                borderWidth: 1
-                            },
-                            {
-                                label: 'Indivdual Post-test',
-                                data: parrScore,
-                                backgroundColor: [
-                                    'red',
-                                    'green',
-                                    'blue',
-                                    'orange',
-                                    'yellow',
-                                    'purple',
-                                    'green',
-                                    'orange',
-                                    'purple',
-                                    'red'
-                                ],
-                                borderColor: [
-                                    'rgba(255,99,132,1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)',
-                                    'rgba(255,99,132,1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)'
-                                ],
-                                borderWidth: 1
-                            }
-                        ]
+                        datasets: [{
+                            label: 'Indivdual Pre-test',
+                            data: arrScore,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(54, 162, 235, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(255,99,132,1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(54, 162, 235, 1)'
+                            ],
+                            borderWidth: 1
+                        }, {
+                            label: 'Indivdual Post-test',
+                            data: parrScore,
+                            backgroundColor: [
+                                'red',
+                                'green',
+                                'blue',
+                                'orange',
+                                'yellow',
+                                'purple',
+                                'green',
+                                'orange',
+                                'purple',
+                                'red'
+                            ],
+                            borderColor: [
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(255,99,132,1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
                     },
                     options: {
                         scales: {
                             xAxes: [{
-                                    stacked: true
-                                }],
+                                stacked: true
+                            }],
                             yAxes: [{
-                                    stacked: true,
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
+                                stacked: true,
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
                         }
                     }
                 });
+
+            }
+            async function preArray() {
+                var mainArr;
+                var arrUserId = [];
+                var arrScore = [];
+                //getGameLeaders(userId, PIN, OTP, gameId, startTime, endTime, mode, byGroup, callback)
+                const getGameLeadersPre = await getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false);
+                //getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
+                console.log(getGameLeadersPre);
+                console.log("Pre leaders ---------------");
+                var testArr = getGameLeadersPre;
+                mainArr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
+                console.log(mainArr);
+                console.log(mainArr.length);
+                for (i = 0; i < mainArr.length && i < 10; i++) {
+                    console.log(mainArr[i]);
+                    arrUserId[i] = mainArr[i]['user_Id'];
+                    arrScore[i] = mainArr[i]['score'];
+                }
+
+                console.log(arrUserId);
+                console.log(arrScore);
+                return [arrUserId, arrScore];
+
+
+            }
+            async function postArray() {
+                var pmainArr;
+                var parrUserId = [];
+                var parrScore = [];
+                const getGameLeadersPost = await getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", false);
+                //getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2019-01-01 00:00:00", "Posttest", false, function(callback) {
+                var ptestArr = getGameLeadersPost;
+                //});
+                pmainArr = ptestArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
+                console.log(pmainArr);
+                console.log(pmainArr.length);
+                for (i = 0; i < pmainArr.length && i < 10; i++) {
+                    parrUserId[i] = pmainArr[i]['user_Id'];
+                    parrScore[i] = pmainArr[i]['score'];
+                }
+
+                return parrScore;
+
             }
         </script>
 
