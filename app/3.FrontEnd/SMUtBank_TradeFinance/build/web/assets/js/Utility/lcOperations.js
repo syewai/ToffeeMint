@@ -9,29 +9,9 @@ var OTP = sessionStorage.OTP;
  * */
 
 //this function handle the ui logic of Apply lc page
-async function applyLcOperation() {
-    var exporterDetails = getExporterDetails();
-    if (exporterDetails.length > 0) {
-        for (var i in exporterDetails) {
-            option =
-                "<option value='" +
-                exporterDetails.customerId +
-                "'>" +
-                exporterDetails.userId +
-                "</option>";
-        }
-    }
+async function applyLcOperation(importer_account_num, contract_currency) {
 
-    const accounts = await getCustomerAccounts(userId, PIN, OTP); //get currency and importer account
-    var account = accounts.Content.ServiceResponse.AccountList.account[0];
-    if (account == null) {
-        account = accounts.Content.ServiceResponse.AccountList.account;
-    }
-
-    var errorMsg;
-    var globalErrorID;
-    var importerAccount = account.accountID;
-    //console.log(importerAccount);
+    var importerAccount = importer_account_num;
     var exporterAccount = document.getElementById("exporterAcct").value;
     var expiryDate = document.getElementById("shipDate").value;
     var confirmed = "false";
@@ -39,7 +19,7 @@ async function applyLcOperation() {
     var availableBy = "TERM";
     var termDays = "90";
     var amount = document.getElementById("amount").value;
-    var currency = account.currency; //getCustomerAccounts
+    var currency = contract_currency; //getCustomerAccounts
     var applicableRules = "none";
     var partialShipments = "false";
     var shipDestination = document.getElementById("shipDestination").value;
@@ -527,10 +507,7 @@ async function getHomepageData() {
     /*call parallel await/async function --> getRefNumListAsync & getBCReceipt(). 
     refnum --> Return {errormsg}, or {refNumlist}, all bc receipt --> return [refnum,transactionHash], [refnum,transactionHash],[...]*/
     const refNumAndReceipt = await Promise.all([getRefNumListAsync(userId, PIN, OTP)]);
-    //, getAllBlockchainReceipt(userId, PIN, OTP)
     var refNumberListValidation = refNumAndReceipt[0];
-
-    //var allBlockchainReceipt = refNumAndReceipt[1];
 
     if (!refNumberListValidation.hasOwnProperty("Content")) {
         if (refNumberListValidation.RefNumList !== null) {
@@ -538,26 +515,6 @@ async function getHomepageData() {
         }
 
     }
-    //var bcReceipt = {};
-
-    //store allBcReceipts in an object {refNum:TransactionHash}
-    /*if (allBlockchainReceipt != null) {
-        for (var i = 0; i < allBlockchainReceipt.length; i++) {
-            bcReceipt[allBlockchainReceipt[i][0]] = allBlockchainReceipt[i][1];
-        }
-    }*/
-
-    //hard code for now to elliminate  impact of these 2 contracts
-    var index1 = refNumberList.indexOf("0000001489");
-    if (index1 > -1) {
-        refNumberList.splice(index1, 1);
-    }
-    var index2 = refNumberList.indexOf("0000001450");
-    if (index2 > -1) {
-        refNumberList.splice(index2, 1);
-    }
-
-
     //get number of refnum in the list
     var numOfRows = refNumberList.length;
     if (refNumberList.length > 0) {
@@ -569,20 +526,10 @@ async function getHomepageData() {
             // const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum), getBlockchainReceiptHash(userId, PIN, OTP, refNum)]);
             const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum)]);
             var lcDetails = results[0];
-            console.log(lcDetails);
             var bolLinks = results[1];
-            /* var getReceipt = "";
-             console.log(results[2][0]);
-             if (results[2].length > 0) {
-                 getReceipt = results[2][0][1];
-             };*/
-            //console.log(getReceipt);
-            if (lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
-                console.log("lcDetails");
-                lc = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
-                //console.log("lcDetailsType");
-                console.log(lc);
 
+            if (lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
+                lc = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
                 //convert lc object to a jsonString, passing jsonstring through data-variable of the modal
                 lc = JSON.stringify(lc);
                 var links = "";
@@ -591,22 +538,13 @@ async function getHomepageData() {
                     links =
                         bolLinks.Content.ServiceResponse.BOL_Details.BOL_record_output
                         .BOL_Link;
-                    //console.log("bol links Type");
-                    //console.log(typeof(links));
                     linkObj = JSON.parse(links);
                 }
-                /*Part 5 - get receipt of each refnum in the list*/
-                var getReceipt = "";
-                /*if (bcReceipt != null) {
-                    getReceipt = bcReceipt[refNum];
-                    //console.log("receipt Type");
-                    //console.log(typeof(getReceipt));
-                }*/
-                /*Part 6 - add each record to data object - Key: RefNum, Value: {lcDetails : lcDetails, bolLinks: bolLinks, receipt : receipt}*/
+
+                /*Part 5 - add each record to data object - Key: RefNum, Value: {lcDetails : lcDetails, bolLinks: bolLinks}*/
                 var contentObj = {
                     lcDetails: lc,
                     bolLinks: links,
-                    receipt: getReceipt
                 };
                 homePageData[refNum] = contentObj;
 
@@ -619,12 +557,14 @@ async function getHomepageData() {
     console.timeEnd("time spent");
     return homepageDataString;
 }
+async function processHomepageData() {
+
+}
 
 //this function handles ui logic of homepage
 async function homeOperation() {
-
-    /*Method 2 - call async/await function --> getHomepageData, (seperate ui and data retriever)*/
     let homePageData;
+
     if (sessionStorage.usertype === "shipper") {
         homepageData = await getAllLcsShipper();
 
@@ -632,12 +572,12 @@ async function homeOperation() {
     } else {
         homepageData = await getHomepageData();
     }
+    /*Method 2 - call async/await function --> getHomepageData, (seperate ui and data retriever)*/
+
     var dataObj = JSON.parse(homepageData);
-    console.log(dataObj);
+
     var dataSize = Object.keys(dataObj).length;
     if (dataSize > 0) {
-        //    console.log(">0");
-
         for (var i = 0; i < dataSize; i++) {
             //get refnum
             var refNum = Object.keys(dataObj)[i];
@@ -665,13 +605,11 @@ async function homeOperation() {
             //get expiry date
             var expiryDate = lcObj.expiry_date;
 
+            //get receipt
+            var getReceipt = lcObj.sender_to_receiver_info;
 
             //get links
             var links = dataObj[refNum].bolLinks;
-
-            //get receipt
-            var getReceipt = dataObj[refNum].receipt;
-
 
             /*End of Method 2*/
 
@@ -722,6 +660,9 @@ async function homeOperation() {
             var button = "";
             /*Button triggers lcDetails modal by default, 
             lcDetails, operation,refNum,receipt,link,status are all stored in the modal data variable*/
+            //if (sessionStorage.usertype === "shipper" && operation === "collect goods") {
+            //    button = "";
+            //} else {
             button =
                 "<button type='button'  class='btn btn-primary lcDetails' data-action= '" +
                 operation +
@@ -749,8 +690,8 @@ async function homeOperation() {
                     "'>" +
                     convertToDisplay(operation, " ") +
                     "</button>";
+                //  }
             }
-
             var $button = $(button);
             //$button.css("visibility","hidden");
             $button.addClass(buttonAssigned(operation)[0]); //change button color to red if action is to be taken(Rather than "View lc").
@@ -768,12 +709,14 @@ async function homeOperation() {
             pageSize: 5,
             pagingNumberOfPages: 5,
             sort: [true, true, true, true, false],
-            filters: [false, 'select', true, false, false],
+            filters: [true, 'select', true, false, false],
             filterEmptySelect: 'Filter by Country',
             filterText: 'Filter by date',
             pagingDivSelector: "#paging-first-datatable"
         });
     }
+
+
 }
 
 
@@ -786,9 +729,9 @@ async function getAllLcsShipper() {
     //call lcCreated listener to get all modified!!! lcs --> change format of json
     //call lcCreatedHash to get all hashes
     var homePageData = {};
-    const results = await Promise.all([getAllBlockchainReceipt(userId, PIN, OTP), getAllBlockchainReceiptHash(userId, PIN, OTP)]);
+    const results = await Promise.all([getAllBlockchainReceipt(userId, PIN, OTP)]);
     var lcDetails = results[0];
-    var receipt = results[1];
+    //var receipt = results[1];
     //store allBcReceipts in an object {refNum:TransactionHash}
     var lcs = {};
     var bcReceipt = {}
@@ -799,14 +742,8 @@ async function getAllLcsShipper() {
             //}
         }
     }
-    if (receipt != null) {
-        for (var i = 0; i < receipt.length; i++) {
-            bcReceipt[receipt[i][0]] = receipt[i][1];
-        }
-    }
     //trim extra property of lc details
     console.log(lcs);
-    console.log(bcReceipt);
     //get status,only store lc with listed status - acknowledged --> submit bol, documents uploaded --> accept documents, documents accpeted,goods collected
     var listedStatus = ["acknowledged", "documents uploaded", "documents accepted", "goods collected"];
     if (Object.keys(lcs).length > 0) {
@@ -828,7 +765,7 @@ async function getAllLcsShipper() {
                         .BOL_Link;
                 }
                 //store lc, bcreceipt and bol links in homepageData
-                var getReceipt = bcReceipt[refNum];
+                var getReceipt = "";
                 var contentObj = {
                     lcDetails: JSON.stringify(lc),
                     bolLinks: links,
@@ -842,6 +779,54 @@ async function getAllLcsShipper() {
     var homepageDataString = JSON.stringify(homePageData);
     return homepageDataString;
 }
+
+/*async function getReadyToCollectLcsShipper() { // this function is to get importer id, ref num and bol links from api
+    var homePageData = {};
+    const results = await Promise.all([getAllBlockchainReceipt(userId, PIN, OTP)]);
+    var lcDetails = results[0];
+
+    var lcs = {};
+    if (lcDetails != null) {
+        for (var i = 0; i < lcDetails.length; i++) {
+            //trim extra property of lc details
+            lcs[lcDetails[i][0]] = trimLcDetails(lcDetails[i][1]);
+        }
+    }
+
+    if (Object.keys(lcs).length > 0) {
+        for (var refNum in lcs) {
+            console.log(refNum);
+            var lc = lcs[refNum];
+            lc = JSON.parse(lc);
+            lc = lc["Trade_LC_Create"]["LC_record"];
+            console.log(lc);
+            var status = lc.status.toLowerCase();
+            //var statusIncluded = $.inArray(status, listedStatus);
+            if (status === "documents accepted") {
+                // if status correct, call get bol links
+                const bolLinks = await getBOLUrl(userId, PIN, OTP, refNum);
+                var links = "";
+                if (bolLinks.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
+                    links =
+                        bolLinks.Content.ServiceResponse.BOL_Details.BOL_record_output
+                        .BOL_Link;
+                }
+                //store lc, bcreceipt and bol links in homepageData
+                var getReceipt = "";
+                var contentObj = {
+                    lcDetails: JSON.stringify(lc),
+                    bolLinks: links,
+                    receipt: getReceipt
+                };
+                homePageData[refNum] = contentObj;
+            }
+        }
+    }
+    console.log(homePageData);
+    var homepageDataString = JSON.stringify(homePageData);
+    return homepageDataString;
+}*/
+
 
 
 //This function assigns button color (by adding class name to the button element) based on action --> view lc(green), other actions(red)
@@ -870,7 +855,7 @@ function operationMatch(status) {
             operation = "accept documents";
         } else if (status.toLowerCase() === "documents accepted") {
             url = "collectGoods";
-            operation = "collect goods";
+            operation = "view qr code";
         }
     } else if (sessionStorage.usertype === "exporter") {
         if (status.toLowerCase() === "pending") {
@@ -887,7 +872,7 @@ function operationMatch(status) {
             operation = "submit bol";
         } else if (status.toLowerCase() === "documents accepted") {
             url = "collectGoods";
-            operation = "collect goods";
+            operation = "scan qr code";
         } else {
             url = "view contract";
             operation = "view contract";
@@ -927,14 +912,24 @@ function loadLcDetailsModal() {
                 "ship_destination",
                 "importer_account_num"
             ];
-            if (usertype === "shipper") {
-                allNecessaryFields = fields;
+            if (sessionStorage.usertype === "shipper") {
+                allNecessaryFields = [
+                    "goods_description",
+                    "importer_ID",
+                    "exporter_ID",
+                    "creation_datetime",
+                    "ship_period",
+                    "ship_date",
+                    "ship_destination",
+                ];
             }
             var allLcHTML = "";
-
+            console.log(links);
+            var verified = "";
             if (links !== "") {
-                var bolLink = "http://bit.ly/2BPThUM"; //links["bolLink"]
-                //new QRCode( document.getElementById"), bolLink);
+
+                var bolLink = links.BillOfLading;
+
                 if (sessionStorage.usertype !== "shipper" && (status === "documents accepted" || status === "goods collected")) {
                     new QRCode(document.getElementById("qrcode"), {
                         width: 150,
@@ -942,8 +937,35 @@ function loadLcDetailsModal() {
                         text: bolLink
                     });
                 }
-                //var qrCode = $("<div id='qrcode'></div>")
-                //$('#lcQRCode').qrcode({width: 100,height: 100,text: bolLink});
+                if (sessionStorage.usertype === "shipper" && status === "documents accepted") {
+                    $("#scannerFrame").append("<video class='col-sm-12' id='preview'></video>");
+                    let scanner = new Instascan.Scanner({
+
+                        video: document.getElementById('preview'),
+                        mirror: true,
+                        refractoryPeriod: 5000,
+                    });
+                    scanner.addListener('scan', function(content) {
+                        console.log(content);
+                        //$("#qrContent").append(content);
+                        verifyQrCodeUI(refNum, content);
+                        scanner.stop();
+
+                    });
+                    Instascan.Camera.getCameras().then(function(cameras) {
+                        if (cameras.length > 0) {
+                            scanner.start(cameras[0]);
+                            console.log("start");
+                        } else {
+                            console.error('No cameras found.');
+                        }
+                    }).catch(function(e) {
+                        console.error(e);
+                    });
+
+                    // verified = "<button type='button' class='btn btn-primary btn-lg'><i class='fa fa-check'></i> Verfified ! </button>"
+                }
+
                 for (var i in links) {
                     var lcDetailsHTML = "";
                     lcDetailsHTML =
@@ -1041,7 +1063,7 @@ function loadLcDetailsModal() {
                 ];
             } else if (
                 sessionStorage.usertype === "shipper" &&
-                action === "collect goods"
+                action === "scan qr code"
             ) {
                 attrToChange = [
                     "collectGoods",
@@ -1081,6 +1103,7 @@ function loadLcDetailsModal() {
             modal
                 .find(".modal-body section header div div div p#refNum")
                 .text(refNum);
+            //modal.find(".modal-body #verification").html(verified);
             modal.find(".modal-body #status").html(statusP);
             modal.find(".modal-body #lcDetails").html(allLcHTML);
             modal.find(".modal-body #returnedRefNum").html(refNumHTML);
@@ -1095,6 +1118,7 @@ function loadLcDetailsModal() {
         $("#lcDetailsModal").on("hidden.bs.modal", function(e) {
             $(e.target).removeData("bs.modal");
             $("#qrcode").html("");
+            $("#scannerFrame").html("");
             $("#statusValue").attr("class", "h3 font-bold m-t");
         });
         /*$(".modal").on("hidden.bs.modal", function () {

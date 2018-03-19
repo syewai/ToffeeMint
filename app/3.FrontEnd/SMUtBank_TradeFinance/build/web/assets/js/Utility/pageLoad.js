@@ -19,6 +19,7 @@ function pageLoad() {
                 sessionStorage.removeItem('page');
             } else {
                 $('#content').empty();
+                // document.location.reload(true);
                 $('#content').load('../homeTemplate.html');
                 //e.defaultPrevented(); 
             }

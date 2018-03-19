@@ -11,26 +11,26 @@ and open the template in the editor.
 
     <script>
         /*$(document).ready(function(){
-                                                                                                                                                                                                                                                                     $("button").click(function(){
-                                                                                                                                                                                                                                                                     var refNumList = [1039,1038,1037,1036,1035];
-                                                                                                                                                                                                                                                                     for (var i in refNumList){
-                                                                                                                                                                                                                                                                     var getContractLink = "http://localhost:9001/lc/getContract?refNum="+refNumList[i];
-                                                                                                                                                                                                                                                                     $.getJSON(getContractLink).done(function (data) {
-                                                                                                                                                                                                                                                                     var items = [];
-                                                                                                                                                                                                                                                                     $.each( data.Content, function( key, val ) {
-                                                                                                                                                                                                                                                                     items.push( "<li id='" + key + "'>" + val + "</li>" );
-                                                                                                                                                                                                                                                                     });
-                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                     $("body").append(items);
-                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                     //console.log(data.Content);
-                                                                                                                                                                                                                                                                     });
-                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                     }
-                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                     });
-                                                                                                                                                                                                                                                                     });*/
+                                                                                                                                                                                                                                                                                                     $("button").click(function(){
+                                                                                                                                                                                                                                                                                                     var refNumList = [1039,1038,1037,1036,1035];
+                                                                                                                                                                                                                                                                                                     for (var i in refNumList){
+                                                                                                                                                                                                                                                                                                     var getContractLink = "http://localhost:9001/lc/getContract?refNum="+refNumList[i];
+                                                                                                                                                                                                                                                                                                     $.getJSON(getContractLink).done(function (data) {
+                                                                                                                                                                                                                                                                                                     var items = [];
+                                                                                                                                                                                                                                                                                                     $.each( data.Content, function( key, val ) {
+                                                                                                                                                                                                                                                                                                     items.push( "<li id='" + key + "'>" + val + "</li>" );
+                                                                                                                                                                                                                                                                                                     });
+                                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                     $("body").append(items);
+                                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                     //console.log(data.Content);
+                                                                                                                                                                                                                                                                                                     });
+                                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                     }
+                                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                     });
+                                                                                                                                                                                                                                                                                                     });*/
     </script>
 </head>
 
@@ -54,7 +54,7 @@ and open the template in the editor.
     <button id="button16">get qr code</button>
     <button id="button17">leaders</button>
     <button id="button18">Get created contract</button>
-    <button id="button19">Get created contract</button>
+    <button id="button19">Shipper URL</button>
     <button id="button20">Test async amend lc</button>
     <button id="button21">Timer - purely retrieving</button>
     <button id="button22">Timer</button>
@@ -240,7 +240,7 @@ and open the template in the editor.
 
         $("#button17").click(function() {
             //getGameLeaders("kinetic1", "123456", "999999", 104, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", false, function(callback) {
-              //  console.log(callback)
+            //  console.log(callback)
             //});
             getGameData();
         });
@@ -267,9 +267,9 @@ and open the template in the editor.
         });
 
         async function doAsyncOp() {
-            const homepageD = await getHomepageData();
-            var dataObj = JSON.parse(homepageD);
-            console.log(dataObj);
+            const homepageD = await getBOLUrl("toffeemintadmin", "123456", "999999", "0000002016");
+            //var dataObj = JSON.parse(homepageD);
+            console.log(homepageD);
 
 
         };

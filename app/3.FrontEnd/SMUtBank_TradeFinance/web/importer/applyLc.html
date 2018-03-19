@@ -150,6 +150,19 @@
         </form>
         <script>
             $(document).ready(function() {
+                //get customerAcct
+                preProcessingApplyLc();
+            });
+            async function preProcessingApplyLc() {
+                const accounts = await getCustomerAccounts(userId, PIN, OTP); //get currency and importer account
+                var account = accounts.Content.ServiceResponse.AccountList.account[0];
+                if (account == null) {
+                    account = accounts.Content.ServiceResponse.AccountList.account;
+                }
+                var errorMsg;
+                var globalErrorID;
+                var importerAccount = account.accountID;
+                var currency = account.currency;
                 //get all countries
                 var allCountries = getAllCountries();
                 var countriesHTML = "";
@@ -193,20 +206,17 @@
                     $("#bankId").html(bankId);
                     var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
                     $("#loginForm").append(exporterAcctInput);
+                    $("#applyLcButton").click(function() {
+                        applyLcOperation(importerAccount, currency); // calling from lcOperations.js
+                    });
+                    $("#cancelButton").click(function() {
+
+                        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
+
+                    });
 
                 };
-
-
-                $("#applyLcButton").click(function() {
-                    applyLcOperation(); // calling from lcOperations.js
-                });
-                $("#cancelButton").click(function() {
-
-                    window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
-
-                });
-
-            })
+            }
         </script>
 
     </section>

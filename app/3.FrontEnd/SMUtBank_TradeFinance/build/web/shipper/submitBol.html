@@ -58,6 +58,58 @@
                 </div>
             </div>
 
+            <!-- form elements
+    ======================================== -->
+            <div class="row" id="div1">
+                <div class="col-md-12">
+                    <form class="form-horizontal well" style="padding-bottom: 0px;" id="retrieveForm">
+                        <div class="form-group">
+                            <label for="partyID" class="col-sm-2 control-label">Party ID:</label>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="partyID" placeholder="(eg; 0000000206)" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="documentType" class="col-sm-2 control-label">Document Type:</label>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <p id="documentTypeSelect">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="filePicker" class="col-sm-2 control-label">Filename:</label>
+
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <input type="file" id="filePicker" class="btn btn-primary" name="filePicker" onchange='readImage()'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-2">
+                                <div class="form-group">
+                                    <input type="hidden" class="form-control" id="base64textarea" />
+                                    <button id="Store" type="button" class="btn btn-primary">Store</button>
+                                    <button id="Clear" type="reset" class="btn btn-default">Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row" id="div2">
+                <div class="col-md-12">
+                    <hr style="margin-top: 0px; margin-bottom: 20px;">
+                </div>
+            </div>
+
+            <!-- table of documents
+    ======================================== -->
+
             <div class="row">
                 <div class="col-sm-6">
                     <section class="panel panel-default">
@@ -65,9 +117,11 @@
                             <span class="h4">Documents</span>
                         </header>
                         <div class="panel-body">
+
                             <div class="form-group">
-                                <label for="bolLink">Bill of Lading</label>
-                                <input id="bolLink" type="text" class="form-control" name="bolLink" />
+                                <label for="filePicker">Bill of Lading</label>
+                                <input type="file" id="filePicker" class="btn btn-primary" name="filePicker" onchange='readImage()'>
+                                <!--<input id="bolLink" type="text" class="form-control" name="bolLink" />-->
                                 <!--<a id="bolLink" target="_blank"></a>-->
                             </div>
                             <div class="form-group">

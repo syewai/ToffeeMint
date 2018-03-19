@@ -1,5 +1,3 @@
-
-
 /* 
  * This script stores all user handling logic (exposing web service)
  */
@@ -81,49 +79,11 @@ async function protectUser() {
     var errorMsg = "";
     if (user === null) {
         //redirect to login
-        var error = {errorMsg: "No such user"};
+        var error = { errorMsg: "No such user" };
         sessionStorage.setItem('error', JSON.stringify(error));
         window.location.replace("/SMUtBank_TradeFinance/");
     }
-    var userId = user.userID;
-    var PIN = user.PIN;
-    var OTP = user.OTP;
-    var usertype = user.usertype;
-    var globalErrorID = "";
-    var errorMsg = "";
-    //passing username, pin,otp to call login web service
-    const customer = await getCustomerDeatils(userId, PIN, OTP);
-        //get error id to check existance of the user
-    errorMsg = customer.Content.ServiceResponse.ServiceRespHeader.ErrorDetails;
-    globalErrorID = customer.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
 
-    if (globalErrorID === "") {
-        var error = {errorMsg: "No such user"};
-        sessionStorage.setItem('error', JSON.stringify(error));
-        window.location.replace("/SMUtBank_TradeFinance/");
-    } else {
-        if (globalErrorID === "010041") {//OTP expiry error - request new otp 
-
-            buildSMSOTP(); // 
-            $("#login_button").click(function () {
-
-                var otp = authenticateSMSOTP();
-                //console.log(otp);
-                if (otp !== undefined) {
-                    if (otp.hasOwnProperty("errorMsg")) {
-                        $("#authError").html(otp.errorMsg);
-                    }
-
-                }
-            });
-
-        } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
-
-            var error = {errorMsg: "No such user"};
-            sessionStorage.setItem('error', JSON.stringify(error));
-            window.location.replace("/SMUtBank_TradeFinance/");
-        }
-    }
 }
 
 function protectAdmin() {
@@ -132,7 +92,7 @@ function protectAdmin() {
     var errorMsg = "";
     if (admin === null) {
         //redirect to login
-        var error = {errorMsg: "No such user"};
+        var error = { errorMsg: "No such user" };
         sessionStorage.setItem('error', JSON.stringify(error));
         window.location.replace("/SMUtBank_TradeFinance/");
     }
@@ -144,7 +104,7 @@ function protectAdmin() {
     var errorMsg = "";
 
     //passing username, pin,otp to call login web service
-    getCustomerDeatils(userId, PIN, OTP, function (data) {
+    getCustomerDeatils(userId, PIN, OTP, function(data) {
         //get error id to check existance of the user
         errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorDetails;
         globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
@@ -152,14 +112,14 @@ function protectAdmin() {
 
     });
     if (globalErrorID === "") {
-        var error = {errorMsg: "No such user"};
+        var error = { errorMsg: "No such user" };
         sessionStorage.setItem('error', JSON.stringify(error));
         window.location.replace("/SMUtBank_TradeFinance/");
     } else {
-        if (globalErrorID === "010041") {//OTP expiry error - request new otp 
+        if (globalErrorID === "010041") { //OTP expiry error - request new otp 
 
             buildSMSOTP(); // 
-            $("#login_button").click(function () {
+            $("#login_button").click(function() {
 
                 var otp = authenticateSMSOTP();
                 //console.log(otp);
@@ -172,7 +132,7 @@ function protectAdmin() {
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
 
-            var error = {errorMsg: "No such user"};
+            var error = { errorMsg: "No such user" };
             sessionStorage.setItem('error', JSON.stringify(error));
             window.location.replace("/SMUtBank_TradeFinance/");
         }
@@ -185,15 +145,15 @@ function checkAdmin(userId, PIN, usertype) {
 
     if (userId === "toffeemintadmin" && PIN === "123456") {
         if (usertype === "shipper") {
-            return {"admin": true};
+            return { "admin": true };
         } else {
-            return {"roleError": "You are not an " + usertype};
+            return { "roleError": "You are not an " + usertype };
         }
     } else {
         if (usertype === "shipper") {
-            return {"roleError": "You are not a shipper"};
+            return { "roleError": "You are not a shipper" };
         } else {
-            return {"admin": false};
+            return { "admin": false };
         }
     }
 }
