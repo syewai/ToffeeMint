@@ -82,8 +82,9 @@ async function applyLcOperation(importer_account_num, contract_currency) {
     };
     var globalErrorID = "";
     var errorMsg = "";
+    console.time("time apply");
     const data = await applyLcApi(userId, PIN, OTP, lc);
-
+    console.time("time apply");
     errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
     globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     if (globalErrorID !== "010000") {
@@ -745,7 +746,7 @@ async function getAllLcsShipper() {
     //trim extra property of lc details
     console.log(lcs);
     //get status,only store lc with listed status - acknowledged --> submit bol, documents uploaded --> accept documents, documents accpeted,goods collected
-    var listedStatus = ["acknowledged", "documents uploaded", "documents accepted", "goods collected"];
+    var listedStatus = ["pending", "acknowledged", "documents uploaded", "documents accepted", "goods collected"];
     if (Object.keys(lcs).length > 0) {
         for (var refNum in lcs) {
             console.log(refNum);

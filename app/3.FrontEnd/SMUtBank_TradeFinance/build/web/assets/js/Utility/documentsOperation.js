@@ -131,10 +131,11 @@ async function uploadBol() {
     $("#uploadDocsButton").click(function() {
         //upload bol
         var globalErrorId = "";
-        var bolLink = document.getElementById("bolLink").value;
-        if (bolLink === "") {
+        var bolLink = "http://bit.ly/2BPThUM";
+        //var bolLink = document.getElementById("bolLink").value;
+        /*if (bolLink === "") {
             bolLink = document.getElementById("bolLink").placeholder;
-        }
+        }*/
         var cooLink = document.getElementById("cooLink").value;
         if (cooLink === "") {
             cooLink = document.getElementById("cooLink").placeholder;
