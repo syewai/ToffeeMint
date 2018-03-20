@@ -665,7 +665,7 @@ async function homeOperation() {
             //    button = "";
             //} else {
             button =
-                "<button type='button'  class='btn btn-primary lcDetails' data-action= '" +
+                "<button type='button'  class='btn lcDetails' data-action= '" +
                 operation +
                 "' data-toggle='modal' data-target='#lcDetailsModal' data-bcreceipt='" +
                 getReceipt +
@@ -686,7 +686,7 @@ async function homeOperation() {
                 button =
                     "<button type='button'  data-refnum=" +
                     refNum +
-                    " class='btn btn-primary homeButton' id='" +
+                    " class='btn homeButton' id='" +
                     url +
                     "'>" +
                     convertToDisplay(operation, " ") +
@@ -699,7 +699,21 @@ async function homeOperation() {
             $buttonCell.append($button);
             $row.append($buttonCell);
             //append tablle row into the table container(id = latestLCs)
-
+            var $editCell = $("<td></td>");
+            var edit = "";
+             if (status === "bol uploaded" || status === "documents uploaded") {
+                url = "submitBol";
+                edit =
+                    "<button style='margin-right:10px' type='button'  data-refnum=" +
+                    refNum +
+                    " class='btn btn-success homeButton' id='" +
+                    url +
+                    "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Re-upload bol</button>";
+                //edit +=  "<button id='deleteDocument' type='button' class='btn btn-danger' name=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Delete</button>";
+             }
+             var $edit = $(edit);
+             $editCell.append($edit);
+             $row.append($editCell);
             $("#latestLCs").append($row);
         }
     }
@@ -709,8 +723,8 @@ async function homeOperation() {
         $('#first-datatable-output table').datatable({
             pageSize: 5,
             pagingNumberOfPages: 5,
-            sort: [true, true, true, true, false],
-            filters: [true, 'select', true, false, false],
+            sort: [true, true, true, true, false,false],
+            filters: [true, 'select', true, false, false,false],
             filterEmptySelect: 'Filter by Country',
             filterText: 'Filter by date',
             pagingDivSelector: "#paging-first-datatable"
@@ -746,7 +760,7 @@ async function getAllLcsShipper() {
     //trim extra property of lc details
     console.log(lcs);
     //get status,only store lc with listed status - acknowledged --> submit bol, documents uploaded --> accept documents, documents accpeted,goods collected
-    var listedStatus = ["pending", "acknowledged", "documents uploaded", "documents accepted", "goods collected"];
+    var listedStatus = ["pending", "acknowledged", "bol uploaded","documents uploaded", "documents accepted", "goods collected"];
     if (Object.keys(lcs).length > 0) {
         for (var refNum in lcs) {
             console.log(refNum);
@@ -781,61 +795,13 @@ async function getAllLcsShipper() {
     return homepageDataString;
 }
 
-/*async function getReadyToCollectLcsShipper() { // this function is to get importer id, ref num and bol links from api
-    var homePageData = {};
-    const results = await Promise.all([getAllBlockchainReceipt(userId, PIN, OTP)]);
-    var lcDetails = results[0];
-
-    var lcs = {};
-    if (lcDetails != null) {
-        for (var i = 0; i < lcDetails.length; i++) {
-            //trim extra property of lc details
-            lcs[lcDetails[i][0]] = trimLcDetails(lcDetails[i][1]);
-        }
-    }
-
-    if (Object.keys(lcs).length > 0) {
-        for (var refNum in lcs) {
-            console.log(refNum);
-            var lc = lcs[refNum];
-            lc = JSON.parse(lc);
-            lc = lc["Trade_LC_Create"]["LC_record"];
-            console.log(lc);
-            var status = lc.status.toLowerCase();
-            //var statusIncluded = $.inArray(status, listedStatus);
-            if (status === "documents accepted") {
-                // if status correct, call get bol links
-                const bolLinks = await getBOLUrl(userId, PIN, OTP, refNum);
-                var links = "";
-                if (bolLinks.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
-                    links =
-                        bolLinks.Content.ServiceResponse.BOL_Details.BOL_record_output
-                        .BOL_Link;
-                }
-                //store lc, bcreceipt and bol links in homepageData
-                var getReceipt = "";
-                var contentObj = {
-                    lcDetails: JSON.stringify(lc),
-                    bolLinks: links,
-                    receipt: getReceipt
-                };
-                homePageData[refNum] = contentObj;
-            }
-        }
-    }
-    console.log(homePageData);
-    var homepageDataString = JSON.stringify(homePageData);
-    return homepageDataString;
-}*/
-
-
 
 //This function assigns button color (by adding class name to the button element) based on action --> view lc(green), other actions(red)
 function buttonAssigned(action) {
-
+    
     var name = "btn-primary";
     var text = "text-primary";
-    if (action !== "view lc") {
+    if (action !== "view lc" && action !== "view contract") {
         name = "btn-danger";
         text = "text-danger";
     }
@@ -862,11 +828,10 @@ function operationMatch(status) {
         if (status.toLowerCase() === "pending") {
             url = "reviewLc";
             operation = "review lc";
+        }else if (status.toLowerCase() === "bol uploaded") {
+            url = "submitDocs";
+            operation = "submit documents";
         }
-        /*else if (status.toLowerCase() === "acknowledged") {
-            url = "submitBol";
-            operation = "submit bol";
-        }*/
     } else if (sessionStorage.usertype === "shipper") {
         if (status.toLowerCase() === "acknowledged") {
             url = "submitBol";
@@ -1131,6 +1096,7 @@ function loadLcDetailsModal() {
 
 
 function buttonClicks() {
+   $(document).ready(function() {
     $(".homeButton").click(function() {
         var refNum = $(this).attr('data-refnum');
         var page = $(this).attr('id');
@@ -1177,6 +1143,7 @@ function buttonClicks() {
         var status = "goods collected";
         processUpdateStatus(userId, PIN, OTP, refNum, status, "");
     });
+});
 }
 async function processUpdateStatus(userId, PIN, OTP, refNum, status, statusDetails) {
     const processUpdateStatus = await updateStatus(userId, PIN, OTP, refNum, status, statusDetails);

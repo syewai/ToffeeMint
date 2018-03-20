@@ -6,7 +6,7 @@
 var apiUrl = getApiUrl();
 var apiUrlBC = getApiUrlBC();
 var apiEvents = getApiEvents();
-
+/** Upload Bol api calling*/
 async function uploadBOL(userId, PIN, OTP, refNum, billOfLadingURL, callback) { //shipper
 
     var headerObj = {
@@ -49,7 +49,7 @@ async function uploadBOL(userId, PIN, OTP, refNum, billOfLadingURL, callback) { 
         console.error(error);
     }
 }
-
+/** get Bol api calling*/
 async function getBOLUrl(userId, PIN, OTP, refNum, callback) {
     var headerObj = {
         Header: {
@@ -83,76 +83,11 @@ async function getBOLUrl(userId, PIN, OTP, refNum, callback) {
         console.error(error);
     }
 }
-
-async function verifyCode(refNum, code) {
-    //verify the url provided by importer and url submiited by shipper 
-    //after verification succeed, update status to "goods collected"
-    //const readyToCollect = await getReadyToCollectLcsShipper();
-    const linkFromShipper = await getBOLUrl(userId, PIN, OTP, refNum);
-    //var linkObj = JSON.parse(linkFromShipper);
-    var links = "";
-    var globalErrorId = linkFromShipper.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-    if (globalErrorId === "010000") {
-        links = linkFromShipper.Content.ServiceResponse.BOL_Details.BOL_record_output.BOL_Link;
-
-        links = JSON.parse(links);
-        console.log("verifying");
-        console.log(links);
-
-        var bol = links.BillOfLading;
-        if (bol === code) {
-
-            return true;
-
-
-        }
-        return false;
-    }
-
-    return false;
-}
-
-async function verifyQrCodeUI(refNum, code) {
-    const result = await verifyCode(refNum, code);
-    if (result) {
-        var verified = "<div class='btn btn-primary btn-lg' width=100 height=100><i class='fa fa-check'></i> QR Code Verfified !</div>";
-        verified += "<p class='font-bold h4 font-bold m-t text-primary'> Customer can collect goods </p>"
-        $("#scannerFrame").html(verified);
-
-
-    } else {
-        var verified = "<div class='btn btn-danger btn-lg' width=100 height=100><i class='fa fa-times'></i> Invalid QR Code!</div>";
-        verified += "<p class='font-bold h4 font-bold m-t text-danger'>Please scan again </p>"
-        $("#scannerFrame").html(verified);
-    }
-
-    console.log(result);
-}
-
-function readImage() {
-    var filesSelected = document.getElementById("filePicker").files; //$('#')[0].files;
-    if (filesSelected.length > 0) {
-        var fileToLoad = filesSelected[0];
-
-        var fileReader = new FileReader();
-
-        fileReader.onload = function(fileLoadedEvent) {
-            var srcData = fileLoadedEvent.target.result; // <--- data: base64
-
-            var result = srcData.split(",");
-            document.getElementById("base64textarea").value = result[1];
-        }
-        fileReader.readAsDataURL(fileToLoad);
-    }
-}
-
-function loadTable() {
-    // form values
-    var filename = encodeURIComponent($("#filePicker").val().replace("C:\\fakepath\\", ""));
-    var partyID = sessionStorage.customerID;
-    var documentType = $("#documentType").val();
-    var MyBinaryData = $("#base64textarea").val();
-
+/* -------------------------------
+ * Store files in directory by calling java servlet
+ */
+function storeFiles(refNum,filename,partyID,documentType,MyBinaryData) {
+ 
     // set request parameters
     var parameters = {
         Filename: filename,
@@ -165,7 +100,7 @@ function loadTable() {
     // send json to servlet
     $.ajax({
             type: "POST",
-            url: "/SMUtBank_CMS/Document?type=store",
+            url: "/SMUtBank_TradeFinance/Document?type=store",
             contentType: "application/json",
             dataType: "json",
             data: parameters,
@@ -174,49 +109,45 @@ function loadTable() {
                 startTime = new Date().getTime();
                 timer = setInterval(function() { updateElapsedTime(); }, 1000);
                 $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
-                $('#loadingModal').modal('show');
+                //$('#loadingModal').modal('show.bs.modal');
+                 $('#loadingModal').on("show.bs.modal", function(event) {
+                     var button = $(event.relatedTarget); // Button that triggered the modal
+                     //var refNum = button.data("refnum"); // Extract info from data-* attributes
+                 });
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                showErrorModal("Error invoking service.");
+                console.log("Error invoking service.");
             }
         })
         // receive json response from servlet
         .done(function(response) {
-            $('#loadingModal').modal('hide');
+            $('#loadingModal').on("hidden.bs.modal", function(event) {
+                     
+                     //var refNum = button.data("refnum"); // Extract info from data-* attributes
+                 });
             clearInterval(timer);
             if (response.globalErrorId === "010000") { // success code
-                $("#document_table_main").show();
-                showParameters(response.document);
-                document.getElementById("Store").disabled = false;
+                //get bol link
+                var bolLink = response.document.url;
+                bolLink = trimUrl(bolLink);
+                bolLink += response.document.filename;
+                var cooLink = "http://bit.ly/2smTvi9";
+                var insuranceLink = "http://bit.ly/2CaYEcP";
+                 
+                     var links = {
+                    BillOfLading: bolLink,
+                    CertOfOrigin: cooLink,
+                    Insurance: insuranceLink
+
+                    };
+
+                var linksJson = JSON.stringify(links);
+                
+                processUploadBol(userId, PIN, OTP, refNum, linksJson);
             } else {
-                $("#document_table_main").hide();
-                showErrorModal(response.errorText);
+                console.log(response.errorText);
             }
         });
-}
-
-/* -------------------------------
- * populate table
- */
-function showParameters(document) {
-    var htmlcode = "";
-    htmlcode += "<tr>";
-    htmlcode += "<th>Filename</th>";
-    htmlcode += "<th>Version</th>";
-    htmlcode += "<th>Document Type</th>";
-    htmlcode += "<th>Date Uploaded</th>";
-    htmlcode += "<th>File Size</th>";
-    htmlcode += "<th>Link</th>";
-    htmlcode += "</tr>";
-    htmlcode += "<tr>";
-    htmlcode += "<td id='filename'>" + document.filename + "</td>";
-    htmlcode += "<td id='version'>" + document.version + "</td>";
-    htmlcode += "<td id='document_type_id'>" + $("#documentType option:selected").text(); + "</td>";
-    htmlcode += "<td id='date_uploaded'>" + document.date_uploaded + "</td>";
-    htmlcode += "<td id='size'>" + document.size + "</td>";
-    htmlcode += "<td id='url'><a class='docLink btn btn-xs btn-primary' href='" + document.url + "' target='_blank'><span class='glyphicon glyphicon-download' aria-hidden='true'></span> Download</a> <button id='deleteDocument' type='button' class='btn btn-xs btn-danger' name=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Delete</button></td>";
-    htmlcode += "</tr>";
-    $("#document_table").html(htmlcode);
 }
 
 /* -------------------------------
@@ -242,7 +173,7 @@ function doDelete() {
     // send json to servlet
     $.ajax({
             type: "POST",
-            url: "/SMUtBank_CMS/Document?type=delete",
+            url: "/SMUtBank_TradeFinance/Document?type=delete",
             contentType: "application/json",
             dataType: "json",
             data: parameters,

@@ -102,3 +102,9 @@ function trimLcDetails(lcString) {
     newString = newString.replace("-Request", '')
     return newString;
 }
+
+function trimUrl(url) {
+ 
+    var page = url.substring(0,url.lastIndexOf('/'));
+    return page;
+}

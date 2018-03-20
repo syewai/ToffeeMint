@@ -35,6 +35,7 @@
                             <th>Country</th>
                             <th>Ship Date</th>
                             <th>Status</th>
+                            <th>Operation</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -72,12 +73,10 @@
         var usertype = user.usertype;
         $('#usertype').html(convertToDisplay(usertype, " ") + " (Customer ID - " + user.customerID + ")");
 
-        $("#lcDetailsModal").load("../lcDetailsModal.html");
-
         homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
         //shipperTest();
         loadLcDetailsModal(); //this method is called from lcOperation.js
-
+        $("#lcDetailsModal").load("../lcDetailsModal.html");
 
     });
 </script>

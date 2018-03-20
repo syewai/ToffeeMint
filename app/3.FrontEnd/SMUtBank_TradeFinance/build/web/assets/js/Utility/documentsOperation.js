@@ -76,85 +76,15 @@ async function uploadBol() {
         senderToReceiverInfo = fields.sender_to_receiver_info;
 
     }
-
-    /* getLcDetails(userId, PIN, OTP, refNum, function (contract) {//calling this method from  assets/js/DAO/lcHandling.js
-         var globalErrorId = contract.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-         //console.log(globalErrorId);
-         var fields = {};
-         if (globalErrorId === "010000") {
-             fields = contract.Content.ServiceResponse.LC_Details.LC_record;
-
-             for (var field in fields) {
-                 var fieldCamel = attributeMapping(field);
-                 var fieldValue = fields[field];
-                 $("#" + fieldCamel).attr("placeholder", fieldValue);
-
-             }
-
-             importerAccount = fields.importer_account_num; //no change
-             //console.log(importerAccount);
-             exporterAccount = fields.exporter_account_num; //no change
-             expiryDate = fields.expiry_date; //no change
-             expiryPlace = fields.expiry_place;
-             confirmed = fields.confirmed;
-             revocable = fields.revocable;
-             availableBy = fields.available_by;
-             termDays = fields.term_days;
-             amount = fields.amount;
-             currency = fields.currency; //no change
-             applicableRules = fields.applicable_rules;
-             partialShipments = fields.partial_shipments;
-             shipDestination = fields.ship_destination;
-             shipDate = fields.ship_date;
-             shipPeriod = fields.ship_period;
-             goodsDescription = fields.goods_description;
-             docsRequired = fields.docs_required;
-             additionalConditions = fields.additional_conditions;
-             senderToReceiverInfo = fields.sender_to_receiver_info;
-
-         }
-     });*/
-    var bolLink = "http://bit.ly/2BPThUM";
-    var cooLink = "http://bit.ly/2smTvi9";
-    var insuranceLink = "http://bit.ly/2CaYEcP";
-    $("#bolLink").attr("placeholder", bolLink);
-    $("#cooLink").attr("placeholder", cooLink);
-    $("#insuranceLink").attr("placeholder", insuranceLink);
-
-    /*var bolText = "BOL - " + refNum+".pdf";
-     var cooText = "Cert of Origin - " + refNum+".pdf";
-     var insuranceText = "Insurance - " + refNum+".pdf";
-     $("#bolLink").html(bolText);
-     $("#cooLink").html(cooText);
-     $("#insuranceLink").html(insuranceText);*/
-
+    
     $("#uploadDocsButton").click(function() {
-        //upload bol
-        var globalErrorId = "";
-        var bolLink = "http://bit.ly/2BPThUM";
-        //var bolLink = document.getElementById("bolLink").value;
-        /*if (bolLink === "") {
-            bolLink = document.getElementById("bolLink").placeholder;
-        }*/
-        var cooLink = document.getElementById("cooLink").value;
-        if (cooLink === "") {
-            cooLink = document.getElementById("cooLink").placeholder;
-        }
-        var insuranceLink = document.getElementById("insuranceLink").value;
-        if (insuranceLink === "") {
-            insuranceLink = document.getElementById("insuranceLink").placeholder;
-        }
-
-        var links = {
-            BillOfLading: bolLink,
-            CertOfOrigin: cooLink,
-            Insurance: insuranceLink
-
-        };
-
-        var linksJson = JSON.stringify(links);
-        processUploadBol(userId, PIN, OTP, refNum, linksJson);
-
+            // form values
+    var filename = encodeURIComponent($("#filePicker").val().replace("C:\\fakepath\\", ""));
+    var partyID = sessionStorage.customerID;
+    // var documentType = $("#documentType").val();
+    var documentType = "6"; // for BOL
+    var MyBinaryData = $("#base64textarea").val();
+        storeFiles(refNum,filename,partyID,documentType,MyBinaryData);
 
     });
     $("#cancelButton").click(function() {
@@ -163,10 +93,96 @@ async function uploadBol() {
     //
 }
 
-async function processUploadBol(userId, PIN, OTP, refNum, linksJson) {
+async function processUploadBol(userId, PIN, OTP, refNum,linksJson) {
+ 
     const uploadBol = await uploadBOL(userId, PIN, OTP, refNum, linksJson);
     var globalErrorId = uploadBol.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     if (globalErrorId === "010000") {
-        processUpdateStatus(userId, PIN, OTP, refNum, "documents uploaded", "");
+        processUpdateStatus(userId, PIN, OTP, refNum, "bol uploaded", "");
     }
+}
+
+async function verifyCode(refNum, code) {
+    //verify the url provided by importer and url submiited by shipper 
+    //after verification succeed, update status to "goods collected"
+
+    const linkFromShipper = await getBOLUrl(userId, PIN, OTP, refNum);
+
+    var links = "";
+    var globalErrorId = linkFromShipper.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    if (globalErrorId === "010000") {
+        links = linkFromShipper.Content.ServiceResponse.BOL_Details.BOL_record_output.BOL_Link;
+
+        links = JSON.parse(links);
+        console.log("verifying");
+        console.log(links);
+
+        var bol = links.BillOfLading;
+        if (bol === code) {
+
+            return true;
+
+
+        }
+        return false;
+    }
+
+    return false;
+}
+
+async function verifyQrCodeUI(refNum, code) {
+    const result = await verifyCode(refNum, code);
+    if (result) {
+        var verified = "<div class='btn btn-primary btn-lg' width=100 height=100><i class='fa fa-check'></i> QR Code Verfified !</div>";
+        verified += "<p class='font-bold h4 font-bold m-t text-primary'> Customer can collect goods </p>"
+        $("#scannerFrame").html(verified);
+
+
+    } else {
+        var verified = "<div class='btn btn-danger btn-lg' width=100 height=100><i class='fa fa-times'></i> Invalid QR Code!</div>";
+        verified += "<p class='font-bold h4 font-bold m-t text-danger'>Please scan again </p>"
+        $("#scannerFrame").html(verified);
+    }
+
+    console.log(result);
+}
+
+function readImage() {
+    var filesSelected = document.getElementById("filePicker").files; //$('#')[0].files;
+    if (filesSelected.length > 0) {
+        var fileToLoad = filesSelected[0];
+
+        var fileReader = new FileReader();
+
+        fileReader.onload = function(fileLoadedEvent) {
+            var srcData = fileLoadedEvent.target.result; // <--- data: base64
+
+            var result = srcData.split(",");
+            document.getElementById("base64textarea").value = result[1];
+        }
+        fileReader.readAsDataURL(fileToLoad);
+    }
+}
+/* -------------------------------
+ * update elapsed time
+ */
+function updateElapsedTime() {
+    var now = new Date().getTime();
+    var timeDiff = now - startTime;
+    timeDiff /= 1000; // strip off milliseconds
+    var elapsedSeconds = Math.round(timeDiff % 60);
+    timeDiff = Math.floor(timeDiff / 60); // strip off seconds
+    var elapsedMinutes = Math.round(timeDiff % 60);
+    $("#elapsedTime").html("<h4>Elapsed Time: " + padZeros(elapsedMinutes, 2) + ":" + padZeros(elapsedSeconds, 2) + "</h4>");
+}
+
+/* -------------------------------
+ * pad leading zeros
+ */
+function padZeros(number, length) {
+    var str = '' + number;
+    while (str.length < length) {
+        str = '0' + str;
+    }
+    return str;
 }
