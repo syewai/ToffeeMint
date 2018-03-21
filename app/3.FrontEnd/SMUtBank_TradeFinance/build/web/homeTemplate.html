@@ -21,6 +21,7 @@
                             <th id="roleTh"></th>
                             <th>Expiry Date</th>
                             <th>Status</th>
+                            <th>Operation</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -59,24 +60,84 @@
 <div class="modal fade" id="lcDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 
 </div>
+<!-- error modal
+    ======================================== -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h2>Error</h2>
+            </div>
+            <div class="modal-body">
+                <p id="errorMsg" class="font-bold h3 font-bold m-t text-danger">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button id="CloseError" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- success modal
+                    ======================================== -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h2>Success</h2>
+            </div>
+            <div class="modal-body">
+                <p id="successMsg" class="font-bold h3 font-bold m-t text-primary">
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- loading modal
+                    ======================================== -->
+<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!--<div class="modal-header bg-warning">
+                <h2>Submitting Letter of Credit...</h2>
+            </div>-->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="text-align: center;">
+                        <p class="font-bold h3 font-bold m-t text-primary">
+                            <i class="fa fa-spinner fa fa-spin fa fa-4x"></i>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
-            protectUser(); // calling from userHandling
-            var getUserItem = sessionStorage.getItem('user');
-            var user = $.parseJSON(getUserItem);
-            //console.log(user.customerID);
-            $('#username').html("Welcome back, " + user.userID);
-            var usertype = user.usertype;
-            $('#usertype').html(convertToDisplay(usertype, " ") + " (Customer ID - " + user.customerID + ")");
-            var colHeader = "Importer";
-            if (usertype === "importer") {
-                colHeader = "Exporter";
-            }
-            $('#roleTh').html(colHeader + " account");
-            $("#lcDetailsModal").load("../lcDetailsModal.html");
-       
-            homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
-            loadLcDetailsModal(); //this method is called from lcOperation.js
+        protectUser(); // calling from userHandling
+        var getUserItem = sessionStorage.getItem('user');
+        var user = $.parseJSON(getUserItem);
+        //console.log(user.customerID);
+        $('#username').html("Welcome back, " + user.userID);
+        var usertype = user.usertype;
+        $('#usertype').html(convertToDisplay(usertype, " ") + " (Customer ID - " + user.customerID + ")");
+        var colHeader = "Importer";
+        if (usertype === "importer") {
+            colHeader = "Exporter";
+        }
+        $('#roleTh').html(colHeader + " account");
+        $("#lcDetailsModal").load("../lcDetailsModal.html");
+
+        homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
+        loadLcDetailsModal(); //this method is called from lcOperation.js
 
     });
 </script>

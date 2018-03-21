@@ -11,7 +11,7 @@
 <section class="vbox">
     <section class="scrollable">
         <div class="wrapper-lg">
-            <h2 class="m-b-xs font-bold m-t-none">Upload Bill of Lading</h2>
+            <h2 class="m-b-xs font-bold m-t-none">Upload Cert of Origin & Insurance</h2>
         </div>
         <form id="amendLcForm" class="padder">
 
@@ -55,11 +55,17 @@
                             <span class="h4">Documents</span>
                         </header>
                         <div class="panel-body">
+                            <div class="form-group" id="bolLink">
+
+                            </div>
 
                             <div class="form-group">
-                                <label for="filePicker">Bill of Lading</label>
-                                <input type="file" id="filePicker" class="btn btn-primary" name="filePicker" onchange='readImage("filePicker","base64textarea")'>
-
+                                <label for="filePicker">Cert of Origin</label>
+                                <input type="file" class="form-control" id="filePicker" class="btn btn-primary" name="filePicker" onchange='readImage("filePicker","base64textarea")'>
+                            </div>
+                            <div class="form-group">
+                                <label for="filePicker2">Cert of Insurance</label>
+                                <input type="file" class="form-control" id="filePicker2" class="btn btn-primary" name="filePicker2" onchange='readImage("filePicker2","base64textarea2")'>
                             </div>
 
                             <div></div>
@@ -67,7 +73,8 @@
                             <footer class="text-center bg-light lter">
                                 <div class='form-group lc-form'>
                                     <input type="hidden" class="form-control" id="base64textarea" />
-                                    <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-primary btn-lg' id="uploadDocsButton">Upload</button></div>
+                                    <input type="hidden" class="form-control" id="base64textarea2" />
+                                    <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-primary btn-lg' id="uploadDocsExporterButton">Upload</button></div>
                                     <div class='col-lg-4 ' style='' id='actionDiv'><button type='button' class='actionButton btn btn-default btn-lg' id='cancelButton'>Cancel</button></div>
                                 </div>
                             </footer>

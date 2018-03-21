@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../assets/css/font.css" type="text/css" />
     <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
     <link rel="stylesheet" href="../assets/css/bootstrap-datetimepicker.min.css">
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+    <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>-->
 </head>
 
 <section class="vbox">
@@ -223,6 +223,65 @@
     <!--End of Scrollable-->
 </section>
 <!--End of vbox-->
+<!-- error modal
+    ======================================== -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h2>Error</h2>
+            </div>
+            <div class="modal-body">
+                <p id="errorMsg" class="font-bold h3 font-bold m-t text-danger">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button id="CloseError" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- success modal
+                ======================================== -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h2>Success</h2>
+            </div>
+            <div class="modal-body">
+                <p id="successMsg" class="font-bold h3 font-bold m-t text-primary">
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- loading modal
+                ======================================== -->
+<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h2>Submitting Letter of Credit...</h2>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="text-align: center;">
+                        <p id="elapsedTime">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="../assets/js/jquery.min.js"></script>
 <!-- Bootstrap -->
 <script src="../assets/js/bootstrap.js"></script>

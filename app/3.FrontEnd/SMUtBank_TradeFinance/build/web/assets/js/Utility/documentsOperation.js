@@ -40,7 +40,8 @@ async function uploadBol() {
     var errorMsg;
     var globalErrorID;
     /*Part 1 - call getLcDetails to prefilled amendments*/
-    const lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
+    const lcDetailsAndBolLinks = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum)]);
+    var lcDetails = lcDetailsAndBolLinks[0]; //calling this method from  assets/js/DAO/lcHandling.js
     var globalErrorId =
         lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     var fields = {};
@@ -76,15 +77,59 @@ async function uploadBol() {
         senderToReceiverInfo = fields.sender_to_receiver_info;
 
     }
-    
+    var bolLinks = lcDetailsAndBolLinks[1]; //calling this method from  assets/js/DAO/lcHandling.js
+    var globalErrorIdBol =
+        bolLinks.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    var bolLink = "";
+    var cooLink = "";
+    var insuranceLink = "";
+    var uploadType = "create";
+    if (globalErrorIdBol === "010000") { //if bol has been submitted, get bol, coo and insurance link
+        var linksObj = JSON.parse(bolLinks.Content.ServiceResponse.BOL_Details.BOL_record_output.BOL_Link);
+        bolLink = linksObj.BillOfLading;
+        cooLink = linksObj.CertOfOrigin;
+        insuranceLink = linksObj.Insurance;
+        uploadType = "update";
+
+        $("#bolLink").append("<label for='bol'>Bill of Ladding</label><a class='form-control btn-success' href='" + bolLink + "' target='_blank'>" + trimBolName(bolLink) + "</a>");
+    }
+
     $("#uploadDocsButton").click(function() {
-            // form values
-    var filename = encodeURIComponent($("#filePicker").val().replace("C:\\fakepath\\", ""));
-    var partyID = sessionStorage.customerID;
-    // var documentType = $("#documentType").val();
-    var documentType = "6"; // for BOL
-    var MyBinaryData = $("#base64textarea").val();
-        storeFiles(refNum,filename,partyID,documentType,MyBinaryData);
+        // form values
+        var filename = encodeURIComponent($("#filePicker").val().replace("C:\\fakepath\\", ""));
+        var partyID = sessionStorage.customerID;
+        // var documentType = $("#documentType").val();
+        var documentType = "6"; // for BOL
+        var MyBinaryData = $("#base64textarea").val();
+        storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink, cooLink, insuranceLink, uploadType);
+
+    });
+    $("#uploadDocsExporterButton").click(function() {
+        // form values
+        var filenameCOO = encodeURIComponent($("#filePicker").val().replace("C:\\fakepath\\", ""));
+        var filenameIns = encodeURIComponent($("#filePicker2").val().replace("C:\\fakepath\\", ""));
+        var partyID = sessionStorage.customerID;
+        var documentTypeCOO = "8"; // for COO
+        var documentTypeIns = "9"; // for insurance
+        var MyBinaryDataCOO = $("#base64textarea").val();
+        var MyBinaryDataIns = $("#base64textarea2").val();
+
+        var parametersCOO = {
+            Filename: filenameCOO,
+            PartyID: partyID,
+            DocumentType: documentTypeCOO,
+            MyBinaryData: MyBinaryDataCOO
+        };
+        parametersCOO = JSON.stringify(parametersCOO);
+        var parametersIns = {
+            Filename: filenameIns,
+            PartyID: partyID,
+            DocumentType: documentTypeIns,
+            MyBinaryData: MyBinaryDataIns
+        };
+        parametersIns = JSON.stringify(parametersIns);
+        //storeCerts(refNum, filename, partyID, documentTypeCOO, MyBinaryDataCOO,);
+        storeCerts(refNum, parametersCOO, parametersIns, bolLink, cooLink, insuranceLink)
 
     });
     $("#cancelButton").click(function() {
@@ -93,12 +138,23 @@ async function uploadBol() {
     //
 }
 
-async function processUploadBol(userId, PIN, OTP, refNum,linksJson) {
- 
+async function processUploadBol(userId, PIN, OTP, refNum, linksJson, status, uploadType) {
+
     const uploadBol = await uploadBOL(userId, PIN, OTP, refNum, linksJson);
     var globalErrorId = uploadBol.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     if (globalErrorId === "010000") {
-        processUpdateStatus(userId, PIN, OTP, refNum, "bol uploaded", "");
+        if (uploadType === "create") {
+            processUpdateStatus(userId, PIN, OTP, refNum, status, "");
+        } else {
+            window.location.replace(
+                "/SMUtBank_TradeFinance/" +
+                sessionStorage.usertype +
+                "/" +
+                sessionStorage.usertype +
+                ".html"
+            );
+        }
+
     }
 }
 
@@ -147,8 +203,8 @@ async function verifyQrCodeUI(refNum, code) {
     console.log(result);
 }
 
-function readImage() {
-    var filesSelected = document.getElementById("filePicker").files; //$('#')[0].files;
+function readImage(fileId, base64Id) {
+    var filesSelected = document.getElementById(fileId).files; //$('#')[0].files;
     if (filesSelected.length > 0) {
         var fileToLoad = filesSelected[0];
 
@@ -158,7 +214,7 @@ function readImage() {
             var srcData = fileLoadedEvent.target.result; // <--- data: base64
 
             var result = srcData.split(",");
-            document.getElementById("base64textarea").value = result[1];
+            document.getElementById(base64Id).value = result[1];
         }
         fileReader.readAsDataURL(fileToLoad);
     }

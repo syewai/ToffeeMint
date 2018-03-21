@@ -6,14 +6,12 @@
     <link rel="stylesheet" href="../assets/css/font-awesome.min.css" type="text/css" />
     <link rel="stylesheet" href="../assets/css/font.css" type="text/css" />
     <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
-    <!--<link rel="stylesheet" href="../assets/css/bootstrap-datetimepicker.min.css">
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>-->
 </head>
 
 <section class="vbox">
     <section class="scrollable">
         <div class="wrapper-lg">
-            <h2 class="m-b-xs font-bold m-t-none">Upload Documents</h2>
+            <h2 class="m-b-xs font-bold m-t-none">Upload Bill of Lading</h2>
         </div>
         <form id="amendLcForm" class="padder">
 
@@ -43,14 +41,7 @@
                                 <input type='text' class="form-control form_date" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" readonly/>
                             </div>
 
-                            <!--<div class="form-group">
-                                <label>Additional Conditions</label>
-                                <textarea id="additionalConditions"  class="form-control" rows="6" placeholder="Additional Conditions" name="additonalConditions" readonly></textarea>
-                            </div>-->
-                            <!--<div class="form-group">
-                                <label>Upload Bill of Exchange</label>
-                                <input type="file" class="filestyle" data-icon="false" data-classButton="btn btn-default" data-classInput="form-control inline input-s">
-                            </div>-->
+
                         </div>
                     </section>
                 </div>
@@ -67,20 +58,10 @@
 
                             <div class="form-group">
                                 <label for="filePicker">Bill of Lading</label>
-                                <input type="file" id="filePicker" class="btn btn-primary" name="filePicker" onchange='readImage()'>
-                                <!--<input id="bolLink" type="text" class="form-control" name="bolLink" />-->
-                                <!--<a id="bolLink" target="_blank"></a>-->
+                                <input type="file" id="filePicker" class="btn btn-primary" name="filePicker" onchange='readImage("filePicker","base64textarea")'>
+
                             </div>
-                            <!--<div class="form-group">
-                                <label for="cooLink">Cert of Origin</label>
-                                <input id="cooLink" type="text" class="form-control" name="cooLink" />
-                                
-                            </div>-->
-                           <!-- <div class="form-group">
-                                
-                                <label for="insuranceLink">Insurance</label>
-                                <input id="insuranceLink" type="text" class="form-control" name="insuranceLink" />
-                            </div>-->
+
                             <div></div>
                             <div id="authError"></div>
                             <footer class="text-center bg-light lter">
@@ -112,7 +93,7 @@
                 <h2>Error</h2>
             </div>
             <div class="modal-body">
-                <p id="errorMsg">
+                <p id="errorMsg" class="font-bold h3 font-bold m-t text-danger">
                 </p>
             </div>
             <div class="modal-footer">
@@ -131,11 +112,8 @@
                 <h2>Success</h2>
             </div>
             <div class="modal-body">
-                <p id="successMsg">
+                <p id="successMsg" class="font-bold h3 font-bold m-t text-primary">
                 </p>
-            </div>
-            <div class="modal-footer">
-                <button id="CloseError" type="button" class="btn btn-success" data-dismiss="modal" data-toggle='modal' data-target='#loadingModal'>Close</button>
             </div>
         </div>
     </div>
@@ -152,7 +130,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col">
-                        <img src="assets/img/progress2.gif" alt="" class="img-responsive center-block" />
+
                     </div>
                 </div>
                 <div class="row">
@@ -177,18 +155,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>
 
 
-
-<script type="text/javascript">
-   /*$('.form_date').datetimepicker({
-        weekStart: 1,
-        todayBtn: 1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        minView: 2,
-        forceParse: 0
-    });*/
-</script>
 
 <script type="text/javascript">
     var timer = "";

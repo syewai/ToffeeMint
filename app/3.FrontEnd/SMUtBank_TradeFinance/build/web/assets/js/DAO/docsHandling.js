@@ -86,8 +86,8 @@ async function getBOLUrl(userId, PIN, OTP, refNum, callback) {
 /* -------------------------------
  * Store files in directory by calling java servlet
  */
-function storeFiles(refNum,filename,partyID,documentType,MyBinaryData) {
- 
+function storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink, cooLink, insuranceLink, uploadType) {
+
     // set request parameters
     var parameters = {
         Filename: filename,
@@ -109,43 +109,121 @@ function storeFiles(refNum,filename,partyID,documentType,MyBinaryData) {
                 startTime = new Date().getTime();
                 timer = setInterval(function() { updateElapsedTime(); }, 1000);
                 $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
-                //$('#loadingModal').modal('show.bs.modal');
-                 $('#loadingModal').on("show.bs.modal", function(event) {
-                     var button = $(event.relatedTarget); // Button that triggered the modal
-                     //var refNum = button.data("refnum"); // Extract info from data-* attributes
-                 });
+                $('#loadingModal').modal('show');
+
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log("Error invoking service.");
+                $('#loadingModal').modal('hide');
+                showErrorModal("Error invoking service.");
             }
         })
         // receive json response from servlet
         .done(function(response) {
-            $('#loadingModal').on("hidden.bs.modal", function(event) {
-                     
-                     //var refNum = button.data("refnum"); // Extract info from data-* attributes
-                 });
+            $('#loadingModal').modal('hide');
             clearInterval(timer);
             if (response.globalErrorId === "010000") { // success code
+                showSuccessModal("Redirecting to Homepage");
                 //get bol link
-                var bolLink = response.document.url;
+                bolLink = response.document.url;
                 bolLink = trimUrl(bolLink);
                 bolLink += response.document.filename;
-                var cooLink = "http://bit.ly/2smTvi9";
-                var insuranceLink = "http://bit.ly/2CaYEcP";
-                 
-                     var links = {
+                //var cooLink = "";
+                //var insuranceLink = "";
+
+                var links = {
                     BillOfLading: bolLink,
                     CertOfOrigin: cooLink,
                     Insurance: insuranceLink
 
-                    };
+                };
 
                 var linksJson = JSON.stringify(links);
-                
-                processUploadBol(userId, PIN, OTP, refNum, linksJson);
+
+                processUploadBol(userId, PIN, OTP, refNum, linksJson, "bol uploaded", uploadType);
             } else {
-                console.log(response.errorText);
+                showErrorModal(response.errorText);
+            }
+        });
+}
+
+
+
+function storeCerts(refNum, parametersCOO, parametersInsurance, bolLink, cooLink, insuranceLink) {
+    // send json to servlet
+    $.ajax({
+            type: "POST",
+            url: "/SMUtBank_TradeFinance/Document?type=store",
+            contentType: "application/json",
+            dataType: "json",
+            data: parametersCOO,
+            timeout: 60000,
+            beforeSend: function() {
+                startTime = new Date().getTime();
+                timer = setInterval(function() { updateElapsedTime(); }, 1000);
+                $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
+                $('#loadingModal').modal('show');
+
+            },
+
+            error: function(jqXHR, textStatus, errorThrown) {
+                $('#loadingModal').modal('hide');
+                showErrorModal("Error invoking service.");
+            }
+        })
+        // receive json response from servlet
+        .done(function(response) {
+
+            if (response.globalErrorId === "010000") { // success code
+                cooLink = response.document.url;
+                cooLink = trimUrl(cooLink);
+                cooLink += response.document.filename;
+
+                /**
+                 *  Second Ajax call for uploading insurance
+                 */
+                // send json to servlet
+                $.ajax({
+                        type: "POST",
+                        url: "/SMUtBank_TradeFinance/Document?type=store",
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: parametersInsurance,
+                        timeout: 60000,
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            $('#loadingModal').modal('hide');
+                            showErrorModal("Error invoking service.");
+                        }
+                    })
+                    // receive json response from servlet
+                    .done(function(response) {
+                        $('#loadingModal').modal('hide');
+                        clearInterval(timer);
+                        if (response.globalErrorId === "010000") { // success code
+                            showSuccessModal("Redirecting to Homepage");
+                            //get insurance link
+                            insuranceLink = response.document.url;
+                            insuranceLink = trimUrl(insuranceLink);
+                            insuranceLink += response.document.filename;
+
+
+                            var links = {
+                                BillOfLading: bolLink,
+                                CertOfOrigin: cooLink,
+                                Insurance: insuranceLink
+
+                            };
+
+                            var linksJson = JSON.stringify(links);
+
+                            processUploadBol(userId, PIN, OTP, refNum, linksJson, "documents uploaded", "create");
+                        } else {
+                            showErrorModal(response.errorText);
+                        }
+                    });
+
+
+            } else {
+                showErrorModal(response.errorText);
             }
         });
 }

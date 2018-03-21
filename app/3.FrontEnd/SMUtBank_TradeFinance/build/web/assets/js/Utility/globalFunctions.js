@@ -104,7 +104,26 @@ function trimLcDetails(lcString) {
 }
 
 function trimUrl(url) {
- 
-    var page = url.substring(0,url.lastIndexOf('/'));
+
+    var page = url.substring(0, url.lastIndexOf('/') + 1);
     return page;
+}
+
+function trimBolName(url) {
+
+    var page = url.substring(url.lastIndexOf('/') + 1);
+    return page;
+}
+
+/* -------------------------------
+ * modals
+ */
+function showErrorModal(errorMessage) {
+    document.getElementById("errorMsg").innerHTML = errorMessage;
+    $('#errorModal').modal('show');
+}
+
+function showSuccessModal(successMessage) {
+    document.getElementById("successMsg").innerHTML = successMessage;
+    $('#successModal').modal('show');
 }

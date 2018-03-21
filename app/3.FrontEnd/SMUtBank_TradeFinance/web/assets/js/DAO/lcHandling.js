@@ -69,12 +69,22 @@ async function applyLcApi(userId, PIN, OTP, lc, callback) {
         result = await $.ajax({
             url: apiUrl + "?Header=" + header + "&Content=" + content + "&ConsumerID=TF",
             type: "POST",
-            data: callback
+            timeout: 60000,
+            data: callback,
+            beforeSend: function() {
+                startTime = new Date().getTime();
+                timer = setInterval(function() { updateElapsedTime(); }, 1000);
+                $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
+                $('#loadingModal').modal('show');
+
+            }
+
         });
 
         return result;
     } catch (error) {
-        console.error(error);
+        $('#loadingModal').modal('hide');
+        showErrorModal("Error invoking service.");
     }
 }
 

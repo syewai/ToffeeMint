@@ -82,20 +82,19 @@ async function applyLcOperation(importer_account_num, contract_currency) {
     };
     var globalErrorID = "";
     var errorMsg = "";
-    console.time("time apply");
+
     const data = await applyLcApi(userId, PIN, OTP, lc);
-    console.time("time apply");
+
     errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
     globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     if (globalErrorID !== "010000") {
-        $("#authError").html(errorMsg);
+        showErrorModal(errorMsg);
+
     } else if (globalErrorID === "010041") {
         //OTP expiry error - request new otp
 
         buildSMSOTP();
     } else {
-        //lc submission message & redirect to homepage
-        $("#authError").html("lc application submitted");
 
         window.location.replace(
             "/SMUtBank_TradeFinance/" +
@@ -558,9 +557,6 @@ async function getHomepageData() {
     console.timeEnd("time spent");
     return homepageDataString;
 }
-async function processHomepageData() {
-
-}
 
 //this function handles ui logic of homepage
 async function homeOperation() {
@@ -682,7 +678,7 @@ async function homeOperation() {
                 "</button>";
 
             //Button triggers modifyLc page or submitBol page, do not store any data, redirection purpose only
-            if (operation === "modify lc" || operation === "submit bol") {
+            if (operation === "modify lc" || operation === "submit bol" || operation === "submit documents") {
                 button =
                     "<button type='button'  data-refnum=" +
                     refNum +
@@ -701,7 +697,7 @@ async function homeOperation() {
             //append tablle row into the table container(id = latestLCs)
             var $editCell = $("<td></td>");
             var edit = "";
-             if (status === "bol uploaded" || status === "documents uploaded") {
+            if (sessionStorage.usertype === "shipper" && (status === "bol uploaded" || status === "documents uploaded")) {
                 url = "submitBol";
                 edit =
                     "<button style='margin-right:10px' type='button'  data-refnum=" +
@@ -710,10 +706,20 @@ async function homeOperation() {
                     url +
                     "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Re-upload bol</button>";
                 //edit +=  "<button id='deleteDocument' type='button' class='btn btn-danger' name=''><span class='glyphicon glyphicon-trash' aria-hidden='true'></span> Delete</button>";
-             }
-             var $edit = $(edit);
-             $editCell.append($edit);
-             $row.append($editCell);
+            }
+            if (sessionStorage.usertype === "exporter" && status === "documents uploaded") {
+                url = "submitDocs";
+                edit =
+                    "<button style='margin-right:10px' type='button'  data-refnum=" +
+                    refNum +
+                    " class='btn btn-success homeButton' id='" +
+                    url +
+                    "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Re-upload documents</button>";
+
+            }
+            var $edit = $(edit);
+            $editCell.append($edit);
+            $row.append($editCell);
             $("#latestLCs").append($row);
         }
     }
@@ -723,8 +729,8 @@ async function homeOperation() {
         $('#first-datatable-output table').datatable({
             pageSize: 5,
             pagingNumberOfPages: 5,
-            sort: [true, true, true, true, false,false],
-            filters: [true, 'select', true, false, false,false],
+            sort: [true, true, true, true, false, false],
+            filters: [true, 'select', true, false, false, false],
             filterEmptySelect: 'Filter by Country',
             filterText: 'Filter by date',
             pagingDivSelector: "#paging-first-datatable"
@@ -760,7 +766,7 @@ async function getAllLcsShipper() {
     //trim extra property of lc details
     console.log(lcs);
     //get status,only store lc with listed status - acknowledged --> submit bol, documents uploaded --> accept documents, documents accpeted,goods collected
-    var listedStatus = ["pending", "acknowledged", "bol uploaded","documents uploaded", "documents accepted", "goods collected"];
+    var listedStatus = ["pending", "acknowledged", "bol uploaded", "documents uploaded", "documents accepted", "goods collected"];
     if (Object.keys(lcs).length > 0) {
         for (var refNum in lcs) {
             console.log(refNum);
@@ -798,7 +804,7 @@ async function getAllLcsShipper() {
 
 //This function assigns button color (by adding class name to the button element) based on action --> view lc(green), other actions(red)
 function buttonAssigned(action) {
-    
+
     var name = "btn-primary";
     var text = "text-primary";
     if (action !== "view lc" && action !== "view contract") {
@@ -828,7 +834,7 @@ function operationMatch(status) {
         if (status.toLowerCase() === "pending") {
             url = "reviewLc";
             operation = "review lc";
-        }else if (status.toLowerCase() === "bol uploaded") {
+        } else if (status.toLowerCase() === "bol uploaded") {
             url = "submitDocs";
             operation = "submit documents";
         }
@@ -913,7 +919,7 @@ function loadLcDetailsModal() {
                     });
                     scanner.addListener('scan', function(content) {
                         console.log(content);
-                        //$("#qrContent").append(content);
+                        $("#qrResults").append("Results: " + content);
                         verifyQrCodeUI(refNum, content);
                         scanner.stop();
 
@@ -1096,54 +1102,70 @@ function loadLcDetailsModal() {
 
 
 function buttonClicks() {
-   $(document).ready(function() {
-    $(".homeButton").click(function() {
-        var refNum = $(this).attr('data-refnum');
-        var page = $(this).attr('id');
-        console.log("TEST!!!!!!!!!!!!!!!!");
-        var pageToLoad = {
-            page: page
-        };
-        if (refNum != undefined) {
-            pageToLoad.refNum = refNum;
-        }
-        sessionStorage.setItem('page', JSON.stringify(pageToLoad));
-        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html?refNum=" + refNum);
+    $(document).ready(function() {
+        $(".homeButton").click(function() {
+            var refNum = $(this).attr('data-refnum');
+            var page = $(this).attr('id');
+            console.log("TEST!!!!!!!!!!!!!!!!");
+            var pageToLoad = {
+                page: page
+            };
+            if (refNum != undefined) {
+                pageToLoad.refNum = refNum;
+            }
+            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+            window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html?refNum=" + refNum);
+        });
+        $("#approveButton").click(function() {
+            var refNum = $("#returnedRef").attr("value");
+            var status = "acknowledged";
+            startTime = new Date().getTime();
+            timer = setInterval(function() { updateElapsedTime(); }, 1000);
+            $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
+            $('#loadingModal').modal('show');
+            processUpdateStatus(userId, PIN, OTP, refNum, status, "");
+        });
+        $("#amendLc").click(function() {
+            startTime = new Date().getTime();
+            timer = setInterval(function() { updateElapsedTime(); }, 1000);
+            $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
+            $('#loadingModal').modal('show');
+            var refNum = $("#returnedRef").attr("value");
+            //console.log(refNum);
+            var page = $(this).attr("id");
+            //console.log(page);
+            var pageToLoad = { page: page, refNum: refNum }; // append refnum into pagetToLoad and set a session
+            sessionStorage.setItem("page", JSON.stringify(pageToLoad));
+            window.location.replace(
+                "/SMUtBank_TradeFinance/" +
+                sessionStorage.usertype +
+                "/" +
+                sessionStorage.usertype +
+                ".html?refNum=" +
+                refNum
+            );
+        });
+        $("#acceptDocs").click(function() {
+            var refNum = $("#returnedRef").attr("value");
+            //console.log(refNum);
+            var status = "documents accepted";
+            startTime = new Date().getTime();
+            timer = setInterval(function() { updateElapsedTime(); }, 1000);
+            $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
+            $('#loadingModal').modal('show');
+            processUpdateStatus(userId, PIN, OTP, refNum, status, "");
+        });
+        $("#collectGoods").click(function() {
+            var refNum = $("#returnedRef").attr("value");
+            //console.log(refNum);
+            var status = "goods collected";
+            startTime = new Date().getTime();
+            timer = setInterval(function() { updateElapsedTime(); }, 1000);
+            $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
+            $('#loadingModal').modal('show');
+            processUpdateStatus(userId, PIN, OTP, refNum, status, "");
+        });
     });
-    $("#approveButton").click(function() {
-        var refNum = $("#returnedRef").attr("value");
-        var status = "acknowledged";
-        processUpdateStatus(userId, PIN, OTP, refNum, status, "");
-    });
-    $("#amendLc").click(function() {
-        var refNum = $("#returnedRef").attr("value");
-        //console.log(refNum);
-        var page = $(this).attr("id");
-        //console.log(page);
-        var pageToLoad = { page: page, refNum: refNum }; // append refnum into pagetToLoad and set a session
-        sessionStorage.setItem("page", JSON.stringify(pageToLoad));
-        window.location.replace(
-            "/SMUtBank_TradeFinance/" +
-            sessionStorage.usertype +
-            "/" +
-            sessionStorage.usertype +
-            ".html?refNum=" +
-            refNum
-        );
-    });
-    $("#acceptDocs").click(function() {
-        var refNum = $("#returnedRef").attr("value");
-        //console.log(refNum);
-        var status = "documents accepted";
-        processUpdateStatus(userId, PIN, OTP, refNum, status, "");
-    });
-    $("#collectGoods").click(function() {
-        var refNum = $("#returnedRef").attr("value");
-        //console.log(refNum);
-        var status = "goods collected";
-        processUpdateStatus(userId, PIN, OTP, refNum, status, "");
-    });
-});
 }
 async function processUpdateStatus(userId, PIN, OTP, refNum, status, statusDetails) {
     const processUpdateStatus = await updateStatus(userId, PIN, OTP, refNum, status, statusDetails);
