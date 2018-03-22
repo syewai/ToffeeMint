@@ -519,6 +519,7 @@ async function getHomepageData() {
     var numOfRows = refNumberList.length;
     if (refNumberList.length > 0) {
         //iterate through up to 5 latest refnum in the list
+        //for (var i = 0; i < numOfRows; i++) {
         for (var i = 0; i < numOfRows && i < 5; i++) {
             var refNum = refNumberList[i]; //key of homepageData
             var lc = {};
@@ -903,11 +904,15 @@ function loadLcDetailsModal() {
                 var bolLink = links.BillOfLading;
 
                 if (sessionStorage.usertype !== "shipper" && (status === "documents accepted" || status === "goods collected")) {
+                    console.log(bolLink);
+                    console.log("TEst BOL link")
                     new QRCode(document.getElementById("qrcode"), {
                         width: 150,
                         height: 150,
                         text: bolLink
                     });
+                    $("#qrcode").append("<div class='font-bold' style='margin-top:10px'>Click QR code to Zoom In</div>");
+                    $("#qrcode").attr("value", bolLink);
                 }
                 if (sessionStorage.usertype === "shipper" && status === "documents accepted") {
                     $("#scannerFrame").append("<video class='col-sm-12' id='preview'></video>");
@@ -1090,8 +1095,11 @@ function loadLcDetailsModal() {
         $("#lcDetailsModal").on("hidden.bs.modal", function(e) {
             $(e.target).removeData("bs.modal");
             $("#qrcode").html("");
+            $("#qrResults").html("");
             $("#scannerFrame").html("");
+
             $("#statusValue").attr("class", "h3 font-bold m-t");
+            $("#qrcode").attr("value", "");
         });
         /*$(".modal").on("hidden.bs.modal", function () {
                  $(".modal-body").html("");
@@ -1117,6 +1125,7 @@ function buttonClicks() {
             window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html?refNum=" + refNum);
         });
         $("#approveButton").click(function() {
+            $('#lcDetailsModal').modal('hide');
             var refNum = $("#returnedRef").attr("value");
             var status = "acknowledged";
             startTime = new Date().getTime();
@@ -1146,6 +1155,7 @@ function buttonClicks() {
             );
         });
         $("#acceptDocs").click(function() {
+            $('#lcDetailsModal').modal('hide');
             var refNum = $("#returnedRef").attr("value");
             //console.log(refNum);
             var status = "documents accepted";
@@ -1156,6 +1166,7 @@ function buttonClicks() {
             processUpdateStatus(userId, PIN, OTP, refNum, status, "");
         });
         $("#collectGoods").click(function() {
+            $('#lcDetailsModal').modal('hide');
             var refNum = $("#returnedRef").attr("value");
             //console.log(refNum);
             var status = "goods collected";
@@ -1165,6 +1176,25 @@ function buttonClicks() {
             $('#loadingModal').modal('show');
             processUpdateStatus(userId, PIN, OTP, refNum, status, "");
         });
+
+        $("#qrcode").click(function() {
+            $("#qrcodeZoom").html("");
+            $("#lcDetailsModal").css("opacity", "0.5");
+            var bol = $("#qrcode").attr("value");
+            console.log(bol);
+            new QRCode(document.getElementById("qrcodeZoom"), {
+                width: 400,
+                height: 400,
+                text: bol
+            });
+            $('#qrZoomModal').modal('show');
+        });
+        $("#qrZoomModal").on("hidden.bs.modal", function(e) {
+            $(e.target).removeData("bs.modal");
+            $("#qrcodeZoom").html("");
+            $("#lcDetailsModal").css("opacity", "1");
+        });
+
     });
 }
 async function processUpdateStatus(userId, PIN, OTP, refNum, status, statusDetails) {

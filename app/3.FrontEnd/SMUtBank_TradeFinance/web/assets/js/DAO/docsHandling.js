@@ -126,7 +126,8 @@ function storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink
                 //get bol link
                 bolLink = response.document.url;
                 bolLink = trimUrl(bolLink);
-                bolLink += response.document.filename;
+                var fileName = convertSpaceToDashed(response.document.filename)
+                bolLink += fileName;
                 //var cooLink = "";
                 //var insuranceLink = "";
 
@@ -176,7 +177,8 @@ function storeCerts(refNum, parametersCOO, parametersInsurance, bolLink, cooLink
             if (response.globalErrorId === "010000") { // success code
                 cooLink = response.document.url;
                 cooLink = trimUrl(cooLink);
-                cooLink += response.document.filename;
+                var fileName = convertSpaceToDashed(response.document.filename)
+                cooLink += fileName;
 
                 /**
                  *  Second Ajax call for uploading insurance
@@ -203,7 +205,8 @@ function storeCerts(refNum, parametersCOO, parametersInsurance, bolLink, cooLink
                             //get insurance link
                             insuranceLink = response.document.url;
                             insuranceLink = trimUrl(insuranceLink);
-                            insuranceLink += response.document.filename;
+                            var fileName = convertSpaceToDashed(response.document.filename)
+                            insuranceLink += fileName;
 
 
                             var links = {

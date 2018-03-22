@@ -85,14 +85,33 @@ function convertToDisplay(underscore, symbol) {
     var newWord = "";
 
     for (var i = 0; i < arr.length; i++) {
-        if (i < 2) {
-            var word = arr[i];
-            word = capitalizeFirstLetter(word);
-            newWord += word + " ";
-        }
+        // if (i < 2) {
+        var word = arr[i];
+        word = capitalizeFirstLetter(word);
+        newWord += word + " ";
+        // }
 
     }
     newWord.trim();
+    return newWord;
+}
+
+function convertSpaceToDashed(url) {
+
+    var arr = url.trim().split(" ");
+    var newWord = "";
+
+    for (var i = 0; i < arr.length - 1; i++) {
+
+        var word = arr[i];
+        word = capitalizeFirstLetter(word);
+        newWord += word + "_";
+
+
+    }
+    newWord += arr[arr.length - 1];
+    newWord.trim();
+    console.log(newWord);
     return newWord;
 }
 

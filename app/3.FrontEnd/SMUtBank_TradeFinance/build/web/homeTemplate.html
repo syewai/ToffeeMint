@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/font.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/app.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" href="../assets/js/datatable/css/datatable-bootstrap.min.css" media="screen">
+
+    <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>-->
+</head>
 <section class="vbox">
     <section class="scrollable">
 
@@ -13,7 +25,7 @@
             </header>
 
 
-            <div class="table-responsive">
+            <div class="table-responsive" id="first-datatable-output">
                 <table class="table table-striped b-t b-light" id="lcTable">
                     <thead>
                         <tr>
@@ -45,7 +57,7 @@
             </footer>
         </section>
         <!--End of LC Table-->
-
+        <div id='paging-first-datatable' class='dataTables_paginate paging_full_numbers'></div>
 
     </section>
     <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen, open" data-target="#nav,html"></a>
@@ -94,6 +106,20 @@
         </div>
     </div>
 </div>
+<!-- loading modal
+                    ======================================== -->
+<div class="modal fade" id="qrZoomModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <center>
+                    <div class='form-group lc-form' id="qrcodeZoom" style=></div>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- loading modal
                     ======================================== -->
@@ -120,6 +146,7 @@
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function() {
         protectUser(); // calling from userHandling
@@ -141,8 +168,15 @@
 
     });
 </script>
-<script>
-</script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
+
+
+
+<script type="text/javascript" src="../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>
+<!-- data table js files -->
+<script type="text/javascript" src="../assets/js/datatable/js/datatable.jquery.min.js"></script>
 <script>
     //once page button clicked, the user is redirected to importer/exporter.html, together with a html page name for loading (stored in a session)
 
