@@ -33,10 +33,22 @@ async function createSMSOTP() {
 
         return { errorMsg: "Usertype cannot be blank" };
     }
-    var isAdmin = checkAdmin(userId, PIN, usertype); //this method is calling from userHandling
+    /*var isAdmin = checkAdmin(userId, PIN, usertype); //this method is calling from userHandling
     if (isAdmin.hasOwnProperty("roleError")) {
         return { errorMsg: isAdmin.roleError };
+    }*/
+    //check shipper 
+    if (usertype === "shipper") {
+        var checkShipper = getShipperId(userId);
+        if (checkShipper === "") {
+            return { errorMsg: "You are not a shipper" };
+        }
+        /*else {
+                   userId = checkShipper;
+               }*/
+
     }
+
     var globalErrorID = "";
     var errorMsg = "";
     const data = await getCustomerDeatils(userId, PIN, OTP);
@@ -48,15 +60,14 @@ async function createSMSOTP() {
     //parse in an empty OTP to activate sms otp
     if (globalErrorID !== "") {
         if (globalErrorID === "010041") { //OTP expiry error - request new otp 
-            buildSMSOTP();
+            $('#showOTPModal').modal('show');
 
         } else if (globalErrorID !== "010000") { //Other errors - display error message and redirect to login page
-
-            $("#authError").html(errorMsg);
+            return { errorMsg: errorMsg };
 
         } else {
 
-            buildSMSOTP();
+            $('#showOTPModal').modal('show');
         }
     }
 
@@ -79,33 +90,47 @@ async function authenticateSMSOTP() {
     //get error id to check existance of the user
     errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
     globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-    if (globalErrorID !== "") {
-        if (globalErrorID !== "010000") { //OTP expiry error - request new otp 
-            buildSMSOTP();
 
-        } else {
-            //if user authentication successful, store userid,pin and otp in a session, load role selector 
-            ////console.log(username + password + usertype);
-            customerID = data.Content.ServiceResponse.CDMCustomer.customer.customerID;
+    if (globalErrorID === "010000") {
+        //if user authentication successful, store userid,pin and otp in a session, load role selector 
+        ////console.log(username + password + usertype);
+        customerID = data.Content.ServiceResponse.CDMCustomer.customer.customerID;
+
+        if (usertype === "importer" || usertype === "exporter") {
             var user = new User(userId, PIN, OTP, usertype, customerID);
-
-            if (usertype === "shipper") {
-                sessionStorage.setItem('admin', JSON.stringify(user)); // change attributes 
-            } else {
-                sessionStorage.setItem('user', JSON.stringify(user));
-                sessionStorage.gameID = 104;
-                sessionStorage.showQuiz = 1;
-            }
+            sessionStorage.setItem('user', JSON.stringify(user)); // change attributes 
+            sessionStorage.gameID = 104;
+            sessionStorage.showQuiz = 1;
             sessionStorage.userID = userId;
-                sessionStorage.PIN = PIN;
-                sessionStorage.OTP = OTP;
-                sessionStorage.usertype = usertype;
-                sessionStorage.customerID = customerID;
-            console.log(sessionStorage.usertype);
-            console.log(sessionStorage.userID);
-            window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
+            sessionStorage.PIN = PIN;
+            sessionStorage.OTP = OTP;
+            sessionStorage.usertype = usertype;
+            sessionStorage.customerID = customerID;
 
         }
+        if (usertype === "shipper") {
+
+            var checkShipper = getShipperId(userId);
+            sessionStorage.shipperId = userId;
+            sessionStorage.userID = checkShipper;
+            sessionStorage.PIN = PIN;
+            sessionStorage.OTP = OTP;
+            sessionStorage.usertype = usertype;
+            sessionStorage.customerID = customerID;
+            var user = new User(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, usertype, customerID);
+            sessionStorage.setItem('user', JSON.stringify(user)); // change attributes 
+        }
+
+
+
+        console.log(sessionStorage.usertype);
+        console.log(sessionStorage.userID);
+        window.location.replace("/SMUtBank_TradeFinance/" + usertype + "/" + usertype + ".html");
+
+    } else {
+
+        $("#errorMsg").html(errorMsg);
+
     }
 }
 
@@ -113,17 +138,4 @@ async function authenticateSMSOTP() {
 
 function buildSMSOTP() {
     $('#showOTPModal').modal('show');
-}
-
-async function authenticateUserCredential() {
-    const generateOTP = await createSMSOTP();
-    //console.log(generateOTP);
-    if (generateOTP !== undefined) {
-        if (generateOTP.hasOwnProperty("errorMsg")) {
-
-            var errorMsg = generateOTP.errorMsg;
-            $("#authError").html(errorMsg);
-        }
-    }
-
 }

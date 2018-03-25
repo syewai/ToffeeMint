@@ -33,6 +33,9 @@
     <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"></button>
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: 700px; overflow-wrap: break-word;word-wrap: break-word;"></div>
 
+    <!--OTP modal-->
+    <div class="modal fade" id="showOTPModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
+
     <section class="vbox">
         <!--Header-->
         <header class="bg-black dk header navbar navbar-fixed-top-xs" id="header">
@@ -81,6 +84,9 @@
         $(document).ready(function() {
             $("#header").load("../header.html");
             $('#nav-bar').load("navBar.html");
+            $("#showOTPModal").load("../OTPModal.html");
+
+
             /*$('#postQuizModal').load("../gameModal2.html", function() {
                 $('#postQuizModal').modalSteps();
             });*/
@@ -130,6 +136,7 @@
     <!-- game modal & timer-->
     <script src="../assets/js/game/jquery-bootstrap-modal-steps.min.js"></script>
     <script src="../assets/js/game/easytimer.min.js"></script>
+    <script type="text/javascript" src="../assets/js/datatable/js/datatable.min.js"></script>
 
 </body>
 

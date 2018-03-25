@@ -11,7 +11,6 @@
 
     <!--<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>-->
 </head>
-
 <section class="vbox">
     <section class="scrollable">
 
@@ -29,11 +28,10 @@
             <div class="table-responsive" id="first-datatable-output">
                 <table class="table table-striped b-t b-light" id="lcTable">
                     <thead>
-
                         <tr>
                             <th>Reference Number</th>
-                            <th>Country</th>
-                            <th>Ship Date</th>
+                            <th id="roleTh"></th>
+                            <th>Expiry Date</th>
                             <th>Status</th>
                             <th>Operation</th>
                             <th></th>
@@ -43,13 +41,12 @@
 
                     </tbody>
                 </table>
-
             </div>
 
         </section>
         <!--End of LC Table-->
-
         <div id='paging-first-datatable' class='dataTables_paginate paging_full_numbers'></div>
+
     </section>
     <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen, open" data-target="#nav,html"></a>
 </section>
@@ -97,6 +94,20 @@
         </div>
     </div>
 </div>
+<!-- zoom in modal
+                    ======================================== -->
+<div class="modal fade" id="qrZoomModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <center>
+                    <div class='form-group lc-form' id="qrcodeZoom" style=></div>
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- loading modal
                     ======================================== -->
@@ -104,8 +115,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <!--<div class="modal-header bg-warning">
-                                        <h2>Submitting Letter of Credit...</h2>
-                                    </div>-->
+                <h2>Submitting Letter of Credit...</h2>
+            </div>-->
             <div class="modal-body">
                 <div class="row">
                     <div class="col">
@@ -126,48 +137,25 @@
 
 <script>
     $(document).ready(function() {
-        //protectAdmin(); // calling from userHandling
-        $("#lcDetailsModal").load("../lcDetailsModal.html");
+        protectUser(); // calling from userHandling
         var getUserItem = sessionStorage.getItem('user');
         var user = $.parseJSON(getUserItem);
         //console.log(user.customerID);
-        $('#username').html("Welcome back, " + sessionStorage.shipperId);
+        $('#username').html("Welcome back, " + user.userID);
         var usertype = user.usertype;
         $('#usertype').html(convertToDisplay(usertype, " ") + " (Customer ID - " + user.customerID + ")");
+        var colHeader = "Importer";
+        if (usertype === "importer") {
+            colHeader = "Exporter";
+        }
+        $('#roleTh').html(colHeader + " account");
+        $("#lcDetailsModal").load("../lcDetailsModal.html");
 
-        //shipperTest();
         homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
         loadLcDetailsModal(); //this method is called from lcOperation.js
-        $(".homeButton").click(function() {
-            //var $button = $("button[data-target='#lcDetailsModal']");
-            //if (!$(event.target).is($button)) {
-            var refNum = $(this).attr('refnum');
-            var page = $(this).attr('id');
-            console.log("TEST!!!!!!!!!!!!!!!!");
-            var pageToLoad = {
-                page: page
-            };
-            if (refNum != undefined) {
-                pageToLoad.refNum = refNum;
-            }
-            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
-            window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html?refNum=" + refNum);
-
-            // }
-
-        });
-
 
     });
 </script>
-
-
-
-<!--<script src="../assets/js/jquery.min.js"></script>
-
-<!-- Bootstrap -->
-<!--<script src="../assets/js/bootstrap.js"></script>-->
-<!-- App -->
 <script src="../assets/js/app.js"></script>
 <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
 
@@ -177,31 +165,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>
 <!-- data table js files -->
 <script type="text/javascript" src="../assets/js/datatable/js/datatable.jquery.min.js"></script>
-
-<script type="text/javascript">
-    $('.form_date').datetimepicker({
-        weekStart: 1,
-        todayBtn: 1,
-        autoclose: 1,
-        todayHighlight: 1,
-        startView: 2,
-        minView: 2,
-        forceParse: 0
-    });
-</script>
 <script>
-    $(document).ready(function() {
-        //once page button clicked, the user is redirected to importer/exporter.html, together with a html page name for loading (stored in a session)
-        $(".pagesButton").click(function() {
-            var page = $(this).attr('id');
-            var pageToLoad = {
-                page: page
-            };
-            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
-            window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
-        });
+    //once page button clicked, the user is redirected to importer/exporter.html, together with a html page name for loading (stored in a session)
 
+
+
+    $(".pagesButton").click(function() {
+        var page = $(this).attr('id');
+        var pageToLoad = {
+            page: page
+        };
+        sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
     });
-</script>
-<script>
 </script>

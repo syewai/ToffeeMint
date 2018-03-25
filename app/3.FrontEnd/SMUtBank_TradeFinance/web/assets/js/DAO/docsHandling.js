@@ -125,9 +125,9 @@ function storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink
                 showSuccessModal("Redirecting to Homepage");
                 //get bol link
                 bolLink = response.document.url;
-                bolLink = trimUrl(bolLink);
+                /*bolLink = trimUrl(bolLink);
                 var fileName = convertSpaceToDashed(response.document.filename)
-                bolLink += fileName;
+                bolLink += fileName;*/
                 //var cooLink = "";
                 //var insuranceLink = "";
 
@@ -140,7 +140,7 @@ function storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink
 
                 var linksJson = JSON.stringify(links);
 
-                processUploadBol(userId, PIN, OTP, refNum, linksJson, "bol uploaded", uploadType);
+                processUploadBol(sessionStorage.userID, PIN, OTP, refNum, linksJson, "bol uploaded", uploadType);
             } else {
                 showErrorModal(response.errorText);
             }
@@ -176,9 +176,9 @@ function storeCerts(refNum, parametersCOO, parametersInsurance, bolLink, cooLink
 
             if (response.globalErrorId === "010000") { // success code
                 cooLink = response.document.url;
-                cooLink = trimUrl(cooLink);
+                /*cooLink = trimUrl(cooLink);
                 var fileName = convertSpaceToDashed(response.document.filename)
-                cooLink += fileName;
+                cooLink += fileName;*/
 
                 /**
                  *  Second Ajax call for uploading insurance
@@ -204,9 +204,9 @@ function storeCerts(refNum, parametersCOO, parametersInsurance, bolLink, cooLink
                             showSuccessModal("Redirecting to Homepage");
                             //get insurance link
                             insuranceLink = response.document.url;
-                            insuranceLink = trimUrl(insuranceLink);
+                            /*insuranceLink = trimUrl(insuranceLink);
                             var fileName = convertSpaceToDashed(response.document.filename)
-                            insuranceLink += fileName;
+                            insuranceLink += fileName;*/
 
 
                             var links = {
@@ -218,7 +218,7 @@ function storeCerts(refNum, parametersCOO, parametersInsurance, bolLink, cooLink
 
                             var linksJson = JSON.stringify(links);
 
-                            processUploadBol(userId, PIN, OTP, refNum, linksJson, "documents uploaded", "create");
+                            processUploadBol(sessionStorage.userID, PIN, OTP, refNum, linksJson, "documents uploaded", "create");
                         } else {
                             showErrorModal(response.errorText);
                         }

@@ -5,38 +5,43 @@
     //protectUser();
 </script>
 <script>
-        var user = sessionStorage.getItem('user');
-        var admin = sessionStorage.getItem('admin');
-        var temp;
-        if (user !== null){
-            temp = user;
-        }
-        if (admin !== null){
-            temp = admin;
-        }
-        var viewName = $.parseJSON(temp);
-        var div = "<span class='thumb-sm avatar pull-left'>";
-        div += "<img src='../assets/images/avatar.jpg'>";
-        div += "</span>"+viewName.userID+" <b class='caret'></b>";
-        $('#user').html(div);
-        //e.preventDefault();
+    var user = sessionStorage.getItem('user');
+    var admin = sessionStorage.getItem('admin');
+    var temp;
+    if (user !== null) {
+        temp = user;
+    }
+    if (admin !== null) {
+        temp = admin;
+    }
+    var viewName = $.parseJSON(temp);
+    var userId = viewName.userID
+    if (sessionStorage.usertype === "shipper") {
+        userId = sessionStorage.shipperId;
+    }
+
+    var div = "<span class='thumb-sm avatar pull-left'>";
+    div += "<img src='../assets/images/avatar.jpg'>";
+    div += "</span>" + userId + " <b class='caret'></b>";
+    $('#user').html(div);
+    //e.preventDefault();
 </script>
 
-    <!--Logo-->
-    <div class="navbar-header aside-md">
-        <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen,open" data-target="#nav,html">
-            <i class="fa fa-bars"></i>
-        </a>
-        <a href="#" class="navbar-brand" data-toggle=""><img src="../assets/images/logo.png" class="m-r-sm">SMU tBank</a>
-        <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".nav-user">
-            <i class="fa fa-cog"></i>
-        </a>
-    </div>
-    <!--End of Logo-->
+<!--Logo-->
+<div class="navbar-header aside-md">
+    <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen,open" data-target="#nav,html">
+        <i class="fa fa-bars"></i>
+    </a>
+    <a href="#" class="navbar-brand" data-toggle=""><img src="../assets/images/logo.png" class="m-r-sm">SMU tBank</a>
+    <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".nav-user">
+        <i class="fa fa-cog"></i>
+    </a>
+</div>
+<!--End of Logo-->
 
-    <ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
-        <!--Notification-->
-       <!-- <li class="hidden-xs">
+<ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
+    <!--Notification-->
+    <!-- <li class="hidden-xs">
             <a href="#" class="dropdown-toggle dk" data-toggle="dropdown">
                 <i class="fa fa-bell"></i>
                 <span class="badge badge-sm up bg-danger m-l-n-sm count">2</span>
@@ -71,10 +76,10 @@
                 </section>
             </section>
         </li>-->
-        <!--End of Notification-->
+    <!--End of Notification-->
 
-        <!--Search-->
-        <!--<li class="dropdown hidden-xs">
+    <!--Search-->
+    <!--<li class="dropdown hidden-xs">
             <a href="#" class="dropdown-toggle dker" data-toggle="dropdown"><i class="fa fa-fw fa-search"></i></a>
             <section class="dropdown-menu aside-xl animated fadeInUp">
                 <section class="panel bg-white">
@@ -91,24 +96,24 @@
                 </section>
             </section>
         </li>-->
-        <!--End of Search-->
+    <!--End of Search-->
 
-        <!--User Info-->
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="user">
-                
-            </a>
-            <ul class="dropdown-menu animated fadeInRight">
-                <span class="arrow top"></span>
-                <li>
-                    <a id="logout" data-toggle="ajaxModal">Logout</a>
-                </li>
-            </ul>
-        </li>
-        <!--End of User Info-->
-    </ul>
-    <script>
-    $("#logout").click(function(){
+    <!--User Info-->
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="user">
+
+        </a>
+        <ul class="dropdown-menu animated fadeInRight">
+            <span class="arrow top"></span>
+            <li>
+                <a id="logout" data-toggle="ajaxModal">Logout</a>
+            </li>
+        </ul>
+    </li>
+    <!--End of User Info-->
+</ul>
+<script>
+    $("#logout").click(function() {
         logout();
     });
-    </script>
+</script>

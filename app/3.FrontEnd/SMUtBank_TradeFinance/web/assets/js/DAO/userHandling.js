@@ -157,3 +157,17 @@ function checkAdmin(userId, PIN, usertype) {
         }
     }
 }
+
+function getShipperId(userID) {
+    var shipperMapping = {
+        "toffeemintadmin": "toffeemint2",
+        "toffeemint3": "toffeemint2",
+        "toffeemint6": "toffeemint5",
+        "toffeemint9": "toffeemint8",
+    };
+    if (shipperMapping[userID] != null) {
+        return shipperMapping[userID];
+    } else {
+        return "";
+    }
+}

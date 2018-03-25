@@ -127,17 +127,36 @@
 <script>
     $(document).ready(function() {
         //protectAdmin(); // calling from userHandling
-        var getUserItem = sessionStorage.getItem('admin');
+        $("#lcDetailsModal").load("../lcDetailsModal.html");
+        var getUserItem = sessionStorage.getItem('user');
         var user = $.parseJSON(getUserItem);
         //console.log(user.customerID);
-        $('#username').html("Welcome back, " + user.userID);
+        $('#username').html("Welcome back, " + sessionStorage.shipperId);
         var usertype = user.usertype;
         $('#usertype').html(convertToDisplay(usertype, " ") + " (Customer ID - " + user.customerID + ")");
 
-        homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
         //shipperTest();
+        homeOperation(); //calling this method from assets/js/Utility/lcOperations.js
         loadLcDetailsModal(); //this method is called from lcOperation.js
-        $("#lcDetailsModal").load("../lcDetailsModal.html");
+        $(".homeButton").click(function() {
+            //var $button = $("button[data-target='#lcDetailsModal']");
+            //if (!$(event.target).is($button)) {
+            var refNum = $(this).attr('refnum');
+            var page = $(this).attr('id');
+            console.log("TEST!!!!!!!!!!!!!!!!");
+            var pageToLoad = {
+                page: page
+            };
+            if (refNum != undefined) {
+                pageToLoad.refNum = refNum;
+            }
+            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+            window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html?refNum=" + refNum);
+
+            // }
+
+        });
+
 
     });
 </script>
@@ -172,17 +191,17 @@
 </script>
 <script>
     $(document).ready(function() {
+        //once page button clicked, the user is redirected to importer/exporter.html, together with a html page name for loading (stored in a session)
+        $(".pagesButton").click(function() {
+            var page = $(this).attr('id');
+            var pageToLoad = {
+                page: page
+            };
+            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+            window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
+        });
 
     });
 </script>
 <script>
-    //once page button clicked, the user is redirected to importer/exporter.html, together with a html page name for loading (stored in a session)
-    $(".pagesButton").click(function() {
-        var page = $(this).attr('id');
-        var pageToLoad = {
-            page: page
-        };
-        sessionStorage.setItem('page', JSON.stringify(pageToLoad));
-        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
-    });
 </script>

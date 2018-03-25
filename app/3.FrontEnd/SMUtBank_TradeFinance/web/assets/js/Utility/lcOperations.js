@@ -169,6 +169,7 @@ async function amendLcOps() {
         $("#shipPeriod").val($("#shipPeriod option:first").val());
     }
     $("#amendLcButton").click(function() {
+        $('#loadingModal').modal('show');
         shipPeriod = document.getElementById("shipPeriod").value;
         if (shipPeriod === "") {
             shipPeriod = document.getElementById("shipPeriod").placeholder;
@@ -230,6 +231,7 @@ async function amendLcOps() {
 
 //This function call amend lc web service and retrieve its response
 async function processAmendments(lc) {
+
     const amendments = await amendLc(userId, PIN, OTP, lc);
 
     var globalErrorID = amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
@@ -237,7 +239,9 @@ async function processAmendments(lc) {
     var amendmentsDetails = {};
     if (globalErrorID !== "010000") { //calling this method from assets/js/DAO/lcHandling.js
         //return {errorMsg: errorMsg};
-        $("#authError").html(errorMsg);
+        $('#loadingModal').modal('hide');
+        showErrorModal(errorMsg);
+        //$("#authError").html(errorMsg);
     } else if (globalErrorID === "010041") { //OTP expiry error - request new otp
 
         buildSMSOTP();
@@ -406,6 +410,7 @@ async function modifyLcOps() {
     }
     // if user clicks modifyLc button,
     $("#modifyLcButton").click(function() {
+        $('#loadingModal').modal('show');
         //retrieve shipPeriod, expiryDate, amount and goods description from user input.
         shipPeriod = document.getElementById("shipPeriod").value;
         //if user did not enter any input, retrieve placeholder as amended value
@@ -477,6 +482,7 @@ async function processModification(lc) {
     var globalErrorID = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
     if (globalErrorID !== "010000") { //calling this method from assets/js/DAO/lcHandling.js
         //return {errorMsg: errorMsg};
+        $('#loadingModal').modal('hide');
         $("#authError").html(errorMsg);
     } else if (globalErrorID === "010041") { //OTP expiry error - request new otp
 
@@ -499,6 +505,7 @@ async function processModification(lc) {
 // call web service used in homepage and consolidate necessary data in homepage data object 
 // --> Importer & Exporter (Shipper homepage data& UI is seperated)
 async function getHomepageData() {
+
     var homePageData = {};
     /*Part 1 retrieve all ref num under the user*/
     /*Part 2 - get all transaction hash*/
@@ -506,7 +513,7 @@ async function getHomepageData() {
     console.time("time spent");
     /*call parallel await/async function --> getRefNumListAsync & getBCReceipt(). 
     refnum --> Return {errormsg}, or {refNumlist}, all bc receipt --> return [refnum,transactionHash], [refnum,transactionHash],[...]*/
-    const refNumAndReceipt = await Promise.all([getRefNumListAsync(userId, PIN, OTP)]);
+    const refNumAndReceipt = await Promise.all([getRefNumListAsync(sessionStorage.userID, PIN, OTP)]);
     var refNumberListValidation = refNumAndReceipt[0];
 
     if (!refNumberListValidation.hasOwnProperty("Content")) {
@@ -515,24 +522,24 @@ async function getHomepageData() {
         }
 
     }
+    //get status,only store lc with listed status - acknowledged --> submit bol, documents uploaded --> accept documents, documents accpeted,goods collected
+    var listedStatus = ["pending", "acknowledged", "bol uploaded", "documents uploaded", "documents accepted", "goods collected"];
     //get number of refnum in the list
     var numOfRows = refNumberList.length;
     if (refNumberList.length > 0) {
-        //iterate through up to 5 latest refnum in the list
-        //for (var i = 0; i < numOfRows; i++) {
-        for (var i = 0; i < numOfRows && i < 5; i++) {
+        //iterate through up to 15 latest refnum in the list
+
+        for (var i = 0; i < numOfRows && i < 15; i++) {
             var refNum = refNumberList[i]; //key of homepageData
             var lc = {};
             var globalErrorId = "";
-            // const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum), getBlockchainReceiptHash(userId, PIN, OTP, refNum)]);
-            const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum)]);
+            // const results = await Promise.all([getLcDetails(sessionStorage.userID, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum), getBlockchainReceiptHash(userId, PIN, OTP, refNum)]);
+            const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(sessionStorage.userID, PIN, OTP, refNum)]);
             var lcDetails = results[0];
             var bolLinks = results[1];
 
             if (lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
                 lc = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
-                //convert lc object to a jsonString, passing jsonstring through data-variable of the modal
-                lc = JSON.stringify(lc);
                 var links = "";
                 var linkObj = {};
                 if (bolLinks.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
@@ -541,14 +548,32 @@ async function getHomepageData() {
                         .BOL_Link;
                     linkObj = JSON.parse(links);
                 }
+                if (sessionStorage.usertype === "shipper") {
+                    // if status is in the listed status, shipper is allowed to view these lcs
+                    var status = lc.status.toLowerCase();
+                    var statusIncluded = $.inArray(status, listedStatus);
+                    if (status !== "" && statusIncluded !== -1) {
+                        //convert lc object to a jsonString, passing jsonstring through data-variable of the modal
+                        lc = JSON.stringify(lc);
+                        /*Part 5 - add each record to data object - Key: RefNum, Value: {lcDetails : lcDetails, bolLinks: bolLinks}*/
+                        var contentObj = {
+                            lcDetails: lc,
+                            bolLinks: links,
+                        };
+                        homePageData[refNum] = contentObj;
 
-                /*Part 5 - add each record to data object - Key: RefNum, Value: {lcDetails : lcDetails, bolLinks: bolLinks}*/
-                var contentObj = {
-                    lcDetails: lc,
-                    bolLinks: links,
-                };
-                homePageData[refNum] = contentObj;
+                    }
+                } else {
+                    //convert lc object to a jsonString, passing jsonstring through data-variable of the modal
+                    lc = JSON.stringify(lc);
+                    /*Part 5 - add each record to data object - Key: RefNum, Value: {lcDetails : lcDetails, bolLinks: bolLinks}*/
+                    var contentObj = {
+                        lcDetails: lc,
+                        bolLinks: links,
+                    };
+                    homePageData[refNum] = contentObj;
 
+                }
             }
 
         }
@@ -559,17 +584,27 @@ async function getHomepageData() {
     return homepageDataString;
 }
 
+async function processHome() {
+    let homepageData;
+    setInterval(function() {
+        $('#your_div').load('newController');
+    }, time_interval);
+}
+
 //this function handles ui logic of homepage
 async function homeOperation() {
-    let homePageData;
-
-    if (sessionStorage.usertype === "shipper") {
+    $('#loadingModal').modal('show');
+    let homepageData = await getHomepageData();;
+    setInterval(async function() {
+        homepageData = await getHomepageData();
+    }, 10000);
+    /*if (sessionStorage.usertype === "shipper") {
         homepageData = await getAllLcsShipper();
 
         // Preparation for data table 
     } else {
         homepageData = await getHomepageData();
-    }
+    }*/
     /*Method 2 - call async/await function --> getHomepageData, (seperate ui and data retriever)*/
 
     var dataObj = JSON.parse(homepageData);
@@ -662,7 +697,7 @@ async function homeOperation() {
             //    button = "";
             //} else {
             button =
-                "<button type='button'  class='btn lcDetails' data-action= '" +
+                "<button type='button'  class='btn lcDetails modalBtn' data-action= '" +
                 operation +
                 "' data-toggle='modal' data-target='#lcDetailsModal' data-bcreceipt='" +
                 getReceipt +
@@ -681,7 +716,7 @@ async function homeOperation() {
             //Button triggers modifyLc page or submitBol page, do not store any data, redirection purpose only
             if (operation === "modify lc" || operation === "submit bol" || operation === "submit documents") {
                 button =
-                    "<button type='button'  data-refnum=" +
+                    "<button type='button'  refnum=" +
                     refNum +
                     " class='btn homeButton' id='" +
                     url +
@@ -692,6 +727,7 @@ async function homeOperation() {
             }
             var $button = $(button);
             //$button.css("visibility","hidden");
+            //$button.prop("disabled", true);
             $button.addClass(buttonAssigned(operation)[0]); //change button color to red if action is to be taken(Rather than "View lc").
             $buttonCell.append($button);
             $row.append($buttonCell);
@@ -701,7 +737,7 @@ async function homeOperation() {
             if (sessionStorage.usertype === "shipper" && (status === "bol uploaded" || status === "documents uploaded")) {
                 url = "submitBol";
                 edit =
-                    "<button style='margin-right:10px' type='button'  data-refnum=" +
+                    "<button style='margin-right:10px' type='button'  refnum=" +
                     refNum +
                     " class='btn btn-success homeButton' id='" +
                     url +
@@ -711,7 +747,7 @@ async function homeOperation() {
             if (sessionStorage.usertype === "exporter" && status === "documents uploaded") {
                 url = "submitDocs";
                 edit =
-                    "<button style='margin-right:10px' type='button'  data-refnum=" +
+                    "<button style='margin-right:10px' type='button'  refnum=" +
                     refNum +
                     " class='btn btn-success homeButton' id='" +
                     url +
@@ -736,7 +772,35 @@ async function homeOperation() {
             filterText: 'Filter by date',
             pagingDivSelector: "#paging-first-datatable"
         });
+    } else {
+        $('#first-datatable-output table').datatable({
+            pageSize: 5,
+            pagingNumberOfPages: 5,
+            sort: [true, true, true, true, false, false],
+            filters: [true, 'select', true, false, false, false],
+            filterEmptySelect: 'All accounts',
+            filterText: 'Search by date',
+            pagingDivSelector: "#paging-first-datatable"
+        });
     }
+    $('#loadingModal').modal('hide');
+    $('#first-datatable-output').on('click', '.homeButton', function() {
+        //var $button = $("button[data-target='#lcDetailsModal']");
+        //if (!$(event.target).is($button)) {
+        var refNum = $(this).attr('refnum');
+        var page = $(this).attr('id');
+        console.log("TEST!!!!!!!!!!!!!!!!");
+        var pageToLoad = {
+            page: page
+        };
+        if (refNum != undefined) {
+            pageToLoad.refNum = refNum;
+        }
+        sessionStorage.setItem('page', JSON.stringify(pageToLoad));
+        window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html?refNum=" + refNum);
+
+        // }
+    });
 
 
 }
@@ -751,7 +815,7 @@ async function getAllLcsShipper() {
     //call lcCreated listener to get all modified!!! lcs --> change format of json
     //call lcCreatedHash to get all hashes
     var homePageData = {};
-    const results = await Promise.all([getAllBlockchainReceipt(userId, PIN, OTP)]);
+    const results = await Promise.all([getAllBlockchainReceipt(sessionStorage.userID, PIN, OTP)]);
     var lcDetails = results[0];
     //var receipt = results[1];
     //store allBcReceipts in an object {refNum:TransactionHash}
@@ -861,269 +925,257 @@ function showLcDetailsModal() {
 }
 
 function loadLcDetailsModal() {
-    $(document).ready(function() {
-        $("#lcDetailsModal").on("show.bs.modal", function(event) {
-            // id of the modal with event
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var refNum = button.data("refnum"); // Extract info from data-* attributes
-            var status = button.data("status");
-            var action = button.data("action");
-            var links = button.data("links");
-            var bcReceipt = button.data("bcreceipt");
-            var fields = button.data("lc"); //convert string to json string
-            //var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
-            var currency = fields["currency"];
-            var allNecessaryFields = [
+    //$(document).ready(function() {
+    $("#lcDetailsModal").on("show.bs.modal", function(event) {
+        // id of the modal with event
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var refNum = button.data("refnum"); // Extract info from data-* attributes
+        var status = button.data("status");
+        var action = button.data("action");
+        var links = button.data("links");
+        var bcReceipt = button.data("bcreceipt");
+        var fields = button.data("lc"); //convert string to json string
+        //var fieldsFromUser = ["exporterAccount", "expiryDate", "amount", "goodsDescription", "additionalConditions"];
+        var currency = fields["currency"];
+        var allNecessaryFields = [
+            "goods_description",
+            "importer_ID",
+            "exporter_ID",
+            "creation_datetime",
+            "issuing_bank_id",
+            "ship_period",
+            "amount",
+            "exporter_account_num",
+            "ship_destination",
+            "importer_account_num"
+        ];
+        if (sessionStorage.usertype === "shipper") {
+            allNecessaryFields = [
                 "goods_description",
                 "importer_ID",
                 "exporter_ID",
                 "creation_datetime",
-                "issuing_bank_id",
                 "ship_period",
-                "amount",
-                "exporter_account_num",
+                "ship_date",
                 "ship_destination",
-                "importer_account_num"
             ];
-            if (sessionStorage.usertype === "shipper") {
-                allNecessaryFields = [
-                    "goods_description",
-                    "importer_ID",
-                    "exporter_ID",
-                    "creation_datetime",
-                    "ship_period",
-                    "ship_date",
-                    "ship_destination",
-                ];
+        }
+        var allLcHTML = "";
+        console.log(links);
+        var verified = "";
+        if (links !== "") {
+
+            var bolLink = links.BillOfLading;
+
+            if (sessionStorage.usertype !== "shipper" && (status === "documents accepted" || status === "goods collected")) {
+                console.log(bolLink);
+                console.log("TEst BOL link")
+                new QRCode(document.getElementById("qrcode"), {
+                    width: 150,
+                    height: 150,
+                    text: bolLink
+                });
+                $("#qrcode").append("<div class='font-bold' style='margin-top:10px'>Click QR code to Zoom In</div>");
+                $("#qrcode").attr("value", bolLink);
             }
-            var allLcHTML = "";
-            console.log(links);
-            var verified = "";
-            if (links !== "") {
+            if (sessionStorage.usertype === "shipper" && status === "documents accepted") {
+                $("#scannerFrame").append("<video class='col-sm-12' id='preview'></video>");
+                let scanner = new Instascan.Scanner({
 
-                var bolLink = links.BillOfLading;
+                    video: document.getElementById('preview'),
+                    mirror: true,
+                    refractoryPeriod: 5000,
+                });
+                scanner.addListener('scan', function(content) {
+                    console.log(content);
+                    $("#qrResults").append("Results: " + content);
+                    verifyQrCodeUI(refNum, content);
+                    scanner.stop();
 
-                if (sessionStorage.usertype !== "shipper" && (status === "documents accepted" || status === "goods collected")) {
-                    console.log(bolLink);
-                    console.log("TEst BOL link")
-                    new QRCode(document.getElementById("qrcode"), {
-                        width: 150,
-                        height: 150,
-                        text: bolLink
-                    });
-                    $("#qrcode").append("<div class='font-bold' style='margin-top:10px'>Click QR code to Zoom In</div>");
-                    $("#qrcode").attr("value", bolLink);
-                }
-                if (sessionStorage.usertype === "shipper" && status === "documents accepted") {
-                    $("#scannerFrame").append("<video class='col-sm-12' id='preview'></video>");
-                    let scanner = new Instascan.Scanner({
+                });
+                Instascan.Camera.getCameras().then(function(cameras) {
+                    if (cameras.length > 0) {
+                        scanner.start(cameras[0]);
+                        console.log("start");
+                    } else {
+                        console.error('No cameras found.');
+                    }
+                }).catch(function(e) {
+                    console.error(e);
+                });
 
-                        video: document.getElementById('preview'),
-                        mirror: true,
-                        refractoryPeriod: 5000,
-                    });
-                    scanner.addListener('scan', function(content) {
-                        console.log(content);
-                        $("#qrResults").append("Results: " + content);
-                        verifyQrCodeUI(refNum, content);
-                        scanner.stop();
+                // verified = "<button type='button' class='btn btn-primary btn-lg'><i class='fa fa-check'></i> Verfified ! </button>"
+            }
 
-                    });
-                    Instascan.Camera.getCameras().then(function(cameras) {
-                        if (cameras.length > 0) {
-                            scanner.start(cameras[0]);
-                            console.log("start");
-                        } else {
-                            console.error('No cameras found.');
-                        }
-                    }).catch(function(e) {
-                        console.error(e);
-                    });
+            for (var i in links) {
+                var lcDetailsHTML = "";
+                lcDetailsHTML =
+                    "<label class='col-lg-4 control-label lc-label' id=''>" +
+                    i +
+                    "</label>";
+                lcDetailsHTML +=
+                    "<div class='col-lg-8 font-bold' id='lcValue'><a href='" +
+                    links[i] +
+                    "' target='_blank'>" +
+                    links[i] +
+                    "</a></div>";
 
-                    // verified = "<button type='button' class='btn btn-primary btn-lg'><i class='fa fa-check'></i> Verfified ! </button>"
-                }
+                allLcHTML +=
+                    "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>";
+                allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>";
+            }
+        }
+        for (var i in fields) {
+            for (var j = 0; j < allNecessaryFields.length; j++) {
+                if (allNecessaryFields[j] === i) {
+                    var field = convertToDisplay(i, "_");
+                    //console.log(field)
+                    var fieldValue = fields[i];
 
-                for (var i in links) {
+                    if (i === "amount") {
+                        fieldValue = currency + " " + fieldValue;
+                    }
+
+                    // convert underscorename to display name
+                    //var displayName = convertUnderscoreToDisplay(i);
                     var lcDetailsHTML = "";
                     lcDetailsHTML =
                         "<label class='col-lg-4 control-label lc-label' id=''>" +
-                        i +
+                        field +
                         "</label>";
                     lcDetailsHTML +=
-                        "<div class='col-lg-8 font-bold' id='lcValue'><a href='" +
-                        links[i] +
-                        "' target='_blank'>" +
-                        links[i] +
-                        "</a></div>";
+                        "<div class='col-lg-8 font-bold' id='lcValue'><p id='" +
+                        i +
+                        "'></p>" +
+                        fieldValue +
+                        "</div>";
 
                     allLcHTML +=
                         "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>";
                     allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>";
                 }
             }
-            for (var i in fields) {
-                for (var j = 0; j < allNecessaryFields.length; j++) {
-                    if (allNecessaryFields[j] === i) {
-                        var field = convertToDisplay(i, "_");
-                        //console.log(field)
-                        var fieldValue = fields[i];
+        }
+        status = convertToDisplay(status, " ");
+        var statusP = $(
+            "<p id='statusValue' class='font-bold h3 font-bold m-t'>" +
+            status +
+            "</p>"
+        );
 
-                        if (i === "amount") {
-                            fieldValue = currency + " " + fieldValue;
-                        }
+        var buttonGroup = $("<div class='form-group lc-form'></div>");
+        var actionDiv = $(
+            "<div class='col-lg-4 ' style='' id='actionDiv'></div>"
+        );
+        var actionButton = $(
+            "<button type='button' class='actionButton btn btn-primary btn-lg'><i class='fa fa-check'></i>  </button>"
+        );
+        var cancelDiv = $(
+            "<div class='col-lg-4 ' style='' id='cancelDiv'></div>"
+        );
+        var cancelButton = $(
+            "<button type='button' class='cancelButton btn btn-danger btn-lg'></button>"
+        );
+        var closeDiv = $("<div class='col-lg-4 '></div>");
+        var closeButton = $(
+            "<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>"
+        );
+        var attrToChange = [];
+        if (sessionStorage.usertype === "exporter" && action === "review lc") {
+            attrToChange = [
+                "approveButton",
+                "amendLc",
+                "Approve",
+                "Request to amend",
+                "visible",
+                "visible"
+            ];
+        } else if (
+            sessionStorage.usertype === "importer" &&
+            action === "accept documents"
+        ) {
+            attrToChange = [
+                "acceptDocs",
+                "",
+                "Accept Documents",
+                "",
+                "visible",
+                "hidden"
+            ];
+        } else if (
+            sessionStorage.usertype === "shipper" &&
+            action === "scan qr code"
+        ) {
+            attrToChange = [
+                "collectGoods",
+                "",
+                "Collect Goods",
+                "",
+                "visible",
+                "hidden"
+            ];
+        } else {
+            attrToChange = ["", "", "", "", "hidden", "hidden"];
+        }
 
-                        // convert underscorename to display name
-                        //var displayName = convertUnderscoreToDisplay(i);
-                        var lcDetailsHTML = "";
-                        lcDetailsHTML =
-                            "<label class='col-lg-4 control-label lc-label' id=''>" +
-                            field +
-                            "</label>";
-                        lcDetailsHTML +=
-                            "<div class='col-lg-8 font-bold' id='lcValue'><p id='" +
-                            i +
-                            "'></p>" +
-                            fieldValue +
-                            "</div>";
+        actionButton.attr("id", attrToChange[0]).append(attrToChange[2]);
+        cancelButton.attr("id", attrToChange[1]).append(attrToChange[3]);
+        actionDiv.css("visibility", attrToChange[4]);
+        cancelDiv.css("visibility", attrToChange[5]);
 
-                        allLcHTML +=
-                            "<div class='form-group lc-form'>" + lcDetailsHTML + "</div>";
-                        allLcHTML += "<div class='line line-dashed line-lg pull-in'></div>";
-                    }
-                }
-            }
-            status = convertToDisplay(status, " ");
-            var statusP = $(
-                "<p id='statusValue' class='font-bold h3 font-bold m-t'>" +
-                status +
-                "</p>"
-            );
+        actionDiv.append(actionButton);
+        cancelDiv.append(cancelButton);
+        closeDiv.append(closeButton);
+        buttonGroup.append(actionDiv);
+        buttonGroup.append(cancelDiv);
+        buttonGroup.append(closeDiv);
 
-            var buttonGroup = $("<div class='form-group lc-form'></div>");
-            var actionDiv = $(
-                "<div class='col-lg-4 ' style='' id='actionDiv'></div>"
-            );
-            var actionButton = $(
-                "<button type='button' class='actionButton btn btn-primary btn-lg'><i class='fa fa-check'></i>  </button>"
-            );
-            var cancelDiv = $(
-                "<div class='col-lg-4 ' style='' id='cancelDiv'></div>"
-            );
-            var cancelButton = $(
-                "<button type='button' class='cancelButton btn btn-danger btn-lg'></button>"
-            );
-            var closeDiv = $("<div class='col-lg-4 '></div>");
-            var closeButton = $(
-                "<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>"
-            );
-            var attrToChange = [];
-            if (sessionStorage.usertype === "exporter" && action === "review lc") {
-                attrToChange = [
-                    "approveButton",
-                    "amendLc",
-                    "Approve",
-                    "Request to amend",
-                    "visible",
-                    "visible"
-                ];
-            } else if (
-                sessionStorage.usertype === "importer" &&
-                action === "accept documents"
-            ) {
-                attrToChange = [
-                    "acceptDocs",
-                    "",
-                    "Accept Documents",
-                    "",
-                    "visible",
-                    "hidden"
-                ];
-            } else if (
-                sessionStorage.usertype === "shipper" &&
-                action === "scan qr code"
-            ) {
-                attrToChange = [
-                    "collectGoods",
-                    "",
-                    "Collect Goods",
-                    "",
-                    "visible",
-                    "hidden"
-                ];
-            } else {
-                attrToChange = ["", "", "", "", "hidden", "hidden"];
-            }
+        var text = "text-primary";
 
-            actionButton.attr("id", attrToChange[0]).append(attrToChange[2]);
-            cancelButton.attr("id", attrToChange[1]).append(attrToChange[3]);
-            actionDiv.css("visibility", attrToChange[4]);
-            cancelDiv.css("visibility", attrToChange[5]);
-
-            actionDiv.append(actionButton);
-            cancelDiv.append(cancelButton);
-            closeDiv.append(closeButton);
-            buttonGroup.append(actionDiv);
-            buttonGroup.append(cancelDiv);
-            buttonGroup.append(closeDiv);
-
-            var text = "text-primary";
-
-            if (action !== "view lc") {
-                text = "text-danger";
-            }
-            statusP.addClass(text);
+        if (action !== "view lc") {
+            text = "text-danger";
+        }
+        statusP.addClass(text);
 
 
-            var refNumHTML = "<div value='" + refNum + "' id='returnedRef'></div>";
-            // Update the modal's content.
-            var modal = $(this);
-            modal
-                .find(".modal-body section header div div div p#refNum")
-                .text(refNum);
-            //modal.find(".modal-body #verification").html(verified);
-            modal.find(".modal-body #status").html(statusP);
-            modal.find(".modal-body #lcDetails").html(allLcHTML);
-            modal.find(".modal-body #returnedRefNum").html(refNumHTML);
-            //modal.find('.modal-body #json').html(JSON.stringify(bcReceipt, undefined, 2))
-            modal
-                .find(".modal-body #json")
-                .html(JSON.stringify(bcReceipt, undefined, 2));
-            modal.find(".modal-footer #lcButtons").html(buttonGroup);
-            //modal.find('.modal-body #lcQRCode').html(qrCode)
-            buttonClicks();
-        });
-        $("#lcDetailsModal").on("hidden.bs.modal", function(e) {
-            $(e.target).removeData("bs.modal");
-            $("#qrcode").html("");
-            $("#qrResults").html("");
-            $("#scannerFrame").html("");
-
-            $("#statusValue").attr("class", "h3 font-bold m-t");
-            $("#qrcode").attr("value", "");
-        });
-        /*$(".modal").on("hidden.bs.modal", function () {
-                 $(".modal-body").html("");
-                 $(".modal-footer").html("");
-                 });*/
+        var refNumHTML = "<div value='" + refNum + "' id='returnedRef'></div>";
+        // Update the modal's content.
+        var modal = $(this);
+        modal
+            .find(".modal-body section header div div div p#refNum")
+            .text(refNum);
+        //modal.find(".modal-body #verification").html(verified);
+        modal.find(".modal-body #status").html(statusP);
+        modal.find(".modal-body #lcDetails").html(allLcHTML);
+        modal.find(".modal-body #returnedRefNum").html(refNumHTML);
+        //modal.find('.modal-body #json').html(JSON.stringify(bcReceipt, undefined, 2))
+        modal
+            .find(".modal-body #json")
+            .html(JSON.stringify(bcReceipt, undefined, 2));
+        modal.find(".modal-footer #lcButtons").html(buttonGroup);
+        //modal.find('.modal-body #lcQRCode').html(qrCode)
+        buttonClicks();
     });
+    $("#lcDetailsModal").on("hidden.bs.modal", function(e) {
+        $(e.target).removeData("bs.modal");
+        $("#qrcode").html("");
+        $("#qrResults").html("");
+        $("#scannerFrame").html("");
+
+        $("#statusValue").attr("class", "h3 font-bold m-t");
+        $("#qrcode").attr("value", "");
+    });
+    /*$(".modal").on("hidden.bs.modal", function () {
+             $(".modal-body").html("");
+             $(".modal-footer").html("");
+             });*/
+    // });
 }
 
 
 function buttonClicks() {
     $(document).ready(function() {
-        $(".homeButton").click(function() {
-            var refNum = $(this).attr('data-refnum');
-            var page = $(this).attr('id');
-            console.log("TEST!!!!!!!!!!!!!!!!");
-            var pageToLoad = {
-                page: page
-            };
-            if (refNum != undefined) {
-                pageToLoad.refNum = refNum;
-            }
-            sessionStorage.setItem('page', JSON.stringify(pageToLoad));
-            window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html?refNum=" + refNum);
-        });
+
         $("#approveButton").click(function() {
             $('#lcDetailsModal').modal('hide');
             var refNum = $("#returnedRef").attr("value");
@@ -1132,7 +1184,7 @@ function buttonClicks() {
             timer = setInterval(function() { updateElapsedTime(); }, 1000);
             $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
             $('#loadingModal').modal('show');
-            processUpdateStatus(userId, PIN, OTP, refNum, status, "");
+            processUpdateStatus(sessionStorage.userID, PIN, OTP, refNum, status, "");
         });
         $("#amendLc").click(function() {
             startTime = new Date().getTime();
@@ -1163,7 +1215,7 @@ function buttonClicks() {
             timer = setInterval(function() { updateElapsedTime(); }, 1000);
             $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
             $('#loadingModal').modal('show');
-            processUpdateStatus(userId, PIN, OTP, refNum, status, "");
+            processUpdateStatus(sessionStorage.userID, PIN, OTP, refNum, status, "");
         });
         $("#collectGoods").click(function() {
             $('#lcDetailsModal').modal('hide');
@@ -1174,7 +1226,7 @@ function buttonClicks() {
             timer = setInterval(function() { updateElapsedTime(); }, 1000);
             $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
             $('#loadingModal').modal('show');
-            processUpdateStatus(userId, PIN, OTP, refNum, status, "");
+            processUpdateStatus(sessionStorage.userID, PIN, OTP, refNum, status, "");
         });
 
         $("#qrcode").click(function() {
@@ -1213,6 +1265,8 @@ async function processUpdateStatus(userId, PIN, OTP, refNum, status, statusDetai
     }
 }
 
+
+
 function getExporterDetails() {
     // get all exporter details of current importer
     //var exporterList = ["0000000915","0000000914"];
@@ -1220,15 +1274,15 @@ function getExporterDetails() {
 
     var allUserCredentials = [{
             userId: "toffeemint1",
-            customerId: "0000000914",
+            customerId: "0000001689",
             bankId: "1",
-            accountId: "0000002473"
+            accountId: "0000003876"
         },
         {
             userId: "toffeemint2",
-            customerId: "0000000915",
+            customerId: "0000001690",
             bankId: "1",
-            accountId: "0000002480"
+            accountId: "0000003880"
         },
         {
             userId: "toffeemint4",

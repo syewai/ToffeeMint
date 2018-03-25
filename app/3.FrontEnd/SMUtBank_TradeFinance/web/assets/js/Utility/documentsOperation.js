@@ -40,7 +40,7 @@ async function uploadBol() {
     var errorMsg;
     var globalErrorID;
     /*Part 1 - call getLcDetails to prefilled amendments*/
-    const lcDetailsAndBolLinks = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum)]);
+    const lcDetailsAndBolLinks = await Promise.all([getLcDetails(sessionStorage.userID, PIN, OTP, refNum), getBOLUrl(sessionStorage.userID, PIN, OTP, refNum)]);
     var lcDetails = lcDetailsAndBolLinks[0]; //calling this method from  assets/js/DAO/lcHandling.js
     var globalErrorId =
         lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
@@ -162,7 +162,7 @@ async function verifyCode(refNum, code) {
     //verify the url provided by importer and url submiited by shipper 
     //after verification succeed, update status to "goods collected"
 
-    const linkFromShipper = await getBOLUrl(userId, PIN, OTP, refNum);
+    const linkFromShipper = await getBOLUrl(sessionStorage.userID, PIN, OTP, refNum);
 
     var links = "";
     var globalErrorId = linkFromShipper.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
