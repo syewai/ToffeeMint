@@ -87,8 +87,11 @@ async function applyLcOperation(importer_account_num, contract_currency) {
 
     errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
     globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+    console.log(errorMsg);
     if (globalErrorID !== "010000") {
-        showErrorModal(errorMsg);
+        //$('#loadingModal').modal('hide');
+        //showErrorModal("test");
+        return { errorMsg: errorMsg };
 
     } else if (globalErrorID === "010041") {
         //OTP expiry error - request new otp
@@ -132,7 +135,7 @@ async function amendLcOps() {
     var mode = "BC"; //no change
 
     /*Part 1 - call getLcDetails to prefilled amendments*/
-    const lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
+    let lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
     var globalErrorId =
         lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     var fields = {};
@@ -232,7 +235,7 @@ async function amendLcOps() {
 //This function call amend lc web service and retrieve its response
 async function processAmendments(lc) {
 
-    const amendments = await amendLc(userId, PIN, OTP, lc);
+    let amendments = await amendLc(userId, PIN, OTP, lc);
 
     var globalErrorID = amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     var errorMsg = amendments.Content.ServiceResponse.ServiceRespHeader.ErrorText;
@@ -323,7 +326,7 @@ async function modifyLcOps() {
     var amendmentDetails = null;
     var originalLc = null;
     /*Part 1 - call getLcDetails to prefilled amendments*/
-    const lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
+    let lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
 
     var globalErrorId =
         lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
@@ -361,7 +364,7 @@ async function modifyLcOps() {
     var originalExpiryDate = "";
     var originalShipPeriod = "";
     /*Part 2 - call getLcAmendments function, fetch expiryDate, amount, shipPeriod and originalDesc from amendments */
-    const amendments = await getLcAmendments(userId, PIN, OTP, refNum);
+    let amendments = await getLcAmendments(userId, PIN, OTP, refNum);
     var globalErrorId =
         amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     if (globalErrorId === "010000") {
@@ -476,7 +479,7 @@ async function modifyLcOps() {
 //This function call modify lc web service and retrieve its response
 async function processModification(lc) {
 
-    const modification = await modifyLc(userId, PIN, OTP, lc);
+    let modification = await modifyLc(userId, PIN, OTP, lc);
 
     var errorMsg = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.ErrorText;
     var globalErrorID = modification.Content.Trade_LC_Update_BCResponse.ServiceRespHeader.GlobalErrorID;
@@ -513,7 +516,7 @@ async function getHomepageData() {
     console.time("time spent");
     /*call parallel await/async function --> getRefNumListAsync & getBCReceipt(). 
     refnum --> Return {errormsg}, or {refNumlist}, all bc receipt --> return [refnum,transactionHash], [refnum,transactionHash],[...]*/
-    const refNumAndReceipt = await Promise.all([getRefNumListAsync(sessionStorage.userID, PIN, OTP)]);
+    let refNumAndReceipt = await Promise.all([getRefNumListAsync(sessionStorage.userID, PIN, OTP)]);
     var refNumberListValidation = refNumAndReceipt[0];
 
     if (!refNumberListValidation.hasOwnProperty("Content")) {
@@ -534,7 +537,7 @@ async function getHomepageData() {
             var lc = {};
             var globalErrorId = "";
             // const results = await Promise.all([getLcDetails(sessionStorage.userID, PIN, OTP, refNum), getBOLUrl(userId, PIN, OTP, refNum), getBlockchainReceiptHash(userId, PIN, OTP, refNum)]);
-            const results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(sessionStorage.userID, PIN, OTP, refNum)]);
+            let results = await Promise.all([getLcDetails(userId, PIN, OTP, refNum), getBOLUrl(sessionStorage.userID, PIN, OTP, refNum)]);
             var lcDetails = results[0];
             var bolLinks = results[1];
 
@@ -595,9 +598,9 @@ async function processHome() {
 async function homeOperation() {
     $('#loadingModal').modal('show');
     let homepageData = await getHomepageData();;
-    setInterval(async function() {
-        homepageData = await getHomepageData();
-    }, 10000);
+    //setInterval(async function() {
+    // homepageData = await getHomepageData();
+    //}, 10000);
     /*if (sessionStorage.usertype === "shipper") {
         homepageData = await getAllLcsShipper();
 
@@ -815,7 +818,7 @@ async function getAllLcsShipper() {
     //call lcCreated listener to get all modified!!! lcs --> change format of json
     //call lcCreatedHash to get all hashes
     var homePageData = {};
-    const results = await Promise.all([getAllBlockchainReceipt(sessionStorage.userID, PIN, OTP)]);
+    let results = await Promise.all([getAllBlockchainReceipt(sessionStorage.userID, PIN, OTP)]);
     var lcDetails = results[0];
     //var receipt = results[1];
     //store allBcReceipts in an object {refNum:TransactionHash}
@@ -843,7 +846,7 @@ async function getAllLcsShipper() {
             var statusIncluded = $.inArray(status, listedStatus);
             if (status !== "" && statusIncluded !== -1) {
                 // if status correct, call get bol links
-                const bolLinks = await getBOLUrl(userId, PIN, OTP, refNum);
+                let bolLinks = await getBOLUrl(userId, PIN, OTP, refNum);
                 var links = "";
                 if (bolLinks.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID === "010000") {
                     links =
@@ -1250,7 +1253,7 @@ function buttonClicks() {
     });
 }
 async function processUpdateStatus(userId, PIN, OTP, refNum, status, statusDetails) {
-    const processUpdateStatus = await updateStatus(userId, PIN, OTP, refNum, status, statusDetails);
+    let processUpdateStatus = await updateStatus(userId, PIN, OTP, refNum, status, statusDetails);
     var globalErrorID =
         processUpdateStatus.Content.Trade_LCStatus_Update_BCResponse.ServiceRespHeader
         .GlobalErrorID;

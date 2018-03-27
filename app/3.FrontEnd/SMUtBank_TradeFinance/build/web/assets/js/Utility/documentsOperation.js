@@ -40,7 +40,7 @@ async function uploadBol() {
     var errorMsg;
     var globalErrorID;
     /*Part 1 - call getLcDetails to prefilled amendments*/
-    const lcDetailsAndBolLinks = await Promise.all([getLcDetails(sessionStorage.userID, PIN, OTP, refNum), getBOLUrl(sessionStorage.userID, PIN, OTP, refNum)]);
+    let lcDetailsAndBolLinks = await Promise.all([getLcDetails(sessionStorage.userID, PIN, OTP, refNum), getBOLUrl(sessionStorage.userID, PIN, OTP, refNum)]);
     var lcDetails = lcDetailsAndBolLinks[0]; //calling this method from  assets/js/DAO/lcHandling.js
     var globalErrorId =
         lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
@@ -140,7 +140,7 @@ async function uploadBol() {
 
 async function processUploadBol(userId, PIN, OTP, refNum, linksJson, status, uploadType) {
 
-    const uploadBol = await uploadBOL(userId, PIN, OTP, refNum, linksJson);
+    let uploadBol = await uploadBOL(userId, PIN, OTP, refNum, linksJson);
     var globalErrorId = uploadBol.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     if (globalErrorId === "010000") {
         if (uploadType === "create") {
@@ -162,7 +162,7 @@ async function verifyCode(refNum, code) {
     //verify the url provided by importer and url submiited by shipper 
     //after verification succeed, update status to "goods collected"
 
-    const linkFromShipper = await getBOLUrl(sessionStorage.userID, PIN, OTP, refNum);
+    let linkFromShipper = await getBOLUrl(sessionStorage.userID, PIN, OTP, refNum);
 
     var links = "";
     var globalErrorId = linkFromShipper.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
@@ -187,7 +187,7 @@ async function verifyCode(refNum, code) {
 }
 
 async function verifyQrCodeUI(refNum, code) {
-    const result = await verifyCode(refNum, code);
+    let result = await verifyCode(refNum, code);
     if (result) {
         var verified = "<div class='btn btn-primary btn-lg' width=100 height=100><i class='fa fa-check'></i> QR Code Verfified !</div>";
         verified += "<p class='font-bold h4 font-bold m-t text-primary'> Customer can collect goods </p>"

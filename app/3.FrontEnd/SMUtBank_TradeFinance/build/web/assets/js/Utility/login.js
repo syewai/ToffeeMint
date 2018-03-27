@@ -51,7 +51,7 @@ async function createSMSOTP() {
 
     var globalErrorID = "";
     var errorMsg = "";
-    const data = await getCustomerDeatils(userId, PIN, OTP);
+    let data = await getCustomerDeatils(userId, PIN, OTP);
     console.log(data);
     //get error id to check existance of the user
     errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
@@ -84,7 +84,7 @@ async function authenticateSMSOTP() {
     }
     var globalErrorID = "";
     var errorMsg = "";
-    const data = await getCustomerDeatils(userId, PIN, OTP);
+    let data = await getCustomerDeatils(userId, PIN, OTP);
     console.log(data);
     //console.log(data);
     //get error id to check existance of the user
@@ -106,6 +106,8 @@ async function authenticateSMSOTP() {
             sessionStorage.OTP = OTP;
             sessionStorage.usertype = usertype;
             sessionStorage.customerID = customerID;
+            sessionStorage.gameMode = true;
+            sessionStorage.quizApplyLC = true;
 
         }
         if (usertype === "shipper") {

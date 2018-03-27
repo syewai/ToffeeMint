@@ -241,18 +241,21 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
 
         result = $("input[name=" + counter + "]:checked").val();
         //console.log(result);
-        const getGameAnswerPre = await getGameAnswer("", "", "", chosenQuestions[questionID]);
+        let getGameAnswerPre = await getGameAnswer("", "", "", chosenQuestions[questionID]);
         answer = JSON.stringify(getGameAnswerPre.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
         //console.log(answer);
         if (result === answer) {
+            //showSuccessModal("Correct Answer : " + answer);
             console.log("Correct");
             score = time * 10;
-            const qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1);
+            let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1);
             console.log(qScore);
             //getQuestionScore(sessionStorage.userID, sessionStoreage.PIN)
             /*setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function(callback) {
 
              });*/
+        } else {
+            //showErrorModal("Correct Answer : " + answer);
         }
         /* getGameAnswer("", "", "", chosenQuestions[questionID], function(callback) {
              answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
@@ -279,7 +282,7 @@ async function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
 
         result = $("input[name=" + counter + "]:checked").val();
         //console.log(result);
-        const getGameAnswerPost = await getGameAnswer("", "", "", chosenQuestions[questionID]);
+        let getGameAnswerPost = await getGameAnswer("", "", "", chosenQuestions[questionID]);
         answer = JSON.stringify(getGameAnswerPost.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
         //console.log(answer);
         if (result === answer) {
@@ -325,10 +328,10 @@ async function preQuiz(chosenQuestions, pagesBeforeQuiz) {
     var gQuestion;
     var gChoices;
     var gAppendString = "";
-
+    console.log("test");
     var gNumberOfQuestions = chosenQuestions.length;
     for (var i = 0; i < gNumberOfQuestions; i++) {
-        const getGameQuestionPre = await getGameQuestion("", "", "", chosenQuestions[i]);
+        let getGameQuestionPre = await getGameQuestion("", "", "", chosenQuestions[i]);
         // getGameQuestion("", "", "", chosenQuestions[i], function(callback) {
 
         //get respective data from json string
@@ -415,7 +418,7 @@ async function postQuiz(chosenQuestions, pagesBeforeQuiz) {
     var gNumberOfQuestions = chosenQuestions.length;
     for (var i = 0; i < gNumberOfQuestions; i++) {
         //getGameQuestion("", "", "", chosenQuestions[i], function(callback) {
-        const getGameQuestion = await getGameQuestion("", "", "", chosenQuestions[i]);
+        let getGameQuestion = await getGameQuestion("", "", "", chosenQuestions[i]);
         //get respective data from json string
         gQuestion = JSON.stringify(getGameQuestion.Content.ServiceResponse.QuestionDetails.question).substr(1).slice(0, -1);
         gChoices = JSON.stringify(getGameQuestion.Content.ServiceResponse.QuestionDetails.choices);

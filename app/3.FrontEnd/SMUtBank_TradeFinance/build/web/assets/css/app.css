@@ -3908,17 +3908,36 @@ fieldset[disabled] .btn-gplus.active {
 .formHidden {
     display: none;
 }
+
 .formHidden1 {
     display: none;
 }
 
+
 /*LC Details*/
-.lc-label{
+
+.lc-label {
     text-align: left !important;
-    
 }
-.lc-form{
-    margin-left:0px !important;
+
+.lc-form {
+    margin-left: 0px !important;
     /*margin-right:0px !important;*/
     vertical-align: middle !important;
+}
+
+#successModal .modal-dialog,
+#errorModal .modal-dialog {
+    position: absolute;
+    top: 40%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10040;
+    overflow: auto;
+    overflow-y: auto;
+}
+
+.modal-body {
+    word-wrap: break-word;
 }

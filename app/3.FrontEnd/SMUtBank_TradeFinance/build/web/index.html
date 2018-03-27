@@ -100,7 +100,7 @@
 
             });
             async function perocessSMSOTP() {
-                const otpResults = await createSMSOTP(); //this method is called from login.js
+                let otpResults = await createSMSOTP(); //this method is called from login.js
                 console.log(otpResults);
                 if (otpResults != null) {
                     $("#authError").html(otpResults.errorMsg);

@@ -154,7 +154,27 @@
                 preProcessingApplyLc();
             });
             async function preProcessingApplyLc() {
-                const accounts = await getCustomerAccounts(userId, PIN, OTP); //get currency and importer account
+                console.log(sessionStorage.gameMode);
+                console.log(sessionStorage.quizApplyLC);
+                if (sessionStorage.quizApplyLC && sessionStorage.gameMode) { // learning mode, initialize modal for pop quiz
+                    console.log("hello");
+                    $('#applyLcButton').attr('data-toggle', 'modal');
+                    $('#applyLcButton').attr('data-target', '#applyLCModal');
+                    // $('#applyLcButton').attr('data-backdrop', 'static');
+                    //$('#applyLcButton').attr('data-keyboard', 'false');
+
+                    $('#applyLCModal').load("../gameModalPop_Create.html", function() {
+                        $('#applyLCModal').modalSteps();
+                        sessionStorage.quizApplyLC = false;
+                        $('#applyLcButton').removeAttr("'data-toggle");
+                        $('#applyLcButton').removeAttr("'data-target");
+                    });
+
+                    //sessionStorage.quizApplyLC = false;
+
+                }
+
+                let accounts = await getCustomerAccounts(userId, PIN, OTP); //get currency and importer account
                 var account = accounts.Content.ServiceResponse.AccountList.account[0];
                 if (account == null) {
                     account = accounts.Content.ServiceResponse.AccountList.account;
@@ -206,8 +226,13 @@
                     $("#bankId").html(bankId);
                     var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
                     $("#loginForm").append(exporterAcctInput);
+
                     $("#applyLcButton").click(function() {
-                        applyLcOperation(importerAccount, currency); // calling from lcOperations.js
+
+                        if (!sessionStorage.quizApplyLC && !sessionStorage.gameMode) { // learning mode, initialize modal for pop quiz
+
+                            applyLcOperation(importerAccount, currency); // calling from lcOperations.js
+                        }
                     });
                     $("#cancelButton").click(function() {
 
@@ -223,16 +248,18 @@
     <!--End of Scrollable-->
 </section>
 <!--End of vbox-->
+<!--apply lc pop quiz modal-->
+<div class="modal fade" id="applyLCModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 <!-- error modal
     ======================================== -->
 <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger">
-                <h2>Error</h2>
+                <h2>Incorrect!</h2>
             </div>
             <div class="modal-body">
-                <p id="errorMsg" class="font-bold h3 font-bold m-t text-danger">
+                <p id="errorInfo">
                 </p>
             </div>
             <div class="modal-footer">
@@ -248,11 +275,14 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-success">
-                <h2>Success</h2>
+                <h2>Correct!</h2>
             </div>
             <div class="modal-body">
-                <p id="successMsg" class="font-bold h3 font-bold m-t text-primary">
+                <p id="successMsg">
                 </p>
+            </div>
+            <div class="modal-footer">
+                <button id="CloseError" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -291,6 +321,10 @@
 
 <script type="text/javascript" src="../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>
+<!-- game modal & timer-->
+<script src="../assets/js/game/jquery-bootstrap-modal-steps.min.js"></script>
+<script src="../assets/js/game/easytimer.min.js"></script>
+<script type="text/javascript" src="../assets/js/datatable/js/datatable.min.js"></script>
 
 <!--<script src="../assets/js/applyLc.js"></script>
 <script src="../assets/js/retrieveRefNumList.js"></script>

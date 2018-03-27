@@ -138,7 +138,8 @@ function trimBolName(url) {
  * modals
  */
 function showErrorModal(errorMessage) {
-    document.getElementById("errorMsg").innerHTML = errorMessage;
+    document.getElementById("errorInfo").innerHTML = errorMessage;
+    //$('#errorMsg').html(errorMessage);
     $('#errorModal').modal('show');
 }
 
