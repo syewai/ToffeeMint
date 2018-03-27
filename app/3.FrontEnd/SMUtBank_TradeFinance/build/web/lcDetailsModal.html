@@ -70,6 +70,8 @@
                 </div>
 
             </section>
+            <!--collect goods pop quiz modal-->
+            <div class="modal fade" id="collectGoodsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 
         </div>
         <div class="modal-footer">
@@ -77,3 +79,21 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            if (sessionStorage.quizCollect == 1 && sessionStorage.gameMode == 1) {
+
+                $('#collectGoodsModal').load("../gameModalPop_Collect.html", function() {
+                    $('#collectGoodsModal').modalSteps({
+                        'completeCallback': function() {
+                            sessionStorage.quizCollect = 0;
+                        }
+                    });
+
+                });
+
+
+            }
+        })
+    </script>

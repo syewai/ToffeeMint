@@ -1,14 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/*var getUserItem = sessionStorage.getItem('user');
-var user = $.parseJSON(getUserItem);
-var userId = user.userID;
-var PIN = user.PIN;
-var OTP = user.OTP;
-var usertype = user.usertype;*/
 var userId = sessionStorage.userID;
 var PIN = sessionStorage.PIN;
 var OTP = sessionStorage.OTP;
@@ -94,14 +83,41 @@ async function uploadBol() {
         $("#bolLink").append("<label for='bol'>Bill of Ladding</label><a class='form-control btn-success' href='" + bolLink + "' target='_blank'>" + trimBolName(bolLink) + "</a>");
     }
 
+    if (sessionStorage.quizSubmitBOL == 1 && sessionStorage.gameMode == 1) {
+        console.log("quiz submit bol");
+
+        $('#uploadBOLModal').load("../gameModalPop_Upload.html", function() {
+            $('#uploadBOLModal').modalSteps({
+                'completeCallback': function() {
+                    sessionStorage.quizSubmitBOL = 0;
+                }
+            });
+
+        });
+        $('#popCorrectModal').load("../popCorrectModal.html");
+        $('#popErrorModal').load("../popErrorModal.html");
+        $('#uploadDocsButton').attr('data-toggle', 'modal');
+        $('#uploadDocsButton').attr('data-target', '#uploadBOLModal');
+        $('#uploadDocsButton').attr('data-backdrop', 'static');
+        $('#uploadDocsButton').attr('data-keyboard', 'false');
+    }
+
     $("#uploadDocsButton").click(function() {
-        // form values
-        var filename = encodeURIComponent($("#filePicker").val().replace("C:\\fakepath\\", ""));
-        var partyID = sessionStorage.customerID;
-        // var documentType = $("#documentType").val();
-        var documentType = "6"; // for BOL
-        var MyBinaryData = $("#base64textarea").val();
-        storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink, cooLink, insuranceLink, uploadType);
+        if (sessionStorage.quizSubmitBOL == 0 || sessionStorage.gameMode == 0) { // learning mode, initialize modal for pop quiz
+            $('#uploadDocsButton').removeAttr('data-toggle', 'modal');
+            $('#uploadDocsButton').removeAttr('data-target', '#uploadBOLModal');
+            $('#uploadDocsButton').removeAttr('data-backdrop', 'static');
+            $('#uploadDocsButton').removeAttr('data-keyboard', 'false');
+
+            showLoadingModal("Submitting Bill of Lading");
+            // form values
+            var filename = encodeURIComponent($("#filePicker").val().replace("C:\\fakepath\\", ""));
+            var partyID = sessionStorage.customerID;
+            // var documentType = $("#documentType").val();
+            var documentType = "6"; // for BOL
+            var MyBinaryData = $("#base64textarea").val();
+            storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink, cooLink, insuranceLink, uploadType);
+        }
 
     });
     $("#uploadDocsExporterButton").click(function() {
@@ -177,7 +193,6 @@ async function verifyCode(refNum, code) {
         if (bol === code) {
 
             return true;
-
 
         }
         return false;

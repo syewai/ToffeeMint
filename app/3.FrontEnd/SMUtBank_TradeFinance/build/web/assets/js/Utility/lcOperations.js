@@ -10,7 +10,8 @@ var OTP = sessionStorage.OTP;
 
 //this function handle the ui logic of Apply lc page
 async function applyLcOperation(importer_account_num, contract_currency) {
-
+    //$('#loadingModal').modal('show');
+    console.log("start to apply");
     var importerAccount = importer_account_num;
     var exporterAccount = document.getElementById("exporterAcct").value;
     var expiryDate = document.getElementById("shipDate").value;
@@ -32,30 +33,38 @@ async function applyLcOperation(importer_account_num, contract_currency) {
     var senderToReceiverInfo = "none";
     var mode = "BC";
     if (!(exporterAccount.length > 0)) {
+        showErrorModal("Exporter account cannot be blank");
         return { errorMsg: "Exporter account cannot be blank" };
     }
     if (!(goodsDescription.length > 0)) {
+        showErrorModal("Goods description cannot be blank");
         return { errorMsg: "Goods description cannot be blank" };
     }
     if (!(shipPeriod.length > 0)) {
+        showErrorModal("Ship period cannot be blank");
         return { errorMsg: "Ship period cannot be blank" };
     } else {
         if (moment(shipDate, "YYYY-MM-DD", true).format() === "Invalid date") {
+            showErrorModal("Invalid Date Format. Correct Format : 'YYYY-MM-DD'");
             return { errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'" };
         }
     }
     if (!(amount.length > 0)) {
+        showErrorModal("Invalid Date Format. Correct Format : 'YYYY-MM-DD'");
         return { errorMsg: "Amount cannot be blank" };
     } else {
         if (isNaN(amount)) {
+            showErrorModal("Amount must be numeric");
             return { errorMsg: "Amount must be numeric" };
         }
     }
     if (!(shipDate.length > 0)) {
+        showErrorModal("Ship date cannot be blank");
         return { errorMsg: "Ship date cannot be blank" };
     }
 
     if (!(shipDestination.length > 0)) {
+        showErrorModal("ship Destination cannot be blank");
         return { errorMsg: "ship Destination cannot be blank" };
     }
 
@@ -82,15 +91,15 @@ async function applyLcOperation(importer_account_num, contract_currency) {
     };
     var globalErrorID = "";
     var errorMsg = "";
-
+    $('#loadingModal').modal('show');
     const data = await applyLcApi(userId, PIN, OTP, lc);
 
     errorMsg = data.Content.ServiceResponse.ServiceRespHeader.ErrorText;
     globalErrorID = data.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
     console.log(errorMsg);
     if (globalErrorID !== "010000") {
-        //$('#loadingModal').modal('hide');
-        //showErrorModal("test");
+        $('#loadingModal').modal('hide');
+        showErrorModal(errorMsg);
         return { errorMsg: errorMsg };
 
     } else if (globalErrorID === "010041") {
@@ -109,131 +118,48 @@ async function applyLcOperation(importer_account_num, contract_currency) {
     }
 }
 
-//This function handles UI logic of amend lc page
-async function amendLcOps() {
-    /*Get ref num from url */
-    var refNum = getQueryVariable("refNum");
-    var importerAccount = ""; //no change
-    var exporterAccount = ""; //no change
-    var expiryDate = "";
-    var expiryPlace = "";
-    var confirmed = "";
-    var revocable = "";
-    var availableBy = "";
-    var termDays = "";
-    var amount = "";
-    var currency = ""; //no change
-    var applicableRules = "";
-    var partialShipments = "";
-    var shipDestination = "";
-    var shipDate = "";
-    var shipPeriod = "";
-    var goodsDescription = "";
-    var docsRequired = "";
-    var additionalConditions = "";
-    var senderToReceiverInfo = "";
-    var mode = "BC"; //no change
 
-    /*Part 1 - call getLcDetails to prefilled amendments*/
-    let lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
-    var globalErrorId =
-        lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-    var fields = {};
-    if (globalErrorId === "010000") {
-        //Fetch lc details, store in fields object
-        fields = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
-        importerAccount = fields.importer_account_num; //no change
-        //console.log(fields);
-        exporterAccount = fields.exporter_account_num; //no change
-        expiryDate = fields.expiry_date; //no change
-        expiryPlace = fields.expiry_place;
-        confirmed = fields.confirmed;
-        revocable = fields.revocable;
-        availableBy = fields.available_by;
-        termDays = fields.term_days;
-        amount = fields.amount;
-        currency = fields.currency; //no change
-        applicableRules = fields.applicable_rules;
-        partialShipments = fields.partial_shipments;
-        shipDestination = fields.ship_destination;
-        shipDate = fields.ship_date;
-        shipPeriod = fields.ship_period;
-        goodsDescription = fields.goods_description;
-        docsRequired = fields.docs_required;
-        additionalConditions = fields.additional_conditions;
-        senderToReceiverInfo = fields.sender_to_receiver_info;
-        $("#goodsDescription").attr("placeholder", goodsDescription);
-        $("#amount").attr("placeholder", amount);
-        $("#expiryDate").attr("placeholder", expiryDate);
-        $("#shipPeriod").attr("placeholder", shipPeriod);
-        $('#shipPeriod option[value="' + shipPeriod + '"]').insertBefore(
-            '#shipPeriod option[value=""]'
-        );
-        $("#shipPeriod").val($("#shipPeriod option:first").val());
-    }
-    $("#amendLcButton").click(function() {
-        $('#loadingModal').modal('show');
-        shipPeriod = document.getElementById("shipPeriod").value;
-        if (shipPeriod === "") {
-            shipPeriod = document.getElementById("shipPeriod").placeholder;
-        }
-        expiryDate = document.getElementById("expiryDate").value;
-        if (expiryDate === "") {
-            expiryDate = document.getElementById("expiryDate").placeholder;
-        } else {
-            if (moment(expiryDate, "YYYY-MM-DD", true).format() === "Invalid date") {
-                return {
-                    errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"
-                };
-            }
-        }
-        amount = document.getElementById("amount").value;
-        if (amount === "") {
-            amount = document.getElementById("amount").placeholder;
-        } else {
-            if (isNaN(amount)) {
-                return { errorMsg: "Amount must be numeric" };
-            }
-        }
-        goodsDescription = document.getElementById("goodsDescription").value;
-        if (goodsDescription === "") {
-            goodsDescription = document.getElementById("goodsDescription")
-                .placeholder;
-        }
-        var lc = {
-            referenceNumber: refNum,
-            importerAccount: importerAccount,
-            exporterAccount: exporterAccount,
-            expiryDate: expiryDate,
-            expiryplace: expiryPlace,
-            confirmed: confirmed,
-            revocable: revocable,
-            availableBy: availableBy,
-            termDays: termDays,
-            amount: amount,
-            currency: currency,
-            applicableRules: applicableRules,
-            partialShipments: partialShipments,
-            shipDestination: shipDestination,
-            shipDate: shipDate,
-            shipPeriod: shipPeriod,
-            goodsDescription: goodsDescription,
-            docsRequired: docsRequired,
-            additionalConditions: additionalConditions,
-            senderToReceiverInfo: senderToReceiverInfo,
-            mode: mode
-        };
-
-        processAmendments(lc); // call amendLc Async function in another async function
-
-    });
-    $("#cancelButton").click(function() {
-        window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
-    });
-}
 
 //This function call amend lc web service and retrieve its response
-async function processAmendments(lc) {
+async function amendLcOperation(lc) {
+    showLoadingModal("Amending Letter of Credit");
+
+    shipPeriod = document.getElementById("shipPeriod").value;
+    if (shipPeriod === "") {
+        shipPeriod = document.getElementById("shipPeriod").placeholder;
+    }
+    expiryDate = document.getElementById("expiryDate").value;
+    if (expiryDate === "") {
+        expiryDate = document.getElementById("expiryDate").placeholder;
+    } else {
+        if (moment(expiryDate, "YYYY-MM-DD", true).format() === "Invalid date") {
+            showErrorModal("Invalid Date Format. Correct Format : 'YYYY-MM-DD'");
+            return {
+                errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"
+            };
+        }
+    }
+    amount = document.getElementById("amount").value;
+    if (amount === "") {
+        amount = document.getElementById("amount").placeholder;
+    } else {
+        if (isNaN(amount)) {
+            showErrorModal("Amount must be numeric");
+            return {
+                errorMsg: "Amount must be numeric"
+            };
+        }
+    }
+    goodsDescription = document.getElementById("goodsDescription").value;
+    if (goodsDescription === "") {
+        goodsDescription = document.getElementById("goodsDescription")
+            .placeholder;
+    }
+    lc.shipPeriod = shipPeriod;
+    lc.expiryDate = expiryDate;
+    lc.amount = amount;
+    lc.goodsDescription = goodsDescription;
+    console.log(lc);
 
     let amendments = await amendLc(userId, PIN, OTP, lc);
 
@@ -255,229 +181,48 @@ async function processAmendments(lc) {
 }
 
 //This function handle UI logic of modify lc page
-async function modifyLcOps() {
-    var refNum = getQueryVariable("refNum");
 
-    var importerAccount = ""; //no change
-    var exporterAccount = ""; //no change
-    var expiryDate = "";
-    var expiryPlace = "";
-    var confirmed = "";
-    var revocable = "";
-    var availableBy = "";
-    var termDays = "";
-    var amount = "";
-    var currency = ""; //no change
-    var applicableRules = "";
-    var partialShipments = "";
-    var shipDestination = "";
-    var shipDate = "";
-    var shipPeriod = "";
-    var goodsDescription = "";
-    var docsRequired = "";
-    var additionalConditions = "";
-    var senderToReceiverInfo = "";
-    var mode = "BC"; //no change
-
-    var errorMsg;
-    var globalErrorID;
-    var allNecessaryFields = [
-        "expiry_date",
-        "amount",
-        "ship_date",
-        "goods_description",
-        "additional_conditions",
-        "importer_account_num",
-        "exporter_account_num",
-        "expiry_place",
-        "confirmed",
-        "revocable",
-        "available_by",
-        "term_days",
-        "currency",
-        "applicable_rules",
-        "partial_shipments",
-        "ship_destination",
-        "ship_period",
-        "sender_to_receiver_info",
-        "docs_required"
-    ];
-    var allNecessaryFieldsName = [
-        "expiryDate",
-        "amount",
-        "shipDate",
-        "goodsDescription",
-        "additionalConditions",
-        "importerAccountNum",
-        "exporterAccountNum",
-        "expiryPlace",
-        "confirmed",
-        "revocable",
-        "availableBy",
-        "termDays",
-        "currency",
-        "applicableRules",
-        "partialShipments",
-        "shipDestination",
-        "shipPeriod",
-        "senderToReceiverInfo",
-        "docsRequired"
-    ];
-    var amendmentDetails = null;
-    var originalLc = null;
-    /*Part 1 - call getLcDetails to prefilled amendments*/
-    let lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
-
-    var globalErrorId =
-        lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-    //console.log(globalErrorId);
-
-    if (globalErrorId === "010000") {
-        //Fetch lc details, store in fields object
-        var fields = {};
-        fields = lcDetails.Content.ServiceResponse.LC_Details.LC_record;
-        originalLc = fields;
-        importerAccount = fields.importer_account_num; //no change
-        //console.log(fields);
-        exporterAccount = fields.exporter_account_num; //no change
-        expiryDate = fields.expiry_date; //no change
-        expiryPlace = fields.expiry_place;
-        confirmed = fields.confirmed;
-        revocable = fields.revocable;
-        availableBy = fields.available_by;
-        termDays = fields.term_days;
-        amount = fields.amount;
-        currency = fields.currency; //no change
-        applicableRules = fields.applicable_rules;
-        partialShipments = fields.partial_shipments;
-        shipDestination = fields.ship_destination;
-        shipDate = fields.ship_date;
-        shipPeriod = fields.ship_period;
-        goodsDescription = fields.goods_description;
-        docsRequired = fields.docs_required;
-        additionalConditions = fields.additional_conditions;
-        senderToReceiverInfo = fields.sender_to_receiver_info;
-    }
-    console.log(originalLc);
-    var originalAmount = "";
-    var originalDesc = "";
-    var originalExpiryDate = "";
-    var originalShipPeriod = "";
-    /*Part 2 - call getLcAmendments function, fetch expiryDate, amount, shipPeriod and originalDesc from amendments */
-    let amendments = await getLcAmendments(userId, PIN, OTP, refNum);
-    var globalErrorId =
-        amendments.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
-    if (globalErrorId === "010000") {
-        var fields = {};
-        fields = amendments.Content.ServiceResponse.LC_Amend.LC_Amend;
-        amendmentDetails = fields;
-        originalExpiryDate = fields.expiry_date; //no change
-        originalAmount = fields.amount;
-        originalShipPeriod = fields.shipPeriod;
-        originalDesc = fields.goods_description;
-
-    }
-
-    /*Part 3- compare original lc and amendments */
-    if (amendmentDetails !== null && originalLc !== null) {
-        for (var field in amendmentDetails) {
-            /*convert attribute format from under_score to camelCase (ship_period--> shipPeriod).
-            This is because all "write" methd(applyLc, amendLc) use camelCase parameter, 
-            all "read" method(getLcDetails) use under_score parameter*/
-            var fieldCamel = attributeMapping(field);
-            var originalValue = originalLc[field];
-            var amendedValue = amendmentDetails[field];
-            if (fieldCamel === "shipPeriod") {
-                //swap current value to be the first value in the dropdown list
-                $('#shipPeriod option[value="' + shipPeriod + '"]').insertBefore(
-                    '#shipPeriod option[value=""]'
-                );
-                //display current option in dropdown list
-                $("#shipPeriod").val($("#shipPeriod option:first").val());
-            }
-            //display the original value of each filed as a placeholder
-            $("#" + fieldCamel).attr("placeholder", originalValue);
-            //console.log(fieldCamel);
-            var suggestion = "";
-            if (originalValue !== amendedValue) {
-                /*if field has been changed, indicating the amended value below input box */
-                if (amendedValue !== null) {
-                    var p =
-                        "<p class='btn-danger'> Exporter has suggested to amend : " +
-                        amendedValue +
-                        "</p>";
-                    $("#" + fieldCamel + "-p").append(p);
-                }
-            }
-        }
-    }
-    // if user clicks modifyLc button,
-    $("#modifyLcButton").click(function() {
-        $('#loadingModal').modal('show');
-        //retrieve shipPeriod, expiryDate, amount and goods description from user input.
-        shipPeriod = document.getElementById("shipPeriod").value;
-        //if user did not enter any input, retrieve placeholder as amended value
-        if (shipPeriod === "") {
-            shipPeriod = document.getElementById("shipPeriod").placeholder;
-        }
-        expiryDate = document.getElementById("expiryDate").value;
-        if (expiryDate === "") {
-            expiryDate = document.getElementById("expiryDate").placeholder;
-        } else {
-            if (moment(expiryDate, "YYYY-MM-DD", true).format() === "Invalid date") {
-                return {
-                    errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"
-                };
-            }
-        }
-        amount = document.getElementById("amount").value;
-        if (amount === "") {
-            amount = document.getElementById("amount").placeholder;
-        } else {
-            if (isNaN(amount)) {
-                return { errorMsg: "Amount must be numeric" };
-            }
-        }
-        goodsDescription = document.getElementById("goodsDescription").value;
-        if (goodsDescription === "") {
-            goodsDescription = document.getElementById("goodsDescription")
-                .placeholder;
-        }
-
-        //store all values of lc details into an object
-        var lc = {
-            referenceNumber: refNum,
-            importerAccount: importerAccount,
-            exporterAccount: exporterAccount,
-            expiryDate: expiryDate,
-            expiryplace: expiryPlace,
-            confirmed: confirmed,
-            revocable: revocable,
-            availableBy: availableBy,
-            termDays: termDays,
-            amount: amount,
-            currency: currency,
-            applicableRules: applicableRules,
-            partialShipments: partialShipments,
-            shipDestination: shipDestination,
-            shipDate: shipDate,
-            shipPeriod: shipPeriod,
-            goodsDescription: goodsDescription,
-            docsRequired: docsRequired,
-            additionalConditions: additionalConditions,
-            senderToReceiverInfo: senderToReceiverInfo,
-            mode: mode
-        };
-        /* call processModification --> as modifylc() is async function , only another async function can access its returned value.
-         $("#modifyLcButton").click(function() {} is sync function, hence get value from modifyLc directly */
-        processModification(lc);
-    });
-    $("#cancelButton").click(function() {
-        window.location.replace("/SMUtBank_TradeFinance/importer/importer.html");
-    });
-}
 //This function call modify lc web service and retrieve its response
-async function processModification(lc) {
+async function modifyLcOperation(lc) {
+    showLoadingModal("Modifying Letter of Credit");
+    //retrieve shipPeriod, expiryDate, amount and goods description from user input.
+    shipPeriod = document.getElementById("shipPeriod").value;
+    //if user did not enter any input, retrieve placeholder as amended value
+    if (shipPeriod === "") {
+        shipPeriod = document.getElementById("shipPeriod").placeholder;
+    }
+    expiryDate = document.getElementById("expiryDate").value;
+    if (expiryDate === "") {
+        expiryDate = document.getElementById("expiryDate").placeholder;
+    } else {
+        if (moment(expiryDate, "YYYY-MM-DD", true).format() === "Invalid date") {
+            showErrorModal("Invalid Date Format. Correct Format : 'YYYY-MM-DD'");
+            return {
+                errorMsg: "Invalid Date Format. Correct Format : 'YYYY-MM-DD'"
+            };
+        }
+    }
+    amount = document.getElementById("amount").value;
+    if (amount === "") {
+        amount = document.getElementById("amount").placeholder;
+    } else {
+        if (isNaN(amount)) {
+            showErrorModal("Amount must be numeric");
+            return {
+                errorMsg: "Amount must be numeric"
+            };
+        }
+    }
+    goodsDescription = document.getElementById("goodsDescription").value;
+    if (goodsDescription === "") {
+        goodsDescription = document.getElementById("goodsDescription")
+            .placeholder;
+    }
+    lc.shipPeriod = shipPeriod;
+    lc.expiryDate = expiryDate;
+    lc.amount = amount;
+    lc.goodsDescription = goodsDescription;
+    console.log(lc);
 
     let modification = await modifyLc(userId, PIN, OTP, lc);
 
@@ -486,12 +231,12 @@ async function processModification(lc) {
     if (globalErrorID !== "010000") { //calling this method from assets/js/DAO/lcHandling.js
         //return {errorMsg: errorMsg};
         $('#loadingModal').modal('hide');
-        $("#authError").html(errorMsg);
+        showErrorModal(errorMsg);
     } else if (globalErrorID === "010041") { //OTP expiry error - request new otp
 
         buildSMSOTP();
     } else { //submit lc application --> for now get ref num and upload lc to bc
-        $("#authError").html("lc details modified");
+
         window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
     }
 }
@@ -526,7 +271,7 @@ async function getHomepageData() {
 
     }
     //get status,only store lc with listed status - acknowledged --> submit bol, documents uploaded --> accept documents, documents accpeted,goods collected
-    var listedStatus = ["pending", "acknowledged", "bol uploaded", "documents uploaded", "documents accepted", "goods collected"];
+    var listedStatus = ["acknowledged", "bol uploaded", "documents uploaded", "documents accepted", "goods collected"];
     //get number of refnum in the list
     var numOfRows = refNumberList.length;
     if (refNumberList.length > 0) {
@@ -587,27 +332,17 @@ async function getHomepageData() {
     return homepageDataString;
 }
 
-async function processHome() {
-    let homepageData;
-    setInterval(function() {
-        $('#your_div').load('newController');
-    }, time_interval);
-}
 
 //this function handles ui logic of homepage
 async function homeOperation() {
-    $('#loadingModal').modal('show');
+    showLoadingModal("Loading Homepage");
+
+
     let homepageData = await getHomepageData();;
     //setInterval(async function() {
     // homepageData = await getHomepageData();
     //}, 10000);
-    /*if (sessionStorage.usertype === "shipper") {
-        homepageData = await getAllLcsShipper();
 
-        // Preparation for data table 
-    } else {
-        homepageData = await getHomepageData();
-    }*/
     /*Method 2 - call async/await function --> getHomepageData, (seperate ui and data retriever)*/
 
     var dataObj = JSON.parse(homepageData);
@@ -772,7 +507,7 @@ async function homeOperation() {
             sort: [true, true, true, true, false, false],
             filters: [true, 'select', true, false, false, false],
             filterEmptySelect: 'Filter by Country',
-            filterText: 'Filter by date',
+            filterText: 'Search all',
             pagingDivSelector: "#paging-first-datatable"
         });
     } else {
@@ -782,7 +517,7 @@ async function homeOperation() {
             sort: [true, true, true, true, false, false],
             filters: [true, 'select', true, false, false, false],
             filterEmptySelect: 'All accounts',
-            filterText: 'Search by date',
+            filterText: 'Search all',
             pagingDivSelector: "#paging-first-datatable"
         });
     }
@@ -930,6 +665,7 @@ function showLcDetailsModal() {
 function loadLcDetailsModal() {
     //$(document).ready(function() {
     $("#lcDetailsModal").on("show.bs.modal", function(event) {
+
         // id of the modal with event
         var button = $(event.relatedTarget); // Button that triggered the modal
         var refNum = button.data("refnum"); // Extract info from data-* attributes
@@ -1221,15 +957,16 @@ function buttonClicks() {
             processUpdateStatus(sessionStorage.userID, PIN, OTP, refNum, status, "");
         });
         $("#collectGoods").click(function() {
-            $('#lcDetailsModal').modal('hide');
-            var refNum = $("#returnedRef").attr("value");
-            //console.log(refNum);
-            var status = "goods collected";
-            startTime = new Date().getTime();
-            timer = setInterval(function() { updateElapsedTime(); }, 1000);
-            $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
-            $('#loadingModal').modal('show');
-            processUpdateStatus(sessionStorage.userID, PIN, OTP, refNum, status, "");
+            if (sessionStorage.quizModifyLC == 0 || sessionStorage.gameMode == 0) {
+                $('#lcDetailsModal').modal('hide');
+                var refNum = $("#returnedRef").attr("value");
+                //console.log(refNum);
+                var status = "goods collected";
+
+                $('#loadingModal').modal('show');
+                processUpdateStatus(sessionStorage.userID, PIN, OTP, refNum, status, "");
+            }
+
         });
 
         $("#qrcode").click(function() {
@@ -1271,6 +1008,79 @@ async function processUpdateStatus(userId, PIN, OTP, refNum, status, statusDetai
 
 
 function getExporterDetails() {
+    // get all exporter details of current importer
+    //var exporterList = ["0000000915","0000000914"];
+    var expoterList = ["toffeemint1", "toffeemint2"]; //user ids
+
+    var allUserCredentials = [{
+            userId: "toffeemint1",
+            customerId: "0000000914",
+            bankId: "1",
+            accountId: "0000002473"
+        },
+        {
+            userId: "toffeemint2",
+            customerId: "0000000915",
+            bankId: "1",
+            accountId: "0000002480"
+        },
+        {
+            userId: "toffeemint3",
+            customerId: "0000000917",
+            bankId: "1",
+            accountId: "0000002481"
+        },
+        {
+            userId: "toffeemint4",
+            customerId: "0000000918",
+            bankId: "1",
+            accountId: "0000002482"
+        },
+        {
+            userId: "toffeemint5",
+            customerId: "0000000919",
+            bankId: "1",
+            accountId: "0000002483"
+        },
+        {
+            userId: "toffeemint6",
+            customerId: "0000000920",
+            bankId: "1",
+            accountId: "0000002484"
+        },
+        {
+            userId: "toffeemint7",
+            customerId: "0000000924",
+            bankId: "1",
+            accountId: "0000002486"
+        },
+        {
+            userId: "toffeemint8",
+            customerId: "0000000921",
+            bankId: "1",
+            accountId: "0000002485"
+        },
+        {
+            userId: "toffeemint9",
+            customerId: "0000000925",
+            bankId: "1",
+            accountId: "0000002487"
+        }
+    ];
+    //console.log(allUserCredentials);
+    var exporterCredentials = [];
+    for (var i = 0; i < allUserCredentials.length; i++) {
+        var oneCredential = allUserCredentials[i];
+        //console.log(oneCredential["userId"]);
+        if (oneCredential["userId"] !== userId) {
+            exporterCredentials.push(oneCredential);
+        }
+    }
+    //console.log(exporterCredentials);
+    return exporterCredentials;
+}
+
+function getExporterDetailsAWS() {
     // get all exporter details of current importer
     //var exporterList = ["0000000915","0000000914"];
     var expoterList = ["toffeemint1", "toffeemint2"]; //user ids

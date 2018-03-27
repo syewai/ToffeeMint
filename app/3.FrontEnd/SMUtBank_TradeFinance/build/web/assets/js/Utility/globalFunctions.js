@@ -147,3 +147,20 @@ function showSuccessModal(successMessage) {
     document.getElementById("successMsg").innerHTML = successMessage;
     $('#successModal').modal('show');
 }
+
+function showPopErrorModal(result, answer) {
+    //document.getElementById("errorInfo").innerHTML = errorMessage;
+    $('#wrongResult').html(result);
+    $('#correctAnswer').html(answer);
+    $('#popErrorModal').modal('show');
+}
+
+function showPopSuccessModal(result) {
+    $('#correctResult').html(result);
+    $('#popCorrectModal').modal('show');
+}
+
+function showLoadingModal(message) {
+    $('#loadingMsg').html(message);
+    $('#loadingModal').modal('show');
+}

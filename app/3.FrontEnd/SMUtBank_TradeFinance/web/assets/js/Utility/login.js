@@ -108,6 +108,9 @@ async function authenticateSMSOTP() {
             sessionStorage.customerID = customerID;
             sessionStorage.gameMode = 1;
             sessionStorage.quizApplyLC = 1;
+            sessionStorage.quizAmendLC = 1;
+            sessionStorage.quizModifyLC = 1;
+
 
         }
         if (usertype === "shipper") {
@@ -121,6 +124,9 @@ async function authenticateSMSOTP() {
             sessionStorage.customerID = customerID;
             var user = new User(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, usertype, customerID);
             sessionStorage.setItem('user', JSON.stringify(user)); // change attributes 
+            sessionStorage.gameMode = 1;
+            sessionStorage.quizSubmitBOL = 1;
+            sessionStorage.quizCollect = 1;
         }
 
 

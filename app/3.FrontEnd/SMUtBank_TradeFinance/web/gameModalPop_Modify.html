@@ -1,0 +1,46 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h4 class="js-title-step"></h4>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <section class="panel panel-default">
+                    <div id="target_modify" class="modal-body" style="word-wrap: break-word;">
+                        <div class="row hide" data-step="1" data-title="Introduction">
+
+                            <div class="list-group no-radius alt">
+                                <div class="list-group-item">
+                                    <!--<span class="badge bg-success">25</span>-->
+                                    For the pop quiz.
+                                </div>
+                            </div>
+
+                        </div>
+                        <script>
+                            //$(document).ready(function() {
+                            var chosenQuestions = [2, 5, 7, 8, 10, 14, 17];
+                            var pagesBeforeQuiz = 1;
+                            var answerCounter = 0;
+                            var timer = new Timer();
+
+                            popQuiz(chosenQuestions, pagesBeforeQuiz, "target_modify");
+                            //});
+                        </script>
+
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--<button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button> -->
+            <!--<button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button> -->
+            <button type="button" class="btn btn-primary js-btn-step" data-orientation="next" onclick='onNextPop(answerCounter++, pagesBeforeQuiz, chosenQuestions, timer)'></button>
+            <!---->
+        </div>
+
+    </div>
+</div>

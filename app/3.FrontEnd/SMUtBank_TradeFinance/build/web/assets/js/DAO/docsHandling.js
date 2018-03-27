@@ -105,13 +105,6 @@ function storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink
             dataType: "json",
             data: parameters,
             timeout: 60000,
-            beforeSend: function() {
-                startTime = new Date().getTime();
-                timer = setInterval(function() { updateElapsedTime(); }, 1000);
-                $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
-                $('#loadingModal').modal('show');
-
-            },
             error: function(jqXHR, textStatus, errorThrown) {
                 $('#loadingModal').modal('hide');
                 showErrorModal("Error invoking service.");
@@ -119,8 +112,7 @@ function storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink
         })
         // receive json response from servlet
         .done(function(response) {
-            $('#loadingModal').modal('hide');
-            clearInterval(timer);
+
             if (response.globalErrorId === "010000") { // success code
                 showSuccessModal("Redirecting to Homepage");
                 //get bol link
@@ -158,14 +150,6 @@ function storeCerts(refNum, parametersCOO, parametersInsurance, bolLink, cooLink
             dataType: "json",
             data: parametersCOO,
             timeout: 60000,
-            beforeSend: function() {
-                startTime = new Date().getTime();
-                timer = setInterval(function() { updateElapsedTime(); }, 1000);
-                $("#elapsedTime").html("<h4>Elapsed Time: 00:00</h4>");
-                $('#loadingModal').modal('show');
-
-            },
-
             error: function(jqXHR, textStatus, errorThrown) {
                 $('#loadingModal').modal('hide');
                 showErrorModal("Error invoking service.");
@@ -198,8 +182,7 @@ function storeCerts(refNum, parametersCOO, parametersInsurance, bolLink, cooLink
                     })
                     // receive json response from servlet
                     .done(function(response) {
-                        $('#loadingModal').modal('hide');
-                        clearInterval(timer);
+
                         if (response.globalErrorId === "010000") { // success code
                             showSuccessModal("Redirecting to Homepage");
                             //get insurance link
