@@ -12,7 +12,6 @@
 
 <section class="vbox">
     <section class="scrollable">
-
         <div class="wrapper-lg">
             <h2 class="m-b-xs font-bold m-t-none">Apply Letter of Credits</h2>
 
@@ -149,29 +148,29 @@
 
         </form>
         <script>
-            $(document).ready(function() {
+            $(document).ready(function () {
                 //get customerAcct
+                
                 preProcessingApplyLc();
             });
+
             async function preProcessingApplyLc() {
-                console.log(sessionStorage.gameMode);
-                console.log(sessionStorage.quizApplyLC);
-                if (sessionStorage.quizApplyLC && sessionStorage.gameMode) { // learning mode, initialize modal for pop quiz
-                    console.log("hello");
-                    $('#applyLcButton').attr('data-toggle', 'modal');
-                    $('#applyLcButton').attr('data-target', '#applyLCModal');
-                    // $('#applyLcButton').attr('data-backdrop', 'static');
-                    //$('#applyLcButton').attr('data-keyboard', 'false');
 
-                    $('#applyLCModal').load("../gameModalPop_Create.html", function() {
-                        $('#applyLCModal').modalSteps();
-                        sessionStorage.quizApplyLC = false;
-                        $('#applyLcButton').removeAttr("'data-toggle");
-                        $('#applyLcButton').removeAttr("'data-target");
+                if (sessionStorage.quizApplyLC == 1 && sessionStorage.gameMode == 1) {
+//                    var callback = function () {
+//                    sessionStorage.quizApplyLC = 0;
+//                 }
+                
+                $('#applyLCModal').load("../gameModalPop_Create.html", function () {
+                    $('#applyLCModal').modalSteps({
+                         'completeCallback': function(){sessionStorage.quizApplyLC = 0;}
                     });
-
-                    //sessionStorage.quizApplyLC = false;
-
+                    
+                });
+                $('#applyLcButton').attr('data-toggle', 'modal');
+                $('#applyLcButton').attr('data-target', '#applyLCModal');
+                //$('#applyLcButton').attr('data-backdrop', 'static');
+                //$('#applyLcButton').attr('data-keyboard', 'false');
                 }
 
                 let accounts = await getCustomerAccounts(userId, PIN, OTP); //get currency and importer account
@@ -202,7 +201,7 @@
                 }
                 $("#exporterId").append(optionHTML);
                 var elem = document.getElementById("exporterId");
-                elem.onchange = function() {
+                elem.onchange = function () {
 
                     document.getElementById("printExpId").innerHTML = $('#exporterId option:selected').val();
                     var elements = document.getElementsByClassName("formHidden");
@@ -227,14 +226,16 @@
                     var exporterAcctInput = "<input type ='hidden' name = 'exporterAcct' id='exporterAcct' value='" + accountId + "' >";
                     $("#loginForm").append(exporterAcctInput);
 
-                    $("#applyLcButton").click(function() {
 
-                        if (!sessionStorage.quizApplyLC && !sessionStorage.gameMode) { // learning mode, initialize modal for pop quiz
 
-                            applyLcOperation(importerAccount, currency); // calling from lcOperations.js
+                    $("#applyLcButton").click(function () {
+                        if (sessionStorage.quizApplyLC == 0 || sessionStorage.gameMode == 0) { // learning mode, initialize modal for pop quiz
+                            $('#applyLcButton').removeAttr('data-toggle', 'modal');
+                            $('#applyLcButton').removeAttr('data-target', '#applyLCModal');
+                            applyLcOperation(importerAccount, currency); // calling from lcOperations.js 
                         }
                     });
-                    $("#cancelButton").click(function() {
+                    $("#cancelButton").click(function () {
 
                         window.location.replace("/SMUtBank_TradeFinance/" + sessionStorage.usertype + "/" + sessionStorage.usertype + ".html");
 
@@ -242,6 +243,7 @@
 
                 };
             }
+
         </script>
 
     </section>
@@ -252,7 +254,7 @@
 <div class="modal fade" id="applyLCModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 <!-- error modal
     ======================================== -->
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
+<!--<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger">
@@ -269,8 +271,8 @@
     </div>
 </div>
 
-<!-- success modal
-                ======================================== -->
+ success modal
+                ======================================== 
 <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -288,8 +290,8 @@
     </div>
 </div>
 
-<!-- loading modal
-                ======================================== -->
+ loading modal
+                ======================================== 
 <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -311,20 +313,20 @@
             </div>
         </div>
     </div>
-</div>
-<script src="../assets/js/jquery.min.js"></script>
-<!-- Bootstrap -->
+</div>-->
+<!--<script src="../assets/js/jquery.min.js"></script>
+ Bootstrap 
 <script src="../assets/js/bootstrap.js"></script>
-<!-- App -->
+ App 
 <script src="../assets/js/app.js"></script>
 <script src="../assets/js/slimscroll/jquery.slimscroll.min.js"></script>
 
 <script type="text/javascript" src="../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>
-<!-- game modal & timer-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>-->
+ game modal & timer
 <script src="../assets/js/game/jquery-bootstrap-modal-steps.min.js"></script>
 <script src="../assets/js/game/easytimer.min.js"></script>
-<script type="text/javascript" src="../assets/js/datatable/js/datatable.min.js"></script>
+<script type="text/javascript" src="../assets/js/datatable/js/datatable.min.js"></script>-->
 
 <!--<script src="../assets/js/applyLc.js"></script>
 <script src="../assets/js/retrieveRefNumList.js"></script>

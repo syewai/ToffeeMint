@@ -106,8 +106,8 @@ async function authenticateSMSOTP() {
             sessionStorage.OTP = OTP;
             sessionStorage.usertype = usertype;
             sessionStorage.customerID = customerID;
-            sessionStorage.gameMode = true;
-            sessionStorage.quizApplyLC = true;
+            sessionStorage.gameMode = 1;
+            sessionStorage.quizApplyLC = 1;
 
         }
         if (usertype === "shipper") {

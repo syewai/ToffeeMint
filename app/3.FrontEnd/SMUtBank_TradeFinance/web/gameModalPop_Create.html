@@ -9,27 +9,26 @@
         <div class="row">
             <div class="col-sm-12">
                 <section class="panel panel-default">
-                    <div id="target" class="modal-body" style="word-wrap: break-word;">
+                    <div id="target_create" class="modal-body" style="word-wrap: break-word;">
                         <div class="row hide" data-step="1" data-title="Introduction">
 
                             <div class="list-group no-radius alt">
                                 <div class="list-group-item">
                                     <!--<span class="badge bg-success">25</span>-->
-
-                                    Hello there. Thank you for participating in ToffeeMint's UAT 2. We will start off with a pre-quiz, followed by a series of instructions to test out our app. Click on the NEXT button to start the pre-quiz.
+                                    For the pop quiz. 
                                 </div>
                             </div>
 
                         </div>
                         <script>
                             //$(document).ready(function() {
-                            var chosenQuestions = [2, 5, 7, 8, 10, 14, 17];
-                            var pagesBeforeQuiz = 1;
-                            var answerCounter = 0;
-                            var timer = new Timer();
+                                var chosenQuestions = [2, 5, 7, 8, 10, 14, 17];
+                                var pagesBeforeQuiz = 1;
+                                var answerCounter = 0;
+                                var timer = new Timer();
 
-                            preQuiz(chosenQuestions, pagesBeforeQuiz);
-                            // });
+                                popQuiz(chosenQuestions, pagesBeforeQuiz, "target_create");
+                            //});
                         </script>
 
                     </div>
@@ -39,7 +38,7 @@
         <div class="modal-footer">
             <!--<button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button> -->
             <!--<button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button> -->
-            <button type="button" class="btn btn-primary js-btn-step" data-orientation="next" onclick='onNextPre(answerCounter++, pagesBeforeQuiz, chosenQuestions, timer)'></button>
+            <button type="button" class="btn btn-primary js-btn-step" data-orientation="next" onclick='onNextPop(answerCounter++, pagesBeforeQuiz, chosenQuestions, timer)'></button>
             <!---->
         </div>
 
