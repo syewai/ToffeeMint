@@ -233,9 +233,6 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
     var score;
 
-    timer.stop();
-    var time = timerStart(timer);
-
     if (counter >= pagesBeforeQuiz && counter <= chosenQuestions.length) {
         var questionID = counter - pagesBeforeQuiz;
 
@@ -246,10 +243,10 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
         //console.log(answer);
         if (result === answer) {
             //showSuccessModal("Correct Answer : " + answer);
-            console.log("Correct");
-            score = time * 10;
+            //console.log("Correct");
+            score = timer.getTimeValues().toString(['seconds']) * 10;
             let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1);
-            console.log(qScore);
+            //console.log(qScore);
             //getQuestionScore(sessionStorage.userID, sessionStoreage.PIN)
             /*setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function(callback) {
              
@@ -267,15 +264,19 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
          });
          }
          });*/
+        
     }
+    timer.stop();
+    if(counter != (chosenQuestions.length-1) + pagesBeforeQuiz + 1){
+         timerStart(timer);
+       
+    }
+   
 }
 
 async function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
     var score;
-
-    timer.stop();
-    var time = timerStart(timer);
 
     if (counter >= pagesBeforeQuiz && counter <= chosenQuestions.length) {
         var questionID = counter - pagesBeforeQuiz;
@@ -287,7 +288,7 @@ async function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
         //console.log(answer);
         if (result === answer) {
             console.log("Correct");
-            score = time * 10;
+            score = timer.getTimeValues().toString(['seconds']) * 10;
             setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1);
             /*setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function(callback) {
              
@@ -303,6 +304,11 @@ async function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
          });
          }
          });*/
+       
+    } 
+     timer.stop();
+      if(counter != (chosenQuestions.length-1) + pagesBeforeQuiz + 1){
+         timerStart(timer);
     }
 }
 
@@ -315,9 +321,7 @@ async function onNextPop(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
     var score;
     var resultPair = [];
-    timer.stop();
-    var time = timerStart(timer);
-
+     
     if (counter >= pagesBeforeQuiz && counter % 2 == 1 && counter <= chosenQuestions.length) {
         var questionID = counter - pagesBeforeQuiz;
 
@@ -331,10 +335,11 @@ async function onNextPop(counter, pagesBeforeQuiz, chosenQuestions, timer) {
             /*$("#icon").html('<p class="font-bold h3 font-bold m-t text-primary"><i class="fa fa-check-circle fa-2x"></i> Correct</p>');
             $("#answer").html("Correct Answer is - " + answer);
             $("#explaination").html(''); //put in explaination here*/
-            console.log("Correct");
-            score = time * 10;
+            //console.log("Correct");
+            score = timer.getTimeValues().toString(['seconds']) * 10;
+            //console.log(timer.getTimeValues().toString(['seconds']));
             let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Poptest", 1);
-            console.log(qScore);
+            //console.log(qScore);
         } else {
             showPopErrorModal(result, answer);
             /* $("#icon").html('<p class="font-bold h3 font-bold m-t text-danger"><i class="fa fa-times-circle fa-2x"></i> Incorrect</p>');
@@ -342,6 +347,12 @@ async function onNextPop(counter, pagesBeforeQuiz, chosenQuestions, timer) {
              $("#answer").html("Correct Answer is - " + answer);
              $("#explaination").html('');*/
         }
+    }
+    timer.stop();
+
+   if(counter != (chosenQuestions.length-1) + pagesBeforeQuiz){
+         timerStart(timer);
+       
     }
 }
 
@@ -366,7 +377,7 @@ async function preQuiz(chosenQuestions, pagesBeforeQuiz) {
     var gQuestion;
     var gChoices;
     var gAppendString = "";
-    console.log("test");
+    //console.log("test");
     var gNumberOfQuestions = chosenQuestions.length;
     for (var i = 0; i < gNumberOfQuestions; i++) {
         let getGameQuestionPre = await getGameQuestion("", "", "", chosenQuestions[i]);
@@ -549,8 +560,8 @@ async function popQuiz(chosenQuestions, pagesBeforeQuiz, target) {
 
         }
         //append to div
-        console.log(gQuestion);
-        console.log(gChoices);
+        //console.log(gQuestion);
+        //console.log(gChoices);
         gAppendString += '<div class="row hide" data-step="';
         gAppendString += Number(i) + pagesBeforeQuiz + 1;
         gAppendString += '" data-title="Pop-Quiz">';
