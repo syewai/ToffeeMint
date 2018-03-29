@@ -204,7 +204,7 @@ async function verifyCode(refNum, code) {
 async function verifyQrCodeUI(refNum, code) {
     let result = await verifyCode(refNum, code);
     if (result) {
-        var verified = "<div class='btn btn-primary btn-lg' width=100 height=100><i class='fa fa-check'></i> QR Code Verfified !</div>";
+        var verified = "<div class='btn btn-primary btn-lg' width=100 height=100><i class='fa fa-check'></i> QR Code Verified!</div>";
         verified += "<p class='font-bold h4 font-bold m-t text-primary'> Customer can collect goods </p>"
         $("#scannerFrame").html(verified);
 

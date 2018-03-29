@@ -27,11 +27,12 @@
 </head>
 
 <body class="">
-    <!-- <div class="modal fade" id="postQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div> -->
-    <!-- <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false"></button> -->
-    <div class="modal fade" id="postQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: 700px; overflow-wrap: break-word;word-wrap: break-word;"></div>
+    <div class="modal fade" id="postQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+    <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#preQuizModal" data-backdrop="static" data-keyboard="false"></button>
+    <div class="modal fade" id="preQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+<!--    <div class="modal fade" id="postQuizModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: 700px; overflow-wrap: break-word;word-wrap: break-word;"></div>
     <button id="modal" style="display:none" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"></button>
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: 700px; overflow-wrap: break-word;word-wrap: break-word;"></div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="max-width: 700px; overflow-wrap: break-word;word-wrap: break-word;"></div>-->
 
     <!--OTP modal-->
     <div class="modal fade" id="showOTPModal" tabindex="-1" role="dialog" aria-hidden="true"></div>
@@ -87,22 +88,22 @@
             $("#showOTPModal").load("../OTPModal.html");
 
 
-            /*$('#postQuizModal').load("../gameModal2.html", function() {
+            $('#postQuizModal').load("../gameModalPost.html", function() {
                 $('#postQuizModal').modalSteps();
-            });*/
-
-
-            /*if (sessionStorage.showQuiz == 1) {
-            $("#myModal").load("../gameModal.html", function() {
-                $('#myModal').modalSteps();
-                jQuery(function() {
-                    jQuery('#modal').click();
-                    sessionStorage.showQuiz = 0;
-                });
-
             });
 
-             } */
+
+            if (sessionStorage.showQuiz == 1) {
+                $("#preQuizModal").load("../gameModalPre.html", function() {
+                    $('#preQuizModal').modalSteps();
+                    jQuery(function() {
+                        jQuery('#modal').click();
+                        sessionStorage.showQuiz = 0;
+                    });
+
+                });
+
+            }
         });
     </script>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>-->

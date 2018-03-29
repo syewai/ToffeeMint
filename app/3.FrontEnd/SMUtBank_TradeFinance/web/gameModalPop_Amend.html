@@ -10,12 +10,21 @@
             <div class="col-sm-12">
                 <section class="panel panel-default">
                     <div id="target_amend" class="modal-body" style="word-wrap: break-word;">
-                        <div class="row hide" data-step="1" data-title="Introduction">
+                        <div class="row hide" data-step="1" data-title="Pop-Quiz">
 
                             <div class="list-group no-radius alt">
                                 <div class="list-group-item">
-                                    <!--<span class="badge bg-success">25</span>-->
-                                    For the pop quiz.
+                                    <h4><strong>Verification on the Blockchain </br></strong></h4>
+                                    <p>For each transaction, modification or update that happens on the blockchain, a new "block" would be created on the chain, which would then be verified across the network; and in doing so, produce a transaction hash. This new block be sync'd to all parties on the network, allowing everyone to have an updated copy of the contract. </p>                
+                                    </br>
+                                    <p>You can test our blockchain with this button below, which would create a new contract on the chain; with a value of "test".</p>                                    
+                                    </br>
+                                    <input class="btn btn-default" type="button" value="Open Window" onclick="window.open('http://smu.tbankonline.com:9001/lc/createContract?refNum=test&contract=test')" style='center'>
+                                    </br>
+                                    </br>
+                                    <p>Notice that a new transaction hash is created each time the button is pressed, and the Block Height increments upwards, as new blocks are added to the chain.</p> 
+                                    </br>
+                                    
                                 </div>
                             </div>
 

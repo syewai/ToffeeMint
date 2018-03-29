@@ -10,23 +10,101 @@
             <div class="col-sm-12">
                 <section class="panel panel-default">
                     <div id="target_create" class="modal-body" style="word-wrap: break-word;">
-                        <div class="row hide" data-step="1" data-title="Introduction">
+                        <div class="row hide" data-step="1" data-title="Pop-Quiz (Please read this section before attempting the quiz.)">
 
                             <div class="list-group no-radius alt">
                                 <div class="list-group-item">
-                                    <!--<span class="badge bg-success">25</span>-->
-                                    For the pop quiz. 
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">
+                                            <h4>
+                                                <strong>The Trade Finance Process</br>
+                                                </strong>
+                                            </h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p>In a trade finance process, importers and exporters first agree on a trade contract
+                                                on a shipment of goods. </br>
+                                                Once a deal has been reached, the Importer will establish a line of credit with his bank to finance this transaction, commonly
+                                                referred to as a Letter of Credit (LC) . This will now kick start the trade
+                                                finance process, which you will get to explore first hand in our trade application.
+                                            </p>
+                                            </br>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">
+                                            <h4>
+                                                <strong>What is a Letter of Credit?</br>
+                                                </strong>
+                                            </h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p>A letter of credit is a contract issued by a bank to another bank (especially
+                                                one in a different country) to serve as a guarantee for payments made to
+                                                a specified person under specified conditions.</p>
+                                            </br>
+                                        </div>
+                                    </div>
+
+                                    <div class="panel panel-warning">
+                                        <div class="panel-heading">
+                                            <h4>
+                                                <strong>Distributed Trade Finance System</br>
+                                                </strong>
+                                            </h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p>The Blockchain allows for all smart contracts to be created, updated and modified,
+                                                by all parties on the distributed ledger (think of it as a Google Docs, for
+                                                financial contracts). The Smart Contracts on the network will then be validated
+                                                and enforced by the Blockchain. The trade finance system that you are using
+                                                right now, is based on the Ethereum Blockchain, and all Letters of Credit
+                                                on the chain are facilitated through Smart Contracts. </p>
+                                            </br>
+                                        </div>
+                                    </div>
+
+                                    <div class="panel panel-warning">
+                                        <div class="panel-heading">
+                                            <h4>
+                                                <strong>What is a Smart Contract?</br>
+                                                </strong>
+                                            </h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p>A smart contract is a computer protocol intended to digitally facilitate, verify,
+                                                or enforce the negotiation or performance of a contract. Smart contracts
+                                                allow the performance of credible transactions without third parties. These
+                                                transactions are trackable and irreversible. Smart contracts were first proposed
+                                                by Nick Szabo, who coined the term, in 1994.</p>
+                                            </br>
+                                        </div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+
                                 </div>
                             </div>
 
                         </div>
                         <script>
                             //$(document).ready(function() {
-                                var chosenQuestions = [2, 5, 7, 8, 10, 14, 17];
-                                var pagesBeforeQuiz = 1;
-                                var answerCounter = 0;
-                                var timer = new Timer();
-                                popQuiz(chosenQuestions, pagesBeforeQuiz, "target_create");
+                            console.log(sessionStorage.userID.substr(8));
+
+                            var chosenQuestions = [2, 5, 7, 8, 10, 14, 17];
+                            var pagesBeforeQuiz = 1;
+                            var answerCounter = 0;
+                            var timer = new Timer();
+                            popQuiz(chosenQuestions, pagesBeforeQuiz, "target_create");
                             //});
                         </script>
 

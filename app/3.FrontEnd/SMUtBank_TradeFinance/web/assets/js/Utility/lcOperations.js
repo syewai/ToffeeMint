@@ -848,7 +848,7 @@ function loadLcDetailsModal() {
             attrToChange = [
                 "collectGoods",
                 "",
-                "Collect Goods",
+                "Dispense Goods",
                 "",
                 "visible",
                 "hidden"
@@ -957,13 +957,14 @@ function buttonClicks() {
             processUpdateStatus(sessionStorage.userID, PIN, OTP, refNum, status, "");
         });
         $("#collectGoods").click(function() {
-            if (sessionStorage.quizModifyLC == 0 || sessionStorage.gameMode == 0) {
+            if (true) {
                 $('#lcDetailsModal').modal('hide');
                 var refNum = $("#returnedRef").attr("value");
                 //console.log(refNum);
                 var status = "goods collected";
-
+                sessionStorage.quizCollect = 1;
                 $('#loadingModal').modal('show');
+
                 processUpdateStatus(sessionStorage.userID, PIN, OTP, refNum, status, "");
             }
 
@@ -1013,58 +1014,46 @@ function getExporterDetails() {
     var expoterList = ["toffeemint1", "toffeemint2"]; //user ids
 
     var allUserCredentials = [{
-            userId: "toffeemint1",
-            customerId: "0000000914",
+            userId: "ExporterTeam1",
+            customerId: "0000001694",
             bankId: "1",
-            accountId: "0000002473"
+            accountId: "0000003881"
         },
         {
-            userId: "toffeemint2",
-            customerId: "0000000915",
+            userId: "ExporterTeam2",
+            customerId: "0000001695",
             bankId: "1",
-            accountId: "0000002480"
+            accountId: "0000003882"
         },
         {
-            userId: "toffeemint3",
-            customerId: "0000000917",
+            userId: "ExporterTeam3",
+            customerId: "0000001696",
             bankId: "1",
-            accountId: "0000002481"
+            accountId: "0000003884"
         },
         {
-            userId: "toffeemint4",
-            customerId: "0000000918",
+            userId: "ExporterTeam4",
+            customerId: "0000001697",
             bankId: "1",
-            accountId: "0000002482"
+            accountId: "0000003885"
         },
         {
-            userId: "toffeemint5",
-            customerId: "0000000919",
+            userId: "ExporterTeam5",
+            customerId: "0000001698",
             bankId: "1",
-            accountId: "0000002483"
+            accountId: "0000003886"
         },
         {
-            userId: "toffeemint6",
-            customerId: "0000000920",
+            userId: "ExporterTeam6",
+            customerId: "0000001699",
             bankId: "1",
-            accountId: "0000002484"
+            accountId: "0000003888"
         },
         {
-            userId: "toffeemint7",
-            customerId: "0000000924",
+            userId: "ExporterTeam7",
+            customerId: "0000001700",
             bankId: "1",
-            accountId: "0000002486"
-        },
-        {
-            userId: "toffeemint8",
-            customerId: "0000000921",
-            bankId: "1",
-            accountId: "0000002485"
-        },
-        {
-            userId: "toffeemint9",
-            customerId: "0000000925",
-            bankId: "1",
-            accountId: "0000002487"
+            accountId: "0000003887"
         }
     ];
     //console.log(allUserCredentials);

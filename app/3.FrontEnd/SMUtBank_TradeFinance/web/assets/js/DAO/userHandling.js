@@ -160,10 +160,13 @@ function checkAdmin(userId, PIN, usertype) {
 
 function getShipperId(userID) {
     var shipperMapping = {
-        "toffeemintadmin": "toffeemint2",
-        "toffeemint3": "toffeemint2",
-        "toffeemint6": "toffeemint5",
-        "toffeemint9": "toffeemint8",
+        "ShipperqTeam1": "ExporterTeam1",
+        "ShipperqTeam2": "ExporterTeam2",
+        "ShipperqTeam3": "ExporterTeam3",
+        "ShipperqTeam4": "ExporterTeam4",
+        "ShipperqTeam5": "ExporterTeam5",
+        "ShipperqTeam6": "ExporterTeam6",
+        "ShipperqTeam7": "ExporterTeam7"
     };
     if (shipperMapping[userID] != null) {
         return shipperMapping[userID];

@@ -40,6 +40,7 @@ async function createSMSOTP() {
     //check shipper 
     if (usertype === "shipper") {
         var checkShipper = getShipperId(userId);
+        console.log(checkShipper);
         if (checkShipper === "") {
             return { errorMsg: "You are not a shipper" };
         }
@@ -126,7 +127,7 @@ async function authenticateSMSOTP() {
             sessionStorage.setItem('user', JSON.stringify(user)); // change attributes 
             sessionStorage.gameMode = 1;
             sessionStorage.quizSubmitBOL = 1;
-            sessionStorage.quizCollect = 1;
+            sessionStorage.quizCollect = 0;
         }
 
 

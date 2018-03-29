@@ -34,6 +34,7 @@
         console.log("Score 1 :" + totalScorePre);
         console.log("TSCore: " + totalScore);
         const getGameScorePost = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest");
+        
         var totalScorePost = JSON.stringify(getGameScorePost.Content.ServiceResponse.ScoreDetails.total_score);
         if (totalScorePost === "null") {
             totalScore += Number(0);
@@ -43,6 +44,16 @@
         }
         $('#tScore').html(totalScore);
 
+        let getTeamScore = await getGameScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Poptest1");
+        var teamScore = JSON.stringify(getTeamScore.Content.ServiceResponse.ScoreDetails.total_score);
+        if (teamScore === "null") {
+            teamScore = Number(0);
+        } else {
+            // getTeamScore = totalScorePre.substr(1).slice(0, -1);
+            // getTeamScore += Number(totalScorePre);
+        }
+        console.log(teamScore);
+        $('#teamScore').html(teamScore);
     }
 </script>
 
@@ -71,7 +82,7 @@
                         <span class="easypiechart pos-abt" data-percent="100" data-line-width="4" data-track-Color="#fff" data-scale-Color="false" data-size="50" data-line-cap='butt' data-animate="2000" data-target="#bugs" data-update="3000"></span>
                     </span>
                     <a class="clear" href="#">
-                        <span class="h3 block m-t-xs"><strong id="bugs">-</strong></span>
+                        <span class="h3 block m-t-xs"><strong id="teamScore"></strong></span>
                         <small class="text-muted text-uc font-bold">Team Score</small>
                     </a>
                 </div>
@@ -80,7 +91,7 @@
 
 
         <div class="container">
-            <h1 class="display-3 text-center">TOP 10 LEADERBOARD RESULTS</h1>
+            <h1 class="display-3 text-center">TEAM LEADERBOARD RESULTS</h1>
             <canvas id="myChart"></canvas>
         </div>
 
@@ -98,7 +109,7 @@
             });
 
             async function call2Bar() {
-                const arrScoreAndUserId = await preArray();
+                const arrScoreAndUserId = await popArray();
                 var arrUserId = arrScoreAndUserId[0];
                 var arrScore = arrScoreAndUserId[1];
                 const parrScore = await postArray();
@@ -109,7 +120,7 @@
                     data: {
                         labels: arrUserId,
                         datasets: [{
-                            label: 'Indivdual Pre-test',
+                            label: 'Team Pop Quiz Score',
                             data: arrScore,
                             backgroundColor: [
                                 'rgba(255, 99, 132, 0.2)',
@@ -136,35 +147,7 @@
                                 'rgba(54, 162, 235, 1)'
                             ],
                             borderWidth: 1
-                        }, {
-                            label: 'Indivdual Post-test',
-                            data: parrScore,
-                            backgroundColor: [
-                                'red',
-                                'green',
-                                'blue',
-                                'orange',
-                                'yellow',
-                                'purple',
-                                'green',
-                                'orange',
-                                'purple',
-                                'red'
-                            ],
-                            borderColor: [
-                                'rgba(255,99,132,1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)',
-                                'rgba(255,99,132,1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)'
-                            ],
-                            borderWidth: 1
-                        }]
+                        }, ]
                     },
                     options: {
                         scales: {
@@ -190,7 +173,7 @@
                 const getGameLeadersPre = await getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false);
                 //getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
                 console.log(getGameLeadersPre);
-                console.log("Pre leaders ---------------");
+                console.log("pop leaders ---------------");
                 var testArr = getGameLeadersPre;
                 mainArr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
                 console.log(mainArr);
@@ -204,8 +187,6 @@
                 console.log(arrUserId);
                 console.log(arrScore);
                 return [arrUserId, arrScore];
-
-
             }
             async function postArray() {
                 var pmainArr;
@@ -226,6 +207,26 @@
                 return parrScore;
 
             }
+            async function popArray() {
+                var popmainArr;
+                var poparrUserId = [];
+                var parrScore = [];
+                const getGameLeadersPop = await getGameLeaders((sessionStorage.userID), sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Poptest1", false);
+                //getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2019-01-01 00:00:00", "Posttest", false, function(callback) {
+                var poptestArr = getGameLeadersPop;
+                //});
+                popmainArr = poptestArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
+                console.log(popmainArr);
+                console.log(popmainArr.length);
+                for (i = 0; i < popmainArr.length && i < 10; i++) {
+                    poparrUserId[i] = popmainArr[i]['user_Id'];
+                    poparrUserId[i] = popmainArr[i]['score'];
+                }
+
+                return parrScore;
+
+            }
+            
         </script>
     </section>
     <!--End of Scrollable-->

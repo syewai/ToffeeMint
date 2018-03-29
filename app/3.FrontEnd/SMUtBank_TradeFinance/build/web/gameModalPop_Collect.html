@@ -10,37 +10,53 @@
             <div class="col-sm-12">
                 <section class="panel panel-default">
                     <div id="target_collect" class="modal-body" style="word-wrap: break-word;">
-                        <div class="row hide" data-step="1" data-title="Introduction">
+                        <div class="row hide" data-step="1" data-title="Pop-Quiz">
 
                             <div class="list-group no-radius alt">
                                 <div class="list-group-item">
-                                    <!--<span class="badge bg-success">25</span>-->
-                                    For the pop quiz.
+                                    <div class="panel panel-primary"></div>
+                                    <div class="panel-heading">
+                                        <h4>
+                                            <strong>Shipment Collection</br>
+                                            </strong>
+                                        </h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <p>In a trade finance process, importers and exporters first agree on a trade contract
+                                            on a shipment of goods. </br>
+                                            Once a deal has been reached, the Importer will establish a line of credit with his bank to finance this transaction, commonly
+                                            referred to as a Letter of Credit (LC) . This will now kick start the trade finance
+                                            process, which you will get to explore first hand in our trade application.
+                                        </p>
+                                        </br>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
-                        <script>
-                            //$(document).ready(function() {
-                            var chosenQuestions = [2, 5, 7, 8, 10, 14, 17];
-                            var pagesBeforeQuiz = 1;
-                            var answerCounter = 0;
-                            var timer = new Timer();
-                       
-                            popQuiz(chosenQuestions, pagesBeforeQuiz, "target_collect");
-                            //});
-                        </script>
 
                     </div>
-                </section>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <!--<button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button> -->
-            <!--<button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button> -->
-            <button type="button" class="btn btn-primary js-btn-step" data-orientation="next" onclick='onNextPop(answerCounter++, pagesBeforeQuiz, chosenQuestions, timer)'></button>
-            <!---->
-        </div>
+                    <script>
+                        //$(document).ready(function() {
+                        var chosenQuestions = [2, 5, 7, 8, 10, 14, 17];
+                        var pagesBeforeQuiz = 1;
+                        var answerCounter = 0;
+                        var timer = new Timer();
 
+                        popQuiz(chosenQuestions, pagesBeforeQuiz, "target_collect");
+//                            sessionStorage.quizCollect = 0;
+                            //});
+                    </script>
+
+            </div>
+            </section>
+        </div>
     </div>
+    <div class="modal-footer">
+        <!--<button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button> -->
+        <!--<button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button> -->
+        <button type="button" class="btn btn-primary js-btn-step" data-orientation="next" onclick='onNextPop(answerCounter++, pagesBeforeQuiz, chosenQuestions, timer)'></button>
+        <!---->
+    </div>
+
+</div>
 </div>

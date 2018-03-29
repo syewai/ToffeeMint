@@ -338,7 +338,7 @@ async function onNextPop(counter, pagesBeforeQuiz, chosenQuestions, timer) {
             //console.log("Correct");
             score = timer.getTimeValues().toString(['seconds']) * 10;
             //console.log(timer.getTimeValues().toString(['seconds']));
-            let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Poptest", 1);
+            let qScore = await setQuestionScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Poptest1", 1);
             //console.log(qScore);
         } else {
             showPopErrorModal(result, answer);
