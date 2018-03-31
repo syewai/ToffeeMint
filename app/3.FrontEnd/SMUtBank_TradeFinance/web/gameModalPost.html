@@ -3,20 +3,33 @@
 
         <div class="modal-header">
 
-            <h4 class="js-title-step"></h4>   
+            <h4 class="js-title-step"></h4>
 
         </div>
         <div class="row">
             <div class="col-sm-12">
                 <section class="panel panel-default">
-                    <div id="target_post" class="modal-body" style="word-wrap: break-word;">            
+                    <div id="target_post" class="modal-body" style="word-wrap: break-word;">
                         <div class="row hide" data-step="1" data-title="Post-Quiz">
-                            
+
                             <div class="list-group no-radius alt">
                                 <div class="list-group-item">
                                     <!--<span class="badge bg-success">25</span>-->
-                                    <h4><strong>One more thing~</br></strong></h4>
-                                    <p>Thanks for participating in this short session on Trade Finance on the Blockchain! Let's say goodbye with a quick quiz on what you have learnt.</p>
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">
+                                            <h4>
+                                                <strong>One more thing~</br>
+                                                </strong>
+                                            </h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p>Thanks for participating in this short session on Trade Finance on the Blockchain!
+                                                Let's say goodbye with a quick quiz on what you have learnt.</p>
+                                        </div>
+                                    </div>
+
+
+
                                 </div>
                             </div>
 
@@ -26,7 +39,7 @@
                             var pagesBeforeQuiz = 1;
                             var answerCounter = 0;
                             var timer = new Timer();
-                            
+
                             postQuiz(chosenQuestions, pagesBeforeQuiz);
                         </script>
 
