@@ -251,6 +251,7 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
             /*setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function(callback) {
              
              });*/
+            sessionStorage.preScore = Number(sessionStorage.preScore) + 1;
         } else {
             //showErrorModal("Correct Answer : " + answer);
         }
@@ -293,6 +294,7 @@ async function onNextPost(counter, pagesBeforeQuiz, chosenQuestions, timer) {
             /*setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1, function(callback) {
              
              });*/
+            sessionStorage.postScore = Number(sessionStorage.postScore) + 1;
         }
         /*getGameAnswer("", "", "", chosenQuestions[questionID], function(callback) {
          answer = JSON.stringify(callback.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);

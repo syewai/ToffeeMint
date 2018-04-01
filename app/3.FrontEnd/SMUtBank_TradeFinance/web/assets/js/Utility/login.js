@@ -111,6 +111,8 @@ async function authenticateSMSOTP() {
             sessionStorage.quizApplyLC = 1;
             sessionStorage.quizAmendLC = 1;
             sessionStorage.quizModifyLC = 1;
+            sessionStorage.preScore = 0;
+            sessionStorage.postScore = 0;
 
 
         }
@@ -128,6 +130,8 @@ async function authenticateSMSOTP() {
             sessionStorage.gameMode = 1;
             sessionStorage.quizSubmitBOL = 1;
             sessionStorage.quizCollect = 0;
+            sessionStorage.preScore = 0;
+            sessionStorage.postScore = 0;
         }
 
 
