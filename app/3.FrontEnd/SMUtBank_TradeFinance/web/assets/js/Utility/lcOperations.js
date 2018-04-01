@@ -497,7 +497,7 @@ async function homeOperation() {
             $row.append($editCell);
             $("#latestLCs").append($row);
         }
-    }
+    
 
     //DataTables instantiation for shipper homepage.
     if (sessionStorage.usertype === "shipper") {
@@ -539,6 +539,11 @@ async function homeOperation() {
 
         // }
     });
+} else {
+    $('#loadingModal').modal('hide');
+    $("#latestLCs").append("<p>No records found</p>");
+    
+}
 
 
 }

@@ -35,12 +35,13 @@
 
                         </div>
                         <script>
-                            var chosenQuestions = [2, 5, 7, 8, 10, 14, 17];
-                            var pagesBeforeQuiz = 1;
-                            var answerCounter = 0;
-                            var timer = new Timer();
+                            var chosenQuestionsPost = [2, 5, 7, 8, 10, 14, 17];
+                            var pagesBeforeQuizPost = 1;
+                            var counterPost = 0;
+                            var postScore = 0;
+                            var timerPost = new Timer();
 
-                            postQuiz(chosenQuestions, pagesBeforeQuiz);
+                            postQuiz(chosenQuestionsPost, pagesBeforeQuizPost);
                         </script>
 
                     </div>
@@ -50,7 +51,7 @@
         <div class="modal-footer">
             <!--<button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button> -->
             <!--<button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button> -->
-            <button type="button" class="btn btn-primary js-btn-step" data-orientation="next" onclick='onNextPost(answerCounter++, pagesBeforeQuiz, chosenQuestions, timer)'></button>
+            <button type="button" class="btn btn-primary js-btn-step" data-orientation="next" onclick='onNextPost(counterPost++, pagesBeforeQuizPost, chosenQuestionsPost, timerPost)'></button>
             <!---->
         </div>
 

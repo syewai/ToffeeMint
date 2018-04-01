@@ -6,6 +6,7 @@ var userId = "";
 var PIN = "";
 var usertype = "";
 var customerID = "";
+var groupID = "";
 var OTP = "";
 if (user !== null) {
     userId = user.userID;
@@ -21,6 +22,7 @@ async function createSMSOTP() {
     userId = document.getElementById("userID").value;
     PIN = document.getElementById("PIN").value;
     usertype = document.getElementById("usertype").value;
+    groupID = document.getElementById("groupID").value;
     if (!(userId.length > 0)) {
 
         return { errorMsg: "Username cannot be blank" };
@@ -33,6 +35,7 @@ async function createSMSOTP() {
 
         return { errorMsg: "Usertype cannot be blank" };
     }
+    
     /*var isAdmin = checkAdmin(userId, PIN, usertype); //this method is calling from userHandling
     if (isAdmin.hasOwnProperty("roleError")) {
         return { errorMsg: isAdmin.roleError };
@@ -95,46 +98,44 @@ async function authenticateSMSOTP() {
     if (globalErrorID === "010000") {
         //if user authentication successful, store userid,pin and otp in a session, load role selector 
         ////console.log(username + password + usertype);
+        sessionStorage.userID = userId;
+        sessionStorage.PIN = PIN;
+        sessionStorage.OTP = OTP;
+        sessionStorage.usertype = usertype;
+            
         customerID = data.Content.ServiceResponse.CDMCustomer.customer.customerID;
+        sessionStorage.customerID = customerID;
+        sessionStorage.gameID = 104;
+        sessionStorage.showQuiz = 1;
+        console.log(groupID);
+        if (!(groupID.length > 0)) {
+            sessionStorage.gameMode = 0;
+        } else {
+            sessionStorage.gameMode = 1;
+            sessionStorage.preScore = 0;
+            sessionStorage.postScore = 0;
+        }
 
         if (usertype === "importer" || usertype === "exporter") {
             var user = new User(userId, PIN, OTP, usertype, customerID);
             sessionStorage.setItem('user', JSON.stringify(user)); // change attributes 
-            sessionStorage.gameID = 104;
-            sessionStorage.showQuiz = 1;
-            sessionStorage.userID = userId;
-            sessionStorage.PIN = PIN;
-            sessionStorage.OTP = OTP;
-            sessionStorage.usertype = usertype;
-            sessionStorage.customerID = customerID;
-            sessionStorage.gameMode = 1;
+            
             sessionStorage.quizApplyLC = 1;
             sessionStorage.quizAmendLC = 1;
             sessionStorage.quizModifyLC = 1;
-            sessionStorage.preScore = 0;
-            sessionStorage.postScore = 0;
-
-
         }
         if (usertype === "shipper") {
 
             var checkShipper = getShipperId(userId);
             sessionStorage.shipperId = userId;
             sessionStorage.userID = checkShipper;
-            sessionStorage.PIN = PIN;
-            sessionStorage.OTP = OTP;
-            sessionStorage.usertype = usertype;
-            sessionStorage.customerID = customerID;
             var user = new User(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, usertype, customerID);
             sessionStorage.setItem('user', JSON.stringify(user)); // change attributes 
-            sessionStorage.gameMode = 1;
+       
             sessionStorage.quizSubmitBOL = 1;
             sessionStorage.quizCollect = 0;
-            sessionStorage.preScore = 0;
-            sessionStorage.postScore = 0;
+            
         }
-
-
 
         console.log(sessionStorage.usertype);
         console.log(sessionStorage.userID);
