@@ -43,9 +43,8 @@
 //            totalScore += Number(totalScorePost);
         }
         $('#tScore').html(totalScore);
-        let getTeamScore = await getGameScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest");
 
-//        let getTeamScore = await getGameScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest");
+        let getTeamScore = await getGameScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest");
         var teamScore = JSON.stringify(getTeamScore.Content.ServiceResponse.ScoreDetails.total_score);
         if (teamScore === "null") {
             teamScore = Number(0);

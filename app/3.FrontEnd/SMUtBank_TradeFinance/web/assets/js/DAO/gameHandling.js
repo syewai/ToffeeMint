@@ -229,7 +229,7 @@ async function onNextPost(counterPost, pagesBeforeQuizPost, chosenQuestionsPost,
     if (counterPost >= pagesBeforeQuizPost && counterPost <= chosenQuestionsPost.length) {
         var questionID = counterPost - pagesBeforeQuiz;
 
-        var result = $("input[name=" + counterPost + "]:checked").val();
+        var result = $("input[name=post" + counterPost + "]:checked").val();
         //console.log(result);
         let getGameAnswerPre = await getGameAnswer("", "", "", chosenQuestionsPost[questionID]);
         answer = JSON.stringify(getGameAnswerPre.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
@@ -469,7 +469,7 @@ async function postQuiz(chosenQuestions, pagesBeforeQuiz) {
 
                 //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
                 gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
-                gAppendString += '<input style="display:none" type="radio" name="';
+                gAppendString += '<input style="display:none" type="radio" name="post';
                 gAppendString += (i) + 1;
                 gAppendString += '" value="';
                 gAppendString += option;
