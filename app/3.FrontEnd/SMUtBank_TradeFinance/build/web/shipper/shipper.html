@@ -104,16 +104,17 @@
                     });
 
                 });
-          }else if (sessionStorage.quizCollect == 1) {
-                $("#preQuizModal").load("../gameModalPop_Collect.html", function() {
-                    $('#preQuizModal').modalSteps();
-                    jQuery(function() {
-                        jQuery('#modal').click();
-                        sessionStorage.quizCollect = 0;
-                    });
-
-                });
           }
+//          else if (sessionStorage.quizCollect == 1) {
+//                $("#preQuizModal").load("../gameModalPop_Collect.html", function() {
+//                    $('#preQuizModal').modalSteps();
+//                    jQuery(function() {
+//                        jQuery('#modal').click();
+//                        sessionStorage.quizCollect = 0;
+//                    });
+//
+//                });
+//          }
             
         });
     </script>

@@ -177,9 +177,9 @@ async function getGameLeaders(userId, PIN, OTP, gameId, startTime, endTime, mode
 async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
     var score;
-    console.log(chosenQuestions.length - pagesBeforeQuiz);
-    console.log("counter");
-    console.log(counter);
+    //console.log(chosenQuestions.length - pagesBeforeQuiz);
+    //console.log("counter");
+    //console.log(counter);
     
     if (counter >= pagesBeforeQuiz && counter <= chosenQuestions.length) {
         var questionID = counter - pagesBeforeQuiz;
@@ -214,7 +214,7 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
             gAppendString += "We have come to the end of the quiz. Thank you for your time.</center>";
             $("#overallResults").append(gAppendString);
             sessionStorage.preScore = preScore;
-            console.log(sessionStorage.preScore);
+            //console.log(sessionStorage.preScore);
     }
    
 }
@@ -222,9 +222,9 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
 async function onNextPost(counterPost, pagesBeforeQuizPost, chosenQuestionsPost, timerPost) {
     var answer;
     var score;
-    console.log(chosenQuestionsPost.length - pagesBeforeQuizPost);
-    console.log("counter");
-    console.log(counterPost);
+    //console.log(chosenQuestionsPost.length - pagesBeforeQuizPost);
+    //console.log("counter");
+    //console.log(counterPost);
     
     if (counterPost >= pagesBeforeQuizPost && counterPost <= chosenQuestionsPost.length) {
         var questionID = counterPost - pagesBeforeQuiz;
@@ -240,7 +240,7 @@ async function onNextPost(counterPost, pagesBeforeQuizPost, chosenQuestionsPost,
             score = timerPost.getTimeValues().toString(['seconds']) * 10;
             let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestionsPost[questionID], sessionStorage.gameID, score, "Posttest", 1);
             postScore += 1;
-            console.log("correct"+postScore);
+            //console.log("correct"+postScore);
         } else {
             //showErrorModal("Correct Answer : " + answer);
         }
@@ -260,7 +260,7 @@ async function onNextPost(counterPost, pagesBeforeQuizPost, chosenQuestionsPost,
             gAppendString += "We have come to the end of the quiz. Thank you for your time.</center>";
             $("#overallResultsPost").append(gAppendString);
             sessionStorage.postScore = postScore;
-            console.log(sessionStorage.postScore);
+            //console.log(sessionStorage.postScore);
     }
    
 }
