@@ -227,10 +227,9 @@ async function onNextPost(counterPost, pagesBeforeQuizPost, chosenQuestionsPost,
     //console.log(counterPost);
     
     if (counterPost >= pagesBeforeQuizPost && counterPost <= chosenQuestionsPost.length) {
-        var questionID = counterPost - pagesBeforeQuiz;
+        var questionID = counterPost - pagesBeforeQuizPost;
 
-        var result = $("input[name=post" + counterPost + "]:checked").val();
-        //console.log(result);
+var result = $("input[name=" + counterPost + "]:checked").val();        //console.log(result);
         let getGameAnswerPre = await getGameAnswer("", "", "", chosenQuestionsPost[questionID]);
         answer = JSON.stringify(getGameAnswerPre.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
         //console.log(answer);
@@ -291,7 +290,7 @@ async function onNextPop(counter, pagesBeforeQuiz, chosenQuestions, timer) {
             //console.log("Correct");
             score = timer.getTimeValues().toString(['seconds']) * 10;
             //console.log(timer.getTimeValues().toString(['seconds']));
-            let qScore = await setQuestionScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Poptest1", 1);
+            let qScore = await setQuestionScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Poptest", 1);
             //console.log(qScore);
         } else {
             showPopErrorModal(result, answer);
@@ -469,7 +468,7 @@ async function postQuiz(chosenQuestions, pagesBeforeQuiz) {
 
                 //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
                 gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
-                gAppendString += '<input style="display:none" type="radio" name="post';
+                gAppendString += '<input style="display:none" type="radio" name=" ';
                 gAppendString += (i) + 1;
                 gAppendString += '" value="';
                 gAppendString += option;
