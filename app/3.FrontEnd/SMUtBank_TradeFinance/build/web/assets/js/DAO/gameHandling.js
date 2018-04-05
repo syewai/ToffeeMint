@@ -237,6 +237,8 @@ var result = $("input[name=" + counterPost + "]:checked").val();        //consol
         if (result === answer) {
             
             score = timerPost.getTimeValues().toString(['seconds']) * 10;
+//            score = 1;
+
             let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestionsPost[questionID], sessionStorage.gameID, score, "Posttest", 1);
             postScore += 1;
             //console.log("correct"+postScore);
