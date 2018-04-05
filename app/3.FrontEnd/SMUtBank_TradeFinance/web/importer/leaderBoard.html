@@ -20,31 +20,31 @@
         totalScores();
     });
     async function totalScores() {
-        var preScore = 0;
-        let getGameScore1 = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest");
-        var totalScorePre = JSON.stringify(getGameScore1.Content.ServiceResponse.ScoreDetails.total_score);
-        console.log("totalScorePre:  " + totalScorePre);
-        if (totalScorePre === "null") {
-            //console.log("inside");
-            preScore += Number(0);
-        } else {
-            totalScorePre = totalScorePre.substr(1).slice(0, -1);
-            preScore += Number(totalScorePre);
-        }
-        $('#preScore').html(preScore);
+//        var preScore = 0;
+//        let getGameScore1 = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "UATPretest");
+//        var totalScorePre = JSON.stringify(getGameScore1.Content.ServiceResponse.ScoreDetails.total_score);
+//        console.log("totalScorePre:  " + totalScorePre);
+//        if (totalScorePre === "null") {
+//            //console.log("inside");
+//            preScore += Number(0);
+//        } else {
+//            totalScorePre = totalScorePre.substr(1).slice(0, -1);
+//            preScore += Number(totalScorePre);
+//        }
+        $('#preScore').html(sessionStorage.preScore + "/9");
 
-        var postScore = 0;
-        let getGameScorePost = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest");
-        var totalScorePost = JSON.stringify(getGameScorePost.Content.ServiceResponse.ScoreDetails.total_score);
-        if (totalScorePost === "null") {
-            postScore += Number(0);
-        } else {
-            totalScorePost = totalScorePost.substr(1).slice(0, -1);
-            postScore += Number(totalScorePost);
+//        var postScore = 0;
+//        let getGameScorePost = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "UATPosttest");
+//        var totalScorePost = JSON.stringify(getGameScorePost.Content.ServiceResponse.ScoreDetails.total_score);
+//        if (totalScorePost === "null") {
+//            postScore += Number(0);
+//        } else {
+//            totalScorePost = totalScorePost.substr(1).slice(0, -1);
+//            postScore += Number(totalScorePost);
+//
+//        }
 
-        }
-
-        $('#postScore').html(postScore);
+        $('#postScore').html(sessionStorage.postScore + "/9");
     }
 </script>
 
@@ -206,17 +206,16 @@
                 var popmainArr;
                 var poparrUserId = [];
                 var parrScore = [];
-                const getGameLeadersPop = await getGameLeaders((sessionStorage.userID), sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Poptest1", false);
+                const getGameLeadersPop = await getGameLeaders((sessionStorage.userID), sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "UATPoptest", false);
                 //getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2019-01-01 00:00:00", "Posttest", false, function(callback) {
                 var poptestArr = getGameLeadersPop;
                 //});
                 popmainArr = poptestArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
-                    //console.log(popmainArr);
-                    //console.log(popmainArr.length);
+                    console.log(popmainArr);
+//                    console.log(popmainArr.length);
                 var tableHead = ' <table class="table"><thead class " table-striped b-t b-light"><tr><th>Rank</th><th>Team Name</th><th>Score</th></tr></thead><tbody>';
                 var row = "";
-
-                for (i = 0; i < popmainArr.length && i < 10; i++) {
+                for (i = 0; i < popmainArr.length; i++) {
                     console.log(popmainArr[i]['user_Id']);
                     var rank = i + 1
                     var r = "<tr>";

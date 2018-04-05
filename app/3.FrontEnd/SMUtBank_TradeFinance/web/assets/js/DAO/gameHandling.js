@@ -193,7 +193,10 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
         if (result === answer) {
             
             score = timer.getTimeValues().toString(['seconds']) * 10;
-            let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Pretest", 1);
+//            score = 1;
+            
+            
+            let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "UATPretest", 1);
             preScore += 1;
         } else {
             //showErrorModal("Correct Answer : " + answer);
@@ -202,11 +205,11 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
   
         
     }
-    timer.stop();
+   /* timer.stop();
     if(counter != (chosenQuestions.length-1) + pagesBeforeQuiz + 1){
          timerStart(timer);
        
-    } 
+    } */
     if(counter === (chosenQuestions.length - pagesBeforeQuiz + 1)) { // if come to the last page
             var gAppendString = '<center class="list-group-item">';
             gAppendString += '<div class="font-bold"> Your Pre-quiz Score : </div>';
@@ -239,7 +242,7 @@ var result = $("input[name=" + counterPost + "]:checked").val();        //consol
             score = timerPost.getTimeValues().toString(['seconds']) * 10;
 //            score = 1;
 
-            let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestionsPost[questionID], sessionStorage.gameID, score, "Posttest", 1);
+            let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestionsPost[questionID], sessionStorage.gameID, score, "UATPosttest", 1);
             postScore += 1;
             //console.log("correct"+postScore);
         } else {
@@ -249,11 +252,11 @@ var result = $("input[name=" + counterPost + "]:checked").val();        //consol
   
         
     }
-    timerPost.stop();
+    /*timerPost.stop();
     if(counterPost != (chosenQuestionsPost.length-1) + pagesBeforeQuizPost + 1){
          timerStart(timerPost);
        
-    } 
+    } */
     if(counterPost === (chosenQuestionsPost.length - pagesBeforeQuizPost + 1)) { // if come to the last page
             var gAppendString = '<center class="list-group-item">';
             gAppendString += '<div class="font-bold"> Your Post-quiz Score : </div>';
@@ -291,8 +294,9 @@ async function onNextPop(counter, pagesBeforeQuiz, chosenQuestions, timer) {
             $("#explaination").html(''); //put in explaination here*/
             //console.log("Correct");
             score = timer.getTimeValues().toString(['seconds']) * 10;
+
             //console.log(timer.getTimeValues().toString(['seconds']));
-            let qScore = await setQuestionScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Poptest", 1);
+            let qScore = await setQuestionScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "UATPoptest", 1);
             //console.log(qScore);
         } else {
             showPopErrorModal(result, answer);
@@ -357,9 +361,9 @@ async function preQuiz(chosenQuestions, pagesBeforeQuiz) {
         gAppendString += '</div></div>';
         gAppendString += '</div>';
         //append timer in header
-        gAppendString += '<div class="col-lg-4">';
+        /*gAppendString += '<div class="col-lg-4">';
         gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
-        gAppendString += '</div>';
+        gAppendString += '</div>';*/
         gAppendString += '</div></header>';
 
         var options = gChoices.split("&&");
@@ -441,9 +445,9 @@ async function postQuiz(chosenQuestions, pagesBeforeQuiz) {
         gAppendString += '</div></div>';
         gAppendString += '</div>';
         //append timer in header
-        gAppendString += '<div class="col-lg-4">';
+       /* gAppendString += '<div class="col-lg-4">';
         gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
-        gAppendString += '</div>';
+        gAppendString += '</div>';*/
         gAppendString += '</div></header>';
 
         var options = gChoices.split("&&");
