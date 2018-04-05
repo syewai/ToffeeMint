@@ -20,40 +20,31 @@
         totalScores();
     });
     async function totalScores() {
-        var totalScore = 0;
-        const getGameScore1 = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest");
+        var preScore = 0;
+        let getGameScore1 = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest");
         var totalScorePre = JSON.stringify(getGameScore1.Content.ServiceResponse.ScoreDetails.total_score);
-        //console.log("totalScorePre:  " + totalScorePre);
+        console.log("totalScorePre:  " + totalScorePre);
         if (totalScorePre === "null") {
             //console.log("inside");
-            totalScore += Number(0);
+            preScore += Number(0);
         } else {
             totalScorePre = totalScorePre.substr(1).slice(0, -1);
-            totalScore += Number(totalScorePre);
+            preScore += Number(totalScorePre);
         }
-        //console.log("Score 1 :" + totalScorePre);
-        //console.log("TSCore: " + totalScore);
-        const getGameScorePost = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest");
-        
+        $('#preScore').html(preScore);
+
+        var postScore = 0;
+        let getGameScorePost = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest");
         var totalScorePost = JSON.stringify(getGameScorePost.Content.ServiceResponse.ScoreDetails.total_score);
         if (totalScorePost === "null") {
-            totalScore += Number(0);
+            postScore += Number(0);
         } else {
             totalScorePost = totalScorePost.substr(1).slice(0, -1);
-//            totalScore += Number(totalScorePost);
-        }
-        $('#tScore').html(totalScore);
+            postScore += Number(totalScorePost);
 
-        let getTeamScore = await getGameScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest");
-        var teamScore = JSON.stringify(getTeamScore.Content.ServiceResponse.ScoreDetails.total_score);
-        if (teamScore === "null") {
-            teamScore = Number(0);
-        } else {
-            // getTeamScore = totalScorePre.substr(1).slice(0, -1);
-            // getTeamScore += Number(totalScorePre);
         }
-        //console.log(teamScore);
-        $('#teamScore').html(teamScore);
+
+        $('#postScore').html(postScore);
     }
 </script>
 
@@ -70,7 +61,7 @@
                         <i class="fa fa-male fa-stack-1x text-white"></i>
                     </span>
                     <a class="clear" href="#">
-                        <span class="h3 block m-t-xs"><strong id="tScore">
+                        <span class="h3 block m-t-xs"><strong id="preScore">
                             </strong></span>
                         <small class="text-muted text-uc font-bold">Pre-Quiz Score</small>
                     </a>
@@ -82,7 +73,7 @@
                         <span class="easypiechart pos-abt" data-percent="100" data-line-width="4" data-track-Color="#fff" data-scale-Color="false" data-size="50" data-line-cap='butt' data-animate="2000" data-target="#bugs" data-update="3000"></span>
                     </span>
                     <a class="clear" href="#">
-                        <span class="h3 block m-t-xs"><strong id="teamScore"></strong></span>
+                        <span class="h3 block m-t-xs"><strong id="postScore"></strong></span>
                         <small class="text-muted text-uc font-bold">Post-Quiz Score</small>
                     </a>
                 </div>
@@ -92,9 +83,9 @@
 
         <div class="container">
             <h1 class="display-2 text-center">TEAM LEADERBOARD RESULTS</h1>
-            <div class="wrapper-lg" >
+            <div class="wrapper-lg">
                 <h3 id="table1"></h3>
-                
+
             </div>
         </div>
 
@@ -103,72 +94,72 @@
         <script>
             $(document).ready(function() {
 
-//                var xhr = new XMLHttpRequest();
-//                xhr.onreadystatechange = function() {
-////                    call2Bar();
-//                }
-//                xhr.open('GET', true);
-//                xhr.send(null);
+                //                var xhr = new XMLHttpRequest();
+                //                xhr.onreadystatechange = function() {
+                ////                    call2Bar();
+                //                }
+                //                xhr.open('GET', true);
+                //                xhr.send(null);
                 popArray();
             });
-//
-//            async function call2Bar() {
-//                const arrScoreAndUserId = await popArray();
-//                var arrUserId = arrScoreAndUserId[0];
-//                var arrScore = arrScoreAndUserId[1];
-//                const parrScore = await postArray();
-//
-//                var ctx = document.getElementById("myChart");
-//                var chart = new Chart(ctx, {
-//                    type: 'bar',
-//                    data: {
-//                        labels: arrUserId,
-//                        datasets: [{
-//                            label: 'Team Pop Quiz Score',
-//                            data: arrScore,
-//                            backgroundColor: [
-//                                'rgba(255, 99, 132, 0.2)',
-//                                'rgba(54, 162, 235, 0.2)',
-//                                'rgba(255, 206, 86, 0.2)',
-//                                'rgba(75, 192, 192, 0.2)',
-//                                'rgba(153, 102, 255, 0.2)',
-//                                'rgba(255, 159, 64, 0.2)',
-//                                'rgba(255, 99, 132, 0.2)',
-//                                'rgba(255, 206, 86, 0.2)',
-//                                'rgba(153, 102, 255, 0.2)',
-//                                'rgba(54, 162, 235, 0.2)'
-//                            ],
-//                            borderColor: [
-//                                'rgba(255,99,132,1)',
-//                                'rgba(54, 162, 235, 1)',
-//                                'rgba(255, 206, 86, 1)',
-//                                'rgba(75, 192, 192, 1)',
-//                                'rgba(153, 102, 255, 1)',
-//                                'rgba(255, 159, 64, 1)',
-//                                'rgba(255,99,132,1)',
-//                                'rgba(255, 206, 86, 1)',
-//                                'rgba(153, 102, 255, 1)',
-//                                'rgba(54, 162, 235, 1)'
-//                            ],
-//                            borderWidth: 1
-//                        }, ]
-//                    },
-//                    options: {
-//                        scales: {
-//                            xAxes: [{
-//                                stacked: true
-//                            }],
-//                            yAxes: [{
-//                                stacked: true,
-//                                ticks: {
-//                                    beginAtZero: true
-//                                }
-//                            }]
-//                        }
-//                    }
-//                });
-//
-//            }
+            //
+            //            async function call2Bar() {
+            //                const arrScoreAndUserId = await popArray();
+            //                var arrUserId = arrScoreAndUserId[0];
+            //                var arrScore = arrScoreAndUserId[1];
+            //                const parrScore = await postArray();
+            //
+            //                var ctx = document.getElementById("myChart");
+            //                var chart = new Chart(ctx, {
+            //                    type: 'bar',
+            //                    data: {
+            //                        labels: arrUserId,
+            //                        datasets: [{
+            //                            label: 'Team Pop Quiz Score',
+            //                            data: arrScore,
+            //                            backgroundColor: [
+            //                                'rgba(255, 99, 132, 0.2)',
+            //                                'rgba(54, 162, 235, 0.2)',
+            //                                'rgba(255, 206, 86, 0.2)',
+            //                                'rgba(75, 192, 192, 0.2)',
+            //                                'rgba(153, 102, 255, 0.2)',
+            //                                'rgba(255, 159, 64, 0.2)',
+            //                                'rgba(255, 99, 132, 0.2)',
+            //                                'rgba(255, 206, 86, 0.2)',
+            //                                'rgba(153, 102, 255, 0.2)',
+            //                                'rgba(54, 162, 235, 0.2)'
+            //                            ],
+            //                            borderColor: [
+            //                                'rgba(255,99,132,1)',
+            //                                'rgba(54, 162, 235, 1)',
+            //                                'rgba(255, 206, 86, 1)',
+            //                                'rgba(75, 192, 192, 1)',
+            //                                'rgba(153, 102, 255, 1)',
+            //                                'rgba(255, 159, 64, 1)',
+            //                                'rgba(255,99,132,1)',
+            //                                'rgba(255, 206, 86, 1)',
+            //                                'rgba(153, 102, 255, 1)',
+            //                                'rgba(54, 162, 235, 1)'
+            //                            ],
+            //                            borderWidth: 1
+            //                        }, ]
+            //                    },
+            //                    options: {
+            //                        scales: {
+            //                            xAxes: [{
+            //                                stacked: true
+            //                            }],
+            //                            yAxes: [{
+            //                                stacked: true,
+            //                                ticks: {
+            //                                    beginAtZero: true
+            //                                }
+            //                            }]
+            //                        }
+            //                    }
+            //                });
+            //
+            //            }
             async function preArray() {
                 var mainArr;
                 var arrUserId = [];
@@ -180,8 +171,8 @@
                 //console.log("pop leaders ---------------");
                 var testArr = getGameLeadersPre;
                 mainArr = testArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
-                //console.log(mainArr);
-                //console.log(mainArr.length);
+                    //console.log(mainArr);
+                    //console.log(mainArr.length);
                 for (i = 0; i < mainArr.length && i < 10; i++) {
                     //console.log(mainArr[i]);
                     arrUserId[i] = mainArr[i]['user_Id'];
@@ -201,8 +192,8 @@
                 var ptestArr = getGameLeadersPost;
                 //});
                 pmainArr = ptestArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
-                //console.log(pmainArr);
-                //console.log(pmainArr.length);
+                    //console.log(pmainArr);
+                    //console.log(pmainArr.length);
                 for (i = 0; i < pmainArr.length && i < 10; i++) {
                     parrUserId[i] = pmainArr[i]['user_Id'];
                     parrScore[i] = pmainArr[i]['score'];
@@ -220,29 +211,28 @@
                 var poptestArr = getGameLeadersPop;
                 //});
                 popmainArr = poptestArr['Content']['ServiceResponse']['LeaderDetails']['Leaders']['Leader'] //main
-                //console.log(popmainArr);
-                //console.log(popmainArr.length);
+                    //console.log(popmainArr);
+                    //console.log(popmainArr.length);
                 var tableHead = ' <table class="table"><thead class " table-striped b-t b-light"><tr><th>Rank</th><th>Team Name</th><th>Score</th></tr></thead><tbody>';
                 var row = "";
-                
+
                 for (i = 0; i < popmainArr.length && i < 10; i++) {
                     console.log(popmainArr[i]['user_Id']);
-                    var rank = i+1
+                    var rank = i + 1
                     var r = "<tr>";
-                    r +="<td>"+ rank +"</td>";
-                    r+="<td>"+ popmainArr[i]['user_Id'] +"</td>";
-                    r +="<td>"+ popmainArr[i]['score'] +"</td>";
+                    r += "<td>" + rank + "</td>";
+                    r += "<td>" + popmainArr[i]['user_Id'] + "</td>";
+                    r += "<td>" + popmainArr[i]['score'] + "</td>";
                     r += "</tr>";
                     row += r;
                 }
                 var tableFoot = '</tbody></table>';
-                var table = tableHead + row + tableFoot; 
+                var table = tableHead + row + tableFoot;
                 $('#table1').append(table);
 
                 return parrScore;
 
             }
-            
         </script>
     </section>
     <!--End of Scrollable-->

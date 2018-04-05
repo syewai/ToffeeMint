@@ -51,13 +51,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Amount</label>
-                                <input id="amount" type="text" class="form-control" data-type="digits" data-required="true" required>
+                                <label>Amount (SGD)</label>
+                                <input id="amount" type="number" min="0" class="form-control" data-type="digits" data-required="true" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="expiryDate">Expiry Date</label>
-                                <input type='text' class="form-control form_date" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" data-required="true" required/>
+                                <input type='text' class="form-control form_date_modify" id='expiryDate' data-date="" data-date-format="yyyy-mm-dd" data-link-field="expiryDate" data-link-format="yyyy-mm-dd" name="expiryDate" data-required="true" required/>
                             </div>
 
 
@@ -201,7 +201,7 @@
             $('#amendLcButton').attr('data-target', '#amendLCModal');
             $('#amendLcButton').attr('data-backdrop', 'static');
             $('#amendLcButton').attr('data-keyboard', 'false');
-
+            }
             $("#amendLcButton").click(function() {
                 if (sessionStorage.quizAmendLC == 0 || sessionStorage.gameMode == 0) { // learning mode, initialize modal for pop quiz
                     $('#amendLcButton').removeAttr('data-toggle', 'modal');
@@ -240,6 +240,24 @@
             $("#cancelButton").click(function() {
                 window.location.replace("/SMUtBank_TradeFinance/exporter/exporter.html");
             });
-        }
+        
     }
+</script>
+
+<script type="text/javascript" src="../assets/js/datepicker/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js" charset="UTF-8"></script>
+<script type="text/javascript">
+     var date = new Date();
+date.setDate(date.getDate());
+    $('.form_date_modify').datetimepicker({
+        pickerPosition: 'top-right',
+        startDate: date,
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
 </script>

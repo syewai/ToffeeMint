@@ -114,7 +114,7 @@ function storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink
         .done(function(response) {
 
             if (response.globalErrorId === "010000") { // success code
-                showSuccessModal("Redirecting to Homepage");
+                
                 //get bol link
                 bolLink = response.document.url;
                 /*bolLink = trimUrl(bolLink);
@@ -134,6 +134,7 @@ function storeBol(refNum, filename, partyID, documentType, MyBinaryData, bolLink
 
                 processUploadBol(sessionStorage.userID, PIN, OTP, refNum, linksJson, "bol uploaded", uploadType);
             } else {
+                 $('#loadingModal').modal('hide');
                 showErrorModal(response.errorText);
             }
         });
@@ -184,7 +185,7 @@ function storeCerts(refNum, parametersCOO, parametersInsurance, bolLink, cooLink
                     .done(function(response) {
 
                         if (response.globalErrorId === "010000") { // success code
-                            showSuccessModal("Redirecting to Homepage");
+                            
                             //get insurance link
                             insuranceLink = response.document.url;
                             /*insuranceLink = trimUrl(insuranceLink);

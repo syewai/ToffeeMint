@@ -15,22 +15,17 @@
                                     <div class="panel panel-warning">
                                         <div class="panel-heading">
                                             <h4>
-                                                <strong>Future-proof Enterprise Architecture</br>
+                                                <strong>Overcoming barriers of entry through Open API</br>
                                                 </strong>
                                             </h4>
                                         </div>
                                         <div class="panel-body">
-                                            <p>As disruptive technological advancements such as the blockchain start to take,
-                                                it becomes increasingly important that existing players in the financial
-                                                industry keep their enterprise architecture agile; by using a Service-oriented
-                                                Architecture (SOA) model to structure their technological stack.
-                                                </br>
-                                                The tBank Trade Finance System that you are using right now is built on an Enterprise Service Bus (ESB) that was adopted
-                                                in the mid 2000s. This banking system however still holds up, as new services
-                                                (such as the Ethereum Blockchain), are integrated into the system by a middleware,
-                                                and facilitated through service endpoints exposed by the ESB. This allows
-                                                new services and technologies to be adopted quickly, keeping the enterprise
-                                                system nimble and ready for the future. </p>
+                                            <p>The strength of an Service-Oriented Architecture would be that the functionality of an existing system can be called, and integrated into newer services, such as ones backed by a blockchain. 
+                                            </br>
+                                            <input class="btn btn-default" type="button" value="Create Contract" onclick="window.open('http://smu.tbankonline.com:9001/lc/updateContract?refNum=test&contract=test')">
+                                            </br>
+                                                To demonstrate this, the button below will call an exposed service endpoint which will create a new Letter of Credit on a legacy database, put that same Letter of Credit on a blockchain backed smart contract, and return the block that has been mined of this smart contract. 
+                                            </p>
                                             </br>
                                         </div>
                                     </div>
@@ -40,7 +35,7 @@
                         </div>
                         <script>
                             //$(document).ready(function() {
-                            var chosenQuestions = [102,109];
+                            var chosenQuestions = [105,109];
                             var pagesBeforeQuiz = 1;
                             var answerCounter = 0;
                             var timer = new Timer();
