@@ -165,7 +165,7 @@
                 var arrUserId = [];
                 var arrScore = [];
                 //getGameLeaders(userId, PIN, OTP, gameId, startTime, endTime, mode, byGroup, callback)
-                const getGameLeadersPre = await getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false);
+                const getGameLeadersPre = await getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Toffeemint_Pretest", true);
                 //getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Pretest", false, function (callback) {
                 //console.log(getGameLeadersPre);
                 //console.log("pop leaders ---------------");
@@ -187,7 +187,7 @@
                 var pmainArr;
                 var parrUserId = [];
                 var parrScore = [];
-                const getGameLeadersPost = await getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Posttest", false);
+                const getGameLeadersPost = await getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Toffeemint_Posttest", true);
                 //getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2019-01-01 00:00:00", "Posttest", false, function(callback) {
                 var ptestArr = getGameLeadersPost;
                 //});
@@ -206,7 +206,7 @@
                 var popmainArr;
                 var poparrUserId = [];
                 var parrScore = [];
-                const getGameLeadersPop = await getGameLeaders((sessionStorage.userID), sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "UATPoptest", false);
+                const getGameLeadersPop = await getGameLeaders((sessionStorage.userID), sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2017-01-01 00:00:00", "2019-01-01 00:00:00", "Toffeemint_Poptest", true);
                 //getGameLeaders(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, sessionStorage.gameID, "2019-01-01 00:00:00", "Posttest", false, function(callback) {
                 var poptestArr = getGameLeadersPop;
                 //});
@@ -215,16 +215,30 @@
 //                    console.log(popmainArr.length);
                 var tableHead = ' <table class="table"><thead class " table-striped b-t b-light"><tr><th>Rank</th><th>Team Name</th><th>Score</th></tr></thead><tbody>';
                 var row = "";
-                for (i = 0; i < popmainArr.length; i++) {
-                    console.log(popmainArr[i]['user_Id']);
-                    var rank = i + 1
+                
+                if(popmainArr.constructor != Array){
+                    console.log(popmainArr['user_Id']);
                     var r = "<tr>";
-                    r += "<td>" + rank + "</td>";
-                    r += "<td>" + popmainArr[i]['user_Id'] + "</td>";
-                    r += "<td>" + popmainArr[i]['score'] + "</td>";
+                    r += "<td>1</td>";
+                    r += "<td>" + popmainArr['user_Id'] + "</td>";
+                    r += "<td>" + popmainArr['score'] + "</td>";
                     r += "</tr>";
-                    row += r;
+                    row += r;                    
+                    
+                }else{
+                    for (i = 0; i < popmainArr.length; i++) {
+                        console.log(popmainArr[i]['user_Id']);
+                        var rank = i + 1
+                        var r = "<tr>";
+                        r += "<td>" + rank + "</td>";
+                        r += "<td>" + popmainArr[i]['user_Id'] + "</td>";
+                        r += "<td>" + popmainArr[i]['score'] + "</td>";
+                        r += "</tr>";
+                        row += r;
+                    }            
                 }
+                
+
                 var tableFoot = '</tbody></table>';
                 var table = tableHead + row + tableFoot;
                 $('#table1').append(table);

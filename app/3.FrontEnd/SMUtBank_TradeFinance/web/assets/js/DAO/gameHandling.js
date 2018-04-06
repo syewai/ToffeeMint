@@ -180,46 +180,47 @@ async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     //console.log(chosenQuestions.length - pagesBeforeQuiz);
     //console.log("counter");
     //console.log(counter);
-    
+
     if (counter >= pagesBeforeQuiz && counter <= chosenQuestions.length) {
         var questionID = counter - pagesBeforeQuiz;
 
         result = $("input[name=" + counter + "]:checked").val();
+        $("input[name=" + counter + "]:checked").removeAttr('checked');
         //console.log(result);
         let getGameAnswerPre = await getGameAnswer("", "", "", chosenQuestions[questionID]);
         answer = JSON.stringify(getGameAnswerPre.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
         //console.log(answer);
-        
+
         if (result === answer) {
-            
-            score = timer.getTimeValues().toString(['seconds']) * 10;
-//            score = 1;
-            
-            
-            let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "UATPretest", 1);
+
+//            score = timer.getTimeValues().toString(['seconds']) * 10;
+            score = 1;
+
+
             preScore += 1;
         } else {
-            //showErrorModal("Correct Answer : " + answer);
+            score = 0;
         }
-        
-  
-        
+        let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Toffeemint_Pretest", sessionStorage.groupID);
+        sessionStorage.preScore = preScore;
+
+
     }
-   /* timer.stop();
-    if(counter != (chosenQuestions.length-1) + pagesBeforeQuiz + 1){
-         timerStart(timer);
-       
-    } */
-    if(counter === (chosenQuestions.length - pagesBeforeQuiz + 1)) { // if come to the last page
-            var gAppendString = '<center class="list-group-item">';
-            gAppendString += '<div class="font-bold"> Your Pre-quiz Score : </div>';
-            gAppendString += '<h2 class="text-primary font-bold">'+preScore+' / '+chosenQuestions.length+'</h2>';
-            gAppendString += "We have come to the end of the quiz. Thank you for your time.</center>";
-            $("#overallResults").append(gAppendString);
-            sessionStorage.preScore = preScore;
-            //console.log(sessionStorage.preScore);
+    /* timer.stop();
+     if(counter != (chosenQuestions.length-1) + pagesBeforeQuiz + 1){
+     timerStart(timer);
+     
+     } */
+    if (counter === (chosenQuestions.length - pagesBeforeQuiz + 1)) { // if come to the last page
+        var gAppendString = '<center class="list-group-item">';
+        gAppendString += '<div class="font-bold"> Your Pre-quiz Score : </div>';
+        gAppendString += '<h2 class="text-primary font-bold">' + preScore + ' / ' + chosenQuestions.length + '</h2>';
+        gAppendString += "We have come to the end of the quiz. Thank you for your time.</center>";
+        $("#overallResults").append(gAppendString);
+
+        //console.log(sessionStorage.preScore);
     }
-   
+
 }
 
 async function onNextPost(counterPost, pagesBeforeQuizPost, chosenQuestionsPost, timerPost) {
@@ -227,46 +228,48 @@ async function onNextPost(counterPost, pagesBeforeQuizPost, chosenQuestionsPost,
     var score;
     //console.log(chosenQuestionsPost.length - pagesBeforeQuizPost);
     //console.log("counter");
-    //console.log(counterPost);
-    
+    console.log(counterPost);
+
     if (counterPost >= pagesBeforeQuizPost && counterPost <= chosenQuestionsPost.length) {
         var questionID = counterPost - pagesBeforeQuizPost;
 
-var result = $("input[name=" + counterPost + "]:checked").val();        //console.log(result);
-        let getGameAnswerPre = await getGameAnswer("", "", "", chosenQuestionsPost[questionID]);
-        answer = JSON.stringify(getGameAnswerPre.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
-        //console.log(answer);
-        
-        if (result === answer) {
-            
-            score = timerPost.getTimeValues().toString(['seconds']) * 10;
-//            score = 1;
+        result = $("input[name=" + counterPost + "]:checked").val();        
+        console.log(result);
+        $("input[name=" + counterPost + "]:checked").removeAttr('checked');
+        let getGameAnswerPost = await getGameAnswer("", "", "", chosenQuestionsPost[questionID]);
+        answer = JSON.stringify(getGameAnswerPost.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
+        console.log(answer);
 
-            let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestionsPost[questionID], sessionStorage.gameID, score, "UATPosttest", 1);
+        if (result === answer) {
+
+//            score = timerPost.getTimeValues().toString(['seconds']) * 10;
+            score = 1;
+
             postScore += 1;
-            //console.log("correct"+postScore);
+            console.log("correct" + postScore);
         } else {
-            //showErrorModal("Correct Answer : " + answer);
+            score = 0;
         }
-        
-  
-        
+        let qScore = await setQuestionScore(sessionStorage.userID, sessionStorage.PIN, sessionStorage.OTP, chosenQuestionsPost[questionID], sessionStorage.gameID, score, "Toffeemint_Posttest", sessionStorage.groupID);
+        sessionStorage.postScore = postScore;
+
+
     }
     /*timerPost.stop();
-    if(counterPost != (chosenQuestionsPost.length-1) + pagesBeforeQuizPost + 1){
-         timerStart(timerPost);
-       
-    } */
-    if(counterPost === (chosenQuestionsPost.length - pagesBeforeQuizPost + 1)) { // if come to the last page
-            var gAppendString = '<center class="list-group-item">';
-            gAppendString += '<div class="font-bold"> Your Post-quiz Score : </div>';
-            gAppendString += '<h2 class="text-primary font-bold">'+postScore+' / '+chosenQuestionsPost.length+'</h2>';
-            gAppendString += "We have come to the end of the quiz. Thank you for your time.</center>";
-            $("#overallResultsPost").append(gAppendString);
-            sessionStorage.postScore = postScore;
-            //console.log(sessionStorage.postScore);
+     if(counterPost != (chosenQuestionsPost.length-1) + pagesBeforeQuizPost + 1){
+     timerStart(timerPost);
+     
+     } */
+    if (counterPost === (chosenQuestionsPost.length - pagesBeforeQuizPost + 1)) { // if come to the last page
+        var gAppendString = '<center class="list-group-item">';
+        gAppendString += '<div class="font-bold"> Your Post-quiz Score : </div>';
+        gAppendString += '<h2 class="text-primary font-bold">' + postScore + ' / ' + chosenQuestionsPost.length + '</h2>';
+        gAppendString += "We have come to the end of the quiz. Thank you for your time.</center>";
+        $("#overallResultsPost").append(gAppendString);
+
+        //console.log(sessionStorage.postScore);
     }
-   
+
 }
 
 
@@ -278,11 +281,11 @@ async function onNextPop(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
     var score;
     var resultPair = [];
-     
+
     if (counter >= pagesBeforeQuiz && counter % 2 == 1 && counter <= chosenQuestions.length) {
         var questionID = counter - pagesBeforeQuiz;
 
-        result = $("input[name=" + counter + "]:checked").val();
+        result = $("input[name='" + counter + "']:checked").val();
         //console.log(result);
         let getGameAnswerPre = await getGameAnswer("", "", "", chosenQuestions[questionID]);
         answer = JSON.stringify(getGameAnswerPre.Content.ServiceResponse.QuestionDetails.answer).substr(1).slice(0, -1);
@@ -290,13 +293,13 @@ async function onNextPop(counter, pagesBeforeQuiz, chosenQuestions, timer) {
         if (result === answer) {
             showPopSuccessModal(result);
             /*$("#icon").html('<p class="font-bold h3 font-bold m-t text-primary"><i class="fa fa-check-circle fa-2x"></i> Correct</p>');
-            $("#answer").html("Correct Answer is - " + answer);
-            $("#explaination").html(''); //put in explaination here*/
+             $("#answer").html("Correct Answer is - " + answer);
+             $("#explaination").html(''); //put in explaination here*/
             //console.log("Correct");
             score = timer.getTimeValues().toString(['seconds']) * 10;
 
             //console.log(timer.getTimeValues().toString(['seconds']));
-            let qScore = await setQuestionScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "UATPoptest", 1);
+            let qScore = await setQuestionScore(sessionStorage.userID.substr(8), sessionStorage.PIN, sessionStorage.OTP, chosenQuestions[questionID], sessionStorage.gameID, score, "Toffeemint_Poptest", sessionStorage.groupID);
             //console.log(qScore);
         } else {
             showPopErrorModal(result, answer);
@@ -308,20 +311,20 @@ async function onNextPop(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     }
     timer.stop();
 
-   if(counter != (chosenQuestions.length-1) + pagesBeforeQuiz){
-         timerStart(timer);
-       
+    if (counter != (chosenQuestions.length - 1) + pagesBeforeQuiz) {
+        timerStart(timer);
+
     }
 }
 
 //timer function to calculate score
 function timerStart(timer) {
-    timer.start({ countdown: true, startValues: { seconds: 59 } });
+    timer.start({countdown: true, startValues: {seconds: 59}});
     $('#countdownTimer .values').html(timer.getTimeValues().toString(['seconds']));
-    timer.addEventListener('secondsUpdated', function(e) {
+    timer.addEventListener('secondsUpdated', function (e) {
         $('#countdownTimer .values').html(timer.getTimeValues().toString(['seconds']));
     });
-    timer.addEventListener('targetAchieved', function(e) {
+    timer.addEventListener('targetAchieved', function (e) {
         $('#countdownTimer .values').html('No points awarded');
     });
 
@@ -362,8 +365,8 @@ async function preQuiz(chosenQuestions, pagesBeforeQuiz) {
         gAppendString += '</div>';
         //append timer in header
         /*gAppendString += '<div class="col-lg-4">';
-        gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
-        gAppendString += '</div>';*/
+         gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
+         gAppendString += '</div>';*/
         gAppendString += '</div></header>';
 
         var options = gChoices.split("&&");
@@ -445,9 +448,9 @@ async function postQuiz(chosenQuestions, pagesBeforeQuiz) {
         gAppendString += '</div></div>';
         gAppendString += '</div>';
         //append timer in header
-       /* gAppendString += '<div class="col-lg-4">';
-        gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
-        gAppendString += '</div>';*/
+        /* gAppendString += '<div class="col-lg-4">';
+         gAppendString += '<button class="btn-s-md btn-primary btn-rounded" sytle="white-space:normal !important;"><div id="countdownTimer" ><div class="values font-bold h4"></div></div></button>';
+         gAppendString += '</div>';*/
         gAppendString += '</div></header>';
 
         var options = gChoices.split("&&");
@@ -474,7 +477,7 @@ async function postQuiz(chosenQuestions, pagesBeforeQuiz) {
 
                 //gAppendString += '<div class="list-group-item" style="overflow-wrap: break-word">';
                 gAppendString += '<label style="text-align:left;margin:10px;width:500px;white-space:normal;" class="btn font-bold active">';
-                gAppendString += '<input style="display:none" type="radio" name=" ';
+                gAppendString += '<input style="display:none" type="radio" name="';
                 gAppendString += (i) + 1;
                 gAppendString += '" value="';
                 gAppendString += option;
@@ -582,17 +585,17 @@ async function popQuiz(chosenQuestions, pagesBeforeQuiz, target) {
              gAppendString += '<div class="col-lg-12">';
              gAppendString += '<div class="font-bold h4" id="icon"></div>'
              gAppendString += '</div></div>';
-
+             
              gAppendString += '<div class="row">';
              gAppendString += '<div class="col-lg-12">';
              gAppendString += '<div id="result"></div>'
              gAppendString += '</div></div>';
-
+             
              gAppendString += '<div class="row">';
              gAppendString += '<div class="col-lg-12">';
              gAppendString += '<div id="answer"></div>'
              gAppendString += '</div></div>';
-
+             
              gAppendString += '<div class="row">';
              gAppendString += '<div class="col-lg-12">';
              gAppendString += '<div id="explaination"></div>'

@@ -8,6 +8,9 @@ var usertype = "";
 var customerID = "";
 var gameID = "";
 var OTP = "";
+var gameID = 104; //set game id here
+
+
 if (user !== null) {
     userId = user.userID;
     PIN = user.PIN;
@@ -22,7 +25,9 @@ async function createSMSOTP() {
     userId = document.getElementById("userID").value;
     PIN = document.getElementById("PIN").value;
     usertype = document.getElementById("usertype").value;
-    gameID = document.getElementById("gameID").value;
+    
+    
+    groupID = document.getElementById("groupID").value;
     if (!(userId.length > 0)) {
 
         return { errorMsg: "Username cannot be blank" };
@@ -106,9 +111,11 @@ async function authenticateSMSOTP() {
         customerID = data.Content.ServiceResponse.CDMCustomer.customer.customerID;
         sessionStorage.customerID = customerID;
         sessionStorage.gameID = gameID;
+        sessionStorage.groupID = groupID;
+
         sessionStorage.showQuiz = 1;
-        console.log(gameID);
-        if (!(gameID.length > 0)) {
+        console.log(groupID);
+        if (!(groupID.length > 0)) {
             sessionStorage.gameMode = 0;
         } else {
             sessionStorage.gameMode = 1;
