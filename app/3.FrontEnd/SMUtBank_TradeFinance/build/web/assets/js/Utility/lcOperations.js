@@ -1,6 +1,7 @@
 var userId = sessionStorage.userID;
 var PIN = sessionStorage.PIN;
 var OTP = sessionStorage.OTP;
+var loadNum = 6; 
 
 /*
  * 
@@ -277,7 +278,7 @@ async function getHomepageData() {
     if (refNumberList.length > 0) {
         //iterate through up to 15 latest refnum in the list
 
-        for (var i = 0; i < numOfRows && i < 15; i++) {
+        for (var i = 0; i < numOfRows && i < loadNum; i++) {
             var refNum = refNumberList[i]; //key of homepageData
             var lc = {};
             var globalErrorId = "";
