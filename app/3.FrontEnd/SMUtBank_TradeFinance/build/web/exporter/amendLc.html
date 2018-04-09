@@ -81,12 +81,37 @@
 </section>
 <!--End of vbox-->
 
+
+
+<!-- error modal
+    ======================================== -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h2>Error</h2>
+            </div>
+            <div class="modal-body">
+                <p id="errorInfo">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button id="CloseError" type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <!-- loading modal
                     ======================================== -->
 <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-
+            <!--<div class="modal-header bg-warning">
+                                                                <h2>Submitting Letter of Credit...</h2>
+                                                            </div>-->
             <div class="modal-body">
                 <div class="row">
                     <div class="col">
@@ -100,10 +125,20 @@
                         </p>
                     </div>
                 </div>
+                <div class="row" style="margin-top:20px;">
+                    <div class="col" style="text-align: center;">
+                        <p class="font-bold h3 font-bold m-t text-primary" id="loadingMsg">
+
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
 <!--reqeust to amend lc pop quiz modal-->
 <div class="modal fade" id="amendLCModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
 <!-- pop quiz error modal
@@ -111,6 +146,9 @@
 <div class="modal fade" id="popErrorModal" tabindex="-1" role="dialog" aria-hidden="true">
 
 </div>
+
+
+
 
 <!--pop quiz success modal
                                 ======================================== -->
@@ -150,8 +188,7 @@
 
         /*Part 1 - call getLcDetails to prefilled amendments*/
         let lcDetails = await getLcDetails(userId, PIN, OTP, refNum); //calling this method from  assets/js/DAO/lcHandling.js
-        var globalErrorId =
-            lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
+        var globalErrorId = lcDetails.Content.ServiceResponse.ServiceRespHeader.GlobalErrorID;
         var fields = {};
         if (globalErrorId === "010000") {
             //Fetch lc details, store in fields object
