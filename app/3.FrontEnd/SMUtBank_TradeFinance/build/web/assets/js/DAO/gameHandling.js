@@ -173,6 +173,45 @@ async function getGameLeaders(userId, PIN, OTP, gameId, startTime, endTime, mode
     }
 }
 
+
+async function getQuestionScores(userId, PIN, OTP, gameId, startTime, endTime, mode, callback) {
+
+    var headerObj = {
+        Header: {
+            serviceName: "getQuestionScores",
+            userID: userId,
+            PIN: "",
+            OTP: ""
+        }
+    };
+    var header = JSON.stringify(headerObj);
+
+    var contentObj = {
+        Content: {
+            gameID: gameId,
+            start: startTime,
+            end: endTime,
+            mode: mode
+        }
+    };
+    var content = JSON.stringify(contentObj);
+    let result;
+    try {
+        result = await $.ajax({
+            url: apiUrl + "?Header=" + header + "&" + "Content=" + content,
+            type: 'POST',
+            data: callback
+        });
+
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+
+
 //function to get game score upon next button
 async function onNextPre(counter, pagesBeforeQuiz, chosenQuestions, timer) {
     var answer;
