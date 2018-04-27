@@ -2,12 +2,12 @@
 const app = require('express')();
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 9001;
-const cors = require('cors');
+// const cors = require('cors');
 const log = require('simple-node-logger').createSimpleFileLogger('bc_log.log');
 
 //Use CORS for cross-origin access
 
-app.use(cors());
+// app.use(cors());
 
 //Import web3 & truffle libraries
 const Web3 = require('web3'),
